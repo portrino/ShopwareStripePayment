@@ -1,6 +1,10 @@
 {if $Controller != "account" && $payment_mean.name == 'viison_stripe'}
 	{* Additional styling for the stripe payment box *}
 	<style type="text/css">
+		.first .error .normal {
+			text-align: left;
+			font-weight: normal;
+		}
 		#viison-stripe-form label {
 			width: 150px !important;
 		}

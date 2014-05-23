@@ -141,6 +141,8 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 	 * Handles different tasks during the checkout process. First it adds the custom templates,
 	 * which are required for the stripe payment form. If the requested action is the 'confirm' action,
 	 * the configured stripe public key is passed to the view, so that it can be rendered accordingly.
+	 * Additionally it checks the session for possible stripe errors and passes them to the view,
+	 * by setting the variable and appending the template.
 	 * Furthermore this method checks for a stripe transaction token in the request parameters,
 	 * and, if present, adds it to the current session. Finally the 'sRegisterFinished' flag is
 	 * set to 'false', to make the detailed list of payment methods visible in the 'confirm' view.
@@ -165,6 +167,28 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 		if ($request->getActionName() === 'confirm') {
 			// Add the stripe public key
 			$view->viisonStripePublicKey = Shopware()->Plugins()->Frontend()->ViisonStripePayment()->Config()->get('stripePublicKey');
+
+			// Check for an error
+			$stripeError = Shopware()->Session()->viisonStripePaymentError;
+			if (!empty($stripeError)) {
+				unset(Shopware()->Session()->viisonStripePaymentError);
+				// Append an error box to the view
+				$content =	'{if $viisonStripePaymentError} ' .
+								'<div class="grid_20 first">' .
+									'<div class="error">' .
+										'<div class="center">' .
+											'Beim Bezahlen der Bestellung ist ein Fehler aufgetreten!' .
+										'</div>' .
+										'<br />' .
+										'<div class="normal">' .
+											'{$viisonStripePaymentError}' .
+										'</div>' .
+									'</div>' .
+								'</div> ' .
+							'{/if}';
+				$view->extendsBlock('frontend_index_content_top', $content, 'append');
+				$view->viisonStripePaymentError = $stripeError;
+			}
 		}
 
 		if ($request->get('stripeTransactionToken')) {
