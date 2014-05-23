@@ -135,7 +135,12 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 				return false;
 		}
 
-		return true;
+		return array(
+			'success' => true,
+			'invalidateCache' => array(
+				'config'
+			)
+		);
 	}
 
 	/**
