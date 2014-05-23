@@ -165,7 +165,6 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 	 * set to 'false', to make the detailed list of payment methods visible in the 'confirm' view.
 	 *
 	 * @param args The arguments passed by the method triggering the event.
-	 * @return The path to the Api/ViisonPickwareConnectorVouchers controller.
 	 */
 	public function onPostDispatchCheckout(Enlight_Event_EventArgs $args) {
 		// Add the custom templates
