@@ -48,8 +48,8 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 		}
 
 		// Calculate the application fee (in cents)
-		$percentageFee = 0.0015;
-		$applicationFee = round($this->getAmount() * 100 * $percentageFee);
+		$percentageFee = 0.3;
+		$applicationFee = round($this->getAmount() * $percentageFee);
 
 		try {
 			// Select the secret key based on the current mode (live/test)
@@ -61,7 +61,7 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 				'currency' => $this->getCurrencyShortName(),
 				'card' => $transactionToken,
 				'description' => $userEmail,
-				'application_fee' => $applicationFeep
+				'application_fee' => $applicationFee
 			), $stripeSecretKey);
 		} catch (Exception $e) {
 			// Save the exception message in the session and redirect to the checkout confirm view
