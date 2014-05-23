@@ -57,11 +57,13 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 	 *		* A configuration element for the stripe connect public key
 	 *		* A configuration element for the stripe connect secret key
 	 *		* A configuration element for the stripe connect refresh token
+	 *		* A configuration element for enabling the test mode
 	 *
 	 * @param $oldVersion The currently installed version of this plugin.
 	 * @return True if the update was successful, otherwise false.
 	 */
 	public function update($oldVersion) {
+		$form = $this->Form();
 		switch ($oldVersion) {
 			case 'install':
 				// Subscribe for the basic events required for the payment process
@@ -84,7 +86,6 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 						'additionalDescription' => ''
 					)
 				);
-				$form = $this->Form();
 				// Add a config element for the stripe public key
 				$form->setElement(
 					'text',
@@ -115,6 +116,17 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 						'label' => 'Stripe Refresh Token',
 						'value' => '',
 						'description' => 'Tragen Sie hier Ihren Token zur aktualisierung der Schlüssel ("Refresh Token") ein, den Sie im Zuge der Registrierung bei Stripe erhalten haben.',
+						'scope' => Shopware_Components_Form::SCOPE_SHOP
+					)
+				);
+				// Add a config element for activating the test mode
+				$form->setElement(
+					'checkbox',
+					'testMode',
+					array(
+						'label' => 'Testmodus aktivieren',
+						'value' => false,
+						'description' => 'Im Testmodus werden die verwendeten Kreditkarten nicht belastet. Hinweis: Die eingegebenen Zugangsdaten werden bei im Testmodus durch Testdaten ersetzt.',
 						'scope' => Shopware_Components_Form::SCOPE_SHOP
 					)
 				);
@@ -165,8 +177,9 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 		}
 
 		if ($request->getActionName() === 'confirm') {
-			// Add the stripe public key
-			$view->viisonStripePublicKey = Shopware()->Plugins()->Frontend()->ViisonStripePayment()->Config()->get('stripePublicKey');
+			// Set the stripe public key as an explicitly defined string
+			$testMode = Shopware()->Plugins()->Frontend()->ViisonStripePayment()->Config()->get('testMode');
+			$view->viisonStripePublicKey = ($testMode) ? 'pk_test_bA2NxqEoDlCGBM2WiyTQClBN' : Shopware()->Plugins()->Frontend()->ViisonStripePayment()->Config()->get('stripePublicKey');
 
 			// Check for an error
 			$stripeError = Shopware()->Session()->viisonStripePaymentError;

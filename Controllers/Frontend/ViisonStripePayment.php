@@ -11,6 +11,18 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 {
 
 	/**
+	 * A boolean indicating whether the test mode is active.
+	 */
+	private $testMode = false;
+
+	/**
+	 * Updates the testMode flag.
+	 */
+	public function preDispatch() {
+		$this->testMode = Shopware()->Plugins()->Frontend()->ViisonStripePayment()->Config()->get('testMode');
+	}
+
+	/**
 	 * Retrieves the generated stripe transaction token and uses it to
 	 * charge the customer via the stripe API. After a successful payment,
 	 * the stripe transaction id is safed in the order and its status is updated to
@@ -30,7 +42,7 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 				'controller' => 'checkout',
 				'action' => 'confirm',
 				'appendSession' => true,
-				// 'forceSecure' => true
+				'forceSecure' => !$this->testMode // Disable the secure mode for testing
 			));
 			return;
 		}
@@ -40,8 +52,10 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 		$applicationFee = round($this->getAmount() * 100 * $percentageFee);
 
 		try {
+			// Select the secret key based on the current mode (live/test)
+			$stripeSecretKey = ($this->testMode) ? 'sk_test_8cku9VMwOVl7wMfPYFX1NUwd' : Shopware()->Plugins()->Frontend()->ViisonStripePayment()->Config()->get('stripeSecretKey');
+
 			// Init the stripe payment
-			$stripeSecretKey = Shopware()->Plugins()->Frontend()->ViisonStripePayment()->Config()->get('stripeSecretKey');
 			$charge = Stripe_Charge::create(array(
 				'amount' => ($this->getAmount() * 100), // Amount has to be in cents!
 				'currency' => $this->getCurrencyShortName(),
@@ -56,7 +70,7 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 				'controller' => 'checkout',
 				'action' => 'confirm',
 				'appendSession' => true,
-				//'forceSecure' => true
+				'forceSecure' => !$this->testMode // Disable the secure mode for testing
 			));
 			return;
 		}
