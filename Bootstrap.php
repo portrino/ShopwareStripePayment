@@ -189,21 +189,9 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 			$stripeError = Shopware()->Session()->viisonStripePaymentError;
 			if (!empty($stripeError)) {
 				unset(Shopware()->Session()->viisonStripePaymentError);
+
 				// Append an error box to the view
-				$content =	'{if $viisonStripePaymentError} ' .
-								'<div class="grid_20 first">' .
-									'<div class="error">' .
-										'<div class="center">' .
-											'Beim Bezahlen der Bestellung ist ein Fehler aufgetreten!' .
-										'</div>' .
-										'<br />' .
-										'<div class="normal">' .
-											'{$viisonStripePaymentError}' .
-										'</div>' .
-									'</div>' .
-								'</div> ' .
-							'{/if}';
-				$view->extendsBlock('frontend_index_content_top', $content, 'append');
+				$view->extendsTemplate('frontend/plugins/payment/viison_stripe_error.tpl');
 				$view->viisonStripePaymentError = $stripeError;
 			}
 		}
