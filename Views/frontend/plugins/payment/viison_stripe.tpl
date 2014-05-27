@@ -49,7 +49,7 @@
 					// default action handle the unchecked box
 					return;
 				}
-				// Check if a token was generated and hence the form can be submittes
+				// Check if a token was generated and hence the form can be submitted
 				if (canSubmitForm) {
 					// Proceed with the submission
 					return;
