@@ -41,7 +41,6 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 			$this->redirect(array(
 				'controller' => 'checkout',
 				'action' => 'confirm',
-				'appendSession' => true,
 				'forceSecure' => !$this->testMode // Disable the secure mode for testing
 			));
 			return;
@@ -69,7 +68,6 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 			$this->redirect(array(
 				'controller' => 'checkout',
 				'action' => 'confirm',
-				'appendSession' => true,
 				'forceSecure' => !$this->testMode // Disable the secure mode for testing
 			));
 			return;
