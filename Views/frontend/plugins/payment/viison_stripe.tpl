@@ -32,8 +32,11 @@
 				}, 500);
 			}
 
-			// Disable the default behaviour of the checkout form submit button
-			$('#basketButton').click(function(event) {
+			// Disable the default behaviour of the checkout form submission
+			var canSubmitForm = false;
+			var requestPending = false;
+			var form = $('#basketButton').closest('form');
+			form.on('submit', function(event) {
 				// Check the selected payment method
 				var stripePaymentId = 'payment_mean{$payment_mean.id}';
 				if (!$('#' + stripePaymentId).is(':checked')) {
@@ -46,9 +49,18 @@
 					// default action handle the unchecked box
 					return;
 				}
-
-				// Prevent the form from being submitted until a new stripe token is generated and received
-				event.preventDefault();
+				// Check if a token was generated and hence the form can be submittes
+				if (canSubmitForm) {
+					// Proceed with the submission
+					return;
+				} else {
+					// Prevent the form from being submitted until a new stripe token is generated and received
+					event.preventDefault();
+				}
+				// Check if a stripe request is pending
+				if (requestPending) {
+					return;
+				}
 
 				// Validate all fields
 				if ($('#stripe-card-holder').val().length === 0) {
@@ -68,11 +80,8 @@
 					return;
 				}
 
-				// Disable the submit button
-				var submitButton = $(this);
-				submitButton.attr('disabled', 'disabled');
-
 				// Send the credit card information to stripe
+				requestPending = true;
 				Stripe.card.createToken({
 					name: $('#stripe-card-holder').val(),
 					number: $('#stripe-card-number').val(),
@@ -80,14 +89,13 @@
 					exp_month: $('#stripe-card-expiry-month').val(),
 					exp_year: $('#stripe-card-expiry-year').val()
 				}, function(status, response) {
+					requestPending = false;
 					if (response.error) {
 						// Display the error
 						handleStripeError('{s namespace="frontend/plugins/payment/viison_stripe" name="error"}{/s}: ' + response.error.message);
-						// Enable the submit button
-						submitButton.removeAttr('disabled');
 					} else {
+						canSubmitForm = true;
 						// Add the stripe token to the order form and submit it
-						var form = submitButton.closest('form');
 						form.append('<input type="hidden" name="stripeTransactionToken" value="' + response['id'] + '" />');
 						form.submit();
 					}
