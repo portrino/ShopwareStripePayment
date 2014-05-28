@@ -48,7 +48,7 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 
 		// Calculate the application fee (in cents)
 		$percentageFee = 0.3;
-		$applicationFee = round($this->getAmount() * $percentageFee);
+		$applicationFee = round($this->getAmount() * $percentageFee) + 5;
 
 		try {
 			// Select the secret key based on the current mode (live/test)
