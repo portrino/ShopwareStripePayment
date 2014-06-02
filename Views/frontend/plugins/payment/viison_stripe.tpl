@@ -120,14 +120,14 @@
 		<div class="form-group">
 			<label class="col-lg-5 control-label" for="stripe-card-number">{s namespace="frontend/plugins/payment/viison_stripe" name="form/card/number"}{/s} *</label>
 			<div class="col-lg-5">
-				<input id="stripe-card-number" type="text" size="20" class="text" value="4242 4242 4242 4242">
+				<input id="stripe-card-number" type="text" size="20" class="text">
 			</div>
 		</div>
 		{* CVC *}
 		<div class="form-group">
 			<label class="col-lg-5 control-label" for="stripe-card-cvc">{s namespace="frontend/plugins/payment/viison_stripe" name="form/card/cvc"}{/s} *</label>
 			<div class="col-lg-5">
-				<input id="stripe-card-cvc" type="text" size="5" class="text" value="101">
+				<input id="stripe-card-cvc" type="text" size="5" class="text">
 			</div>
 		</div>
 		{* Expiry date *}
