@@ -5,15 +5,25 @@
 			text-align: left;
 			font-weight: normal;
 		}
-		#viison-stripe-form label {
-			width: 150px !important;
-		}
 		#viison-stripe-form .error-box {
 			padding: 10px;
 			margin-bottom: 15px;
 			color: #B94A48;
 			background-color: #F2DEDE;
 			border: 1px solid #DF7373;
+		}
+		#viison-stripe-form .form-group {
+			width: 600px;
+			height: 38px;
+		}
+		#viison-stripe-form .form-group .form-input {
+			float: left;
+		}
+		#viison-stripe-form .adjust-margin {
+			margin-top: 5px;
+		}
+		#viison-stripe-form label {
+			width: 150px !important;
 		}
 	</style>
 	{* Include and set up the Stripe SDK *}
@@ -111,29 +121,29 @@
 		</div >
 		{* Card holder *}
 		<div class="form-group">
-			<label class="col-lg-5 control-label" for="stripe-card-holder">{s namespace="frontend/plugins/payment/viison_stripe" name="form/card/holder"}{/s} *</label>
-			<div class="col-lg-5">
-				<input id="stripe-card-holder" type="text" size="20" class="text" value="{$sUserData['billingaddress']['firstname']} {$sUserData['billingaddress']['lastname']}">
+			<label class="control-label" for="stripe-card-holder">{s namespace="frontend/plugins/payment/viison_stripe" name="form/card/holder"}{/s} *</label>
+			<div class="form-input">
+				<input id="stripe-card-holder" type="text" size="20" class="text" value="{$sUserData.billingaddress.firstname} {$sUserData.billingaddress.lastname}">
 			</div>
 		</div>
 		{* Card number *}
 		<div class="form-group">
-			<label class="col-lg-5 control-label" for="stripe-card-number">{s namespace="frontend/plugins/payment/viison_stripe" name="form/card/number"}{/s} *</label>
-			<div class="col-lg-5">
+			<label class="control-label" for="stripe-card-number">{s namespace="frontend/plugins/payment/viison_stripe" name="form/card/number"}{/s} *</label>
+			<div class="form-input">
 				<input id="stripe-card-number" type="text" size="20" class="text">
 			</div>
 		</div>
 		{* CVC *}
 		<div class="form-group">
-			<label class="col-lg-5 control-label" for="stripe-card-cvc">{s namespace="frontend/plugins/payment/viison_stripe" name="form/card/cvc"}{/s} *</label>
-			<div class="col-lg-5">
+			<label class="control-label" for="stripe-card-cvc">{s namespace="frontend/plugins/payment/viison_stripe" name="form/card/cvc"}{/s} *</label>
+			<div class="form-input">
 				<input id="stripe-card-cvc" type="text" size="5" class="text">
 			</div>
 		</div>
 		{* Expiry date *}
 		<div class="form-group">
-			<label class="col-lg-5 control-label" for="stripe-card-expiry-month">{s namespace="frontend/plugins/payment/viison_stripe" name="form/card/expiry"}{/s} *</label>
-			<div class="col-lg-5">
+			<label class="control-label" for="stripe-card-expiry-month">{s namespace="frontend/plugins/payment/viison_stripe" name="form/card/expiry"}{/s} *</label>
+			<div class="form-input adjust-margin">
 				<select id="stripe-card-expiry-month"></select>
 				<script type="text/javascript">
 					var select = $('#stripe-card-expiry-month'),
@@ -154,6 +164,10 @@
 			</div>
 		</div>
 		{* Info *}
-		<p class="description">{s namespace="frontend/plugins/payment/viison_stripe" name="form/description"}{/s}</p>
+		<div class="form-group adjust-margin">
+			<p>
+				{s namespace="frontend/plugins/payment/viison_stripe" name="form/description"}{/s}
+			</p>
+		</div>
 	</div>
 {/if}
