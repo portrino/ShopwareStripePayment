@@ -76,6 +76,10 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 		// Save the payment details in the order
 		$this->saveOrder($charge->id, $charge->balance_transaction, 12); // transactionId, paymentUniqueId, [paymentStatusId, [sendStatusMail]]
 
+		// Unset the values stored in the session
+		unset(Shopware()->Session()->stripeTransactionToken);
+		unset(Shopware()->Session()->stripeCard);
+
 		// Finish the checkout process
 		$this->redirect(array(
 			'controller' => 'checkout',

@@ -203,6 +203,15 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 			// Simulate a new customer to make the payment selection in the checkout process visible
 			$view->sRegisterFinished = 'false';
 		}
+		if ($request->get('stripeCard') !== null) {
+			// Save the stripe card info in the session
+			Shopware()->Session()->stripeCard = $request->get('stripeCard');
+		}
+		if (Shopware()->Session()->stripeCard !== null) {
+			// Decode the card info and write it to the template both JSON encoded and in a form usable by smarty
+			$view->viisonStripeCardRaw = Shopware()->Session()->stripeCard;
+			$view->viisonStripeCard = json_decode(Shopware()->Session()->stripeCard, true);
+		}
 	}
 
 	/**
