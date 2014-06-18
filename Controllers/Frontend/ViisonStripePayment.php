@@ -30,8 +30,9 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 	 */
 	public function indexAction() {
 		// Get the necessary user info
-		$user = Shopware()->Session()->sOrderVariables['sUserData'];
+		$user = $this->getUser();
 		$userEmail = $user['additional']['user']['email'];
+		$customerNumber = $user['billingaddress']['customernumber'];
 
 		// Try to find the transaction token
 		$transactionToken = Shopware()->Session()->stripeTransactionToken;
@@ -59,7 +60,7 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 				'amount' => ($this->getAmount() * 100), // Amount has to be in cents!
 				'currency' => $this->getCurrencyShortName(),
 				'card' => $transactionToken,
-				'description' => $userEmail,
+				'description' => ($userEmail . ' / Kunden-Nr.: ' . $customerNumber),
 				'application_fee' => $applicationFee
 			), $stripeSecretKey);
 		} catch (Exception $e) {
@@ -75,6 +76,15 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 
 		// Save the payment details in the order
 		$this->saveOrder($charge->id, $charge->balance_transaction, 12); // transactionId, paymentUniqueId, [paymentStatusId, [sendStatusMail]]
+
+		try {
+			// Save the order number in the description of the charge
+			$charge->description .= ' / Bestell-Nr.: ' . $this->getOrderNumber();
+			$charge->save();
+		} catch (Exception $e) {
+			// Ignore exceptions in this case, because the order has already been created
+			// and adding the order number is not essential to identify the payment
+		}
 
 		// Unset the values stored in the session
 		unset(Shopware()->Session()->stripeTransactionToken);
