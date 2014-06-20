@@ -1,5 +1,8 @@
 <?php
 
+include_once(__DIR__ . '/lib/StripePHP/Stripe.php');
+include_once(__DIR__ . '/Util.php');
+
 /**
  * This plugin offers a payment method, which uses the stripe JavaScript SDK and API
  * to make payments. Because none of the credit card information is send to the server,
@@ -61,6 +64,8 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 	 *		* A configuration element for the stripe connect secret key
 	 *		* A configuration element for the stripe connect refresh token
 	 *		* A configuration element for enabling the test mode
+	 *	- since 1.0.1:
+	 *		* A custom user attribute field for storing the Stripe customer id
 	 *
 	 * @param $oldVersion The currently installed version of this plugin.
 	 * @return True if the update was successful, otherwise false.
@@ -133,6 +138,19 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 						'scope' => Shopware_Components_Form::SCOPE_SHOP
 					)
 				);
+			case '1.0.0':
+				// Add an attribute to the user for storing the Stripe customer id
+				$this->Application()->Models()->addAttribute(
+					's_user_attributes',
+					'viison',
+					'stripe_customer_id',
+					'varchar(255)'
+				);
+
+				// Rebuild the user attributes model
+				$this->Application()->Models()->generateAttributeModels(array(
+					's_user_attributes'
+				));
 				break;
 			default:
 				return false;
@@ -186,10 +204,13 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 		// Inject the credit card logos into the template
 		$view->extendsTemplate('frontend/plugins/payment/viison_stripe_card_logos.tpl');
 
+		// Set the Stripe API key
+		$stripeSecretKey = Shopware_Plugins_Frontend_ViisonStripePayment_Util::stripeSecretKey();
+		Stripe::setApiKey($stripeSecretKey);
+
 		if ($request->getActionName() === 'confirm') {
-			// Set the stripe public key as an explicitly defined string
-			$testMode = Shopware()->Plugins()->Frontend()->ViisonStripePayment()->Config()->get('testMode');
-			$view->viisonStripePublicKey = ($testMode) ? 'pk_test_bA2NxqEoDlCGBM2WiyTQClBN' : Shopware()->Plugins()->Frontend()->ViisonStripePayment()->Config()->get('stripePublicKey');
+			// Set the stripe public key
+			$view->viisonStripePublicKey = Shopware_Plugins_Frontend_ViisonStripePayment_Util::stripePublicKey();
 
 			// Check for an error
 			$stripeError = Shopware()->Session()->viisonStripePaymentError;
@@ -199,6 +220,11 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 				// Append an error box to the view
 				$view->extendsTemplate('frontend/plugins/payment/viison_stripe_error.tpl');
 				$view->viisonStripePaymentError = $stripeError;
+			}
+
+			// Check if a Stripe card is already exists
+			if (Shopware()->Session()->stripeCard === null) {
+				Shopware_Plugins_Frontend_ViisonStripePayment_Util::loadStripeCard();
 			}
 		}
 
@@ -211,12 +237,35 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 		}
 		if ($request->get('stripeCard') !== null) {
 			// Save the stripe card info in the session
-			Shopware()->Session()->stripeCard = $request->get('stripeCard');
+			Shopware()->Session()->stripeCard = json_decode($request->get('stripeCard'), true);
 		}
+
+		// Check if a new card token is provided and shall be saved for later use
+		if ($request->get('stripeSaveCard') === 'on' && Shopware()->Session()->stripeTransactionToken !== null) {
+			unset(Shopware()->Session()->stripeDeleteCustomerAfterPayment);
+			// Save the card info either in a new or an existing Stripe customer
+			try {
+				Shopware_Plugins_Frontend_ViisonStripePayment_Util::saveStripeCustomer();
+			} catch (Exception $e) {
+				// Append an error box to the view
+				$view->extendsTemplate('frontend/plugins/payment/viison_stripe_error.tpl');
+				$view->viisonStripePaymentError = $e->getMessage();
+			}
+		} else if ($request->get('stripeSaveCard') === 'off') {
+			// Mark the Stripe customer to be deleted after the payment
+			Shopware()->Session()->stripeDeleteCustomerAfterPayment = true;
+		}
+
+		// Update view parameters
 		if (Shopware()->Session()->stripeCard !== null) {
-			// Decode the card info and write it to the template both JSON encoded and in a form usable by smarty
-			$view->viisonStripeCardRaw = Shopware()->Session()->stripeCard;
-			$view->viisonStripeCard = json_decode(Shopware()->Session()->stripeCard, true);
+			// Write the card info to the template both JSON encoded and in a form usable by smarty
+			$view->viisonStripeCardRaw = json_encode(Shopware()->Session()->stripeCard);
+			$view->viisonStripeCard = Shopware()->Session()->stripeCard;
+		}
+		$customer = Shopware_Plugins_Frontend_ViisonStripePayment_Util::getCustomer();
+		if ($customer !== null) {
+			// Add the account mode to the view
+			$view->customerAccountMode = $customer->getAccountMode();
 		}
 	}
 

@@ -25,6 +25,11 @@
 		#viison-stripe-form label {
 			width: 150px !important;
 		}
+		#confirm .personal-information .payment_method .bankdata .form-group label.checkbox {
+			width: auto !important;
+			padding-left: 5px;
+			padding-top: 2px !important;
+		}
 		#viison-stripe-form .help {
 			cursor: pointer;
 			width: 22px;
@@ -90,6 +95,10 @@
 				};
 				// Check if a token was generated and hence the form can be submitted
 				if (canSubmitForm && !valuesChanged) {
+					{if $customerAccountMode == 0}
+						// Append the value of the checkbox, indicating whether the credit card info shall be saved, to the form
+						form.append('<input type="hidden" name="stripeSaveCard" value="' + ($('#stripe-save-card').is(':checked') ? 'on' : 'off') + '" />');
+					{/if}
 					// Proceed with the submission
 					return;
 				} else {
@@ -226,6 +235,15 @@
 				</script>
 			</div>
 		</div>
+		{if $customerAccountMode == 0}
+			{* Save data *}
+			<div class="form-group adjust-margin">
+				<div class="form-input">
+					<input id="stripe-save-card" type="checkbox" checked="checked">
+				</div>
+				<label class="control-label checkbox" for="stripe-save-card">{s namespace="frontend/plugins/payment/viison_stripe" name="form/save_card"}{/s}</label>
+			</div>
+		{/if}
 		{* Info *}
 		<div class="form-group adjust-margin">
 			<p>
