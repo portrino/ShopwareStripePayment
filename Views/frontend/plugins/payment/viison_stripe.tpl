@@ -101,22 +101,35 @@
 					return;
 				}
 
+				// Remove the error class from all input fields
+				$('#stripe-card-holder').removeClass('instyle_error');
+				$('#stripe-card-number').removeClass('instyle_error');
+				$('#stripe-card-cvc').removeClass('instyle_error');
+				$('#stripe-card-expiry-month').parent('.outer-select').removeClass('instyle_error');
+				$('#stripe-card-expiry-year').parent('.outer-select').removeClass('instyle_error');
+
 				// Validate all fields
+				var errorMessages = [];
 				if ($('#stripe-card-holder').val().length === 0) {
-					handleStripeError('{s namespace="frontend/plugins/payment/viison_stripe" name="error/invalid_name"}{/s}');
-					return;
+					errorMessages.push('{s namespace="frontend/plugins/payment/viison_stripe" name="error/invalid_name"}{/s}');
+					$('#stripe-card-holder').addClass('instyle_error');
 				}
 				if (!Stripe.validateCardNumber($('#stripe-card-number').val())) {
-					handleStripeError('{s namespace="frontend/plugins/payment/viison_stripe" name="error/invalid_number"}{/s}');
-					return;
+					errorMessages.push('{s namespace="frontend/plugins/payment/viison_stripe" name="error/invalid_number"}{/s}');
+					$('#stripe-card-number').addClass('instyle_error');
 				}
 				if (!Stripe.validateCVC($('#stripe-card-cvc').val())) {
-					handleStripeError('{s namespace="frontend/plugins/payment/viison_stripe" name="error/invalid_cvc"}{/s}');
-					return;
+					errorMessages.push('{s namespace="frontend/plugins/payment/viison_stripe" name="error/invalid_cvc"}{/s}');
+					$('#stripe-card-cvc').addClass('instyle_error');
 				}
 				if (!Stripe.validateExpiry($('#stripe-card-expiry-month').val(), $('#stripe-card-expiry-year').val())) {
-					handleStripeError('{s namespace="frontend/plugins/payment/viison_stripe" name="error/invalid_expiry"}{/s}');
-					return;
+					errorMessages.push('{s namespace="frontend/plugins/payment/viison_stripe" name="error/invalid_expiry"}{/s}');
+					$('#stripe-card-expiry-month').parent('.outer-select').addClass('instyle_error');
+					$('#stripe-card-expiry-year').parent('.outer-select').addClass('instyle_error');
+				}
+				if (errorMessages.length > 0) {
+					// At least one field is invalid
+					handleStripeError(errorMessages.join('<br />'));
 				}
 
 				// Send the credit card information to stripe
