@@ -197,7 +197,7 @@
 		<div class="form-group">
 			<label class="control-label" for="stripe-card-cvc">{s namespace="frontend/plugins/payment/viison_stripe" name="form/card/cvc"}{/s} *</label>
 			<div class="form-input">
-				{* Set a playholder, if a previously created card is set *}
+				{* Set a placeholder, if a previously created card is set *}
 				<input id="stripe-card-cvc" type="text" size="5" class="text" value="{if $viisonStripeCard}***{/if}">
 			</div>
 			<div class="help"></div>
