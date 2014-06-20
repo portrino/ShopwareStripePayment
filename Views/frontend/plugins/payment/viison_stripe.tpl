@@ -28,6 +28,7 @@
 	</style>
 	{* Include and set up the Stripe SDK *}
 	<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+	<script type="text/javascript" src="{link file="frontend/plugins/_resources/javascript/jquery.payment.min.js"}"></script>
 	<script type="text/javascript">
 		// Set the public stripe key
 		Stripe.setPublishableKey('{$viisonStripePublicKey}');
@@ -48,6 +49,10 @@
 			{else}
 				var card = null;
 			{/if}
+
+			// Add constraints to the stripe input fields
+			$('#stripe-card-number').payment('formatCardNumber');
+			$('#stripe-card-cvc').payment('formatCardCVC');
 
 			// Disable the default behaviour of the checkout form submission
 			var canSubmitForm = card !== null;
