@@ -183,6 +183,9 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 			return;
 		}
 
+		// Inject the credit card logos into the template
+		$view->extendsTemplate('frontend/plugins/payment/viison_stripe_card_logos.tpl');
+
 		if ($request->getActionName() === 'confirm') {
 			// Set the stripe public key as an explicitly defined string
 			$testMode = Shopware()->Plugins()->Frontend()->ViisonStripePayment()->Config()->get('testMode');
