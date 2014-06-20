@@ -17,10 +17,13 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 	 * @return An array containing meta information about this plugin.
 	 */
 	public function getInfo() {
+		// Load the custom Stripe connect button CSS
+		$stripeCSS = file_get_contents($this->Path() . 'Views/backend/_resources/stripe-connect-button.css');
+
 		return array(
 			'name' => 'Stripe Payment',
 			'label' => 'Stripe Payment',
-			'description' => 'Bevor Sie Kreditkartenzahlungen über Stripe abwickeln können, müssen Sie sich zunächst bei Stripe als Kunde registrieren oder einloggen. Anschließend daran werden Sie auf eine Seite weitergeleitet, die Ihnen die weiteren Schritte zur Einrichtung dieses Plugins beschreibt.<br /><br />Klicken Sie <a href="https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_3ygZJhLAhsQ4jqyKTL8SwxD0zYEmBf1l&scope=read_write" target="_blank">hier</a>, um sich bei Stripe zu registrieren oder einzuloggen.',
+			'description' => '<style type="text/css">' . $stripeCSS . '</style>Bevor Sie Kreditkartenzahlungen über Stripe abwickeln können, müssen Sie sich zunächst bei Stripe als Kunde registrieren oder einloggen. Anschließend daran werden Sie auf eine Seite weitergeleitet, die Ihnen die weiteren Schritte zur Einrichtung dieses Plugins beschreibt.<br /><br />Klicken Sie auf "Mit Stripe verbinden", um sich bei Stripe zu registrieren oder einzuloggen.<br /><br /><a href="https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_3ygZJhLAhsQ4jqyKTL8SwxD0zYEmBf1l&scope=read_write" target="_blank" class="stripe-connect"><span>Mit Stripe verbinden</span></a>',
 			'autor' => 'VIISON GmbH',
 			'copyright' => 'Copyright © 2014, VIISON GmbH',
 			'license' => 'All rights reserved.',
