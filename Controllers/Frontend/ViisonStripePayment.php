@@ -128,6 +128,7 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 		$this->redirect(array(
 			'controller' => 'checkout',
 			'action' => 'finish',
+			'forceSecure' => !$this->testMode // Disable the secure mode for testing
 			// 'sUniqueID' => 'SOME_ID' // This id will be displayed in the order summary with some additional text
 		));
 	}
