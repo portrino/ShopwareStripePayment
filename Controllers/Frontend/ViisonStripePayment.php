@@ -93,6 +93,11 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 		}
 
 		// Save the payment details in the order
+		// Use the balance_transaction as the paymentUniqueId, because altough the column in the backend
+		// order list is named 'Transaktion' or 'tranaction', it displays NOT the transactionId, but
+		// the field 'temporaryID', to which the paymentUniqueId is written. Additionally the
+		// balance_transaction is displayed in the shop owner's Stripe account, so it can
+		// be used to easily identify an order.
 		$this->saveOrder($charge->id, $charge->balance_transaction, 12); // transactionId, paymentUniqueId, [paymentStatusId, [sendStatusMail]]
 
 		try {
