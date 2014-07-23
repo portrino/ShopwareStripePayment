@@ -21,7 +21,7 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 	 */
 	public function getInfo() {
 		// Load the custom Stripe connect button CSS
-		$stripeCSS = file_get_contents($this->Path() . 'Views/backend/_resources/stripe-connect-button.css');
+		$stripeCSS = file_get_contents(__DIR__ . '/Views/backend/_resources/stripe-connect-button.css');
 
 		return array(
 			'name' => 'Stripe Payment',
