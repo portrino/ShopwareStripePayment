@@ -309,7 +309,7 @@
 						var selectedMonth = month;
 					{/if}
 					for (var i = 1; i <= 12; i++) {
-						select.append($('<option value="' + i + '" ' + ((selectedMonth === i) ? 'selected' : '') + '>' + i + '</option>'));
+						select.append($('<option value="' + i + '" ' + ((selectedMonth === i) ? 'selected' : '') + '>' + (100 + i + '').substr(1) + '</option>'));
 					}
 				</script>
 				<span> / </span>
