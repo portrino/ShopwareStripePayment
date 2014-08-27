@@ -14,19 +14,24 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 {
 
 	/**
+	 * Returns the current version of this plugin.
+	 *
+	 * @return The current version of this plugin.
+	 */
+	public function getVersion() {
+		return '1.0.0';
+	}
+
+	/**
 	 * Gathers all information about this plugin and returns it wrapped in an array. This information
 	 * will be displayed e.g. in the backend plugin manager.
 	 *
 	 * @return An array containing meta information about this plugin.
 	 */
 	public function getInfo() {
-		// Load the custom Stripe connect button CSS
-		$stripeCSS = file_get_contents(__DIR__ . '/Views/backend/_resources/stripe-connect-button.css');
-
 		return array(
-			'name' => 'Stripe Payment',
 			'label' => 'Stripe Payment',
-			'description' => '<style type="text/css">' . $stripeCSS . '</style>Bevor Sie Kreditkartenzahlungen über Stripe abwickeln können, müssen Sie sich zunächst bei Stripe als Kunde registrieren oder einloggen. Anschließend daran werden Sie auf eine Seite weitergeleitet, die Ihnen die weiteren Schritte zur Einrichtung dieses Plugins beschreibt.<br /><br />Klicken Sie auf "Mit Stripe verbinden", um sich bei Stripe zu registrieren oder einzuloggen.<br /><br /><a href="https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_3ygZJhLAhsQ4jqyKTL8SwxD0zYEmBf1l&scope=read_write" target="_blank" class="stripe-connect"><span>Mit Stripe verbinden</span></a><br /><br /><br />Wenn Sie den Testmodus aktiviert haben, benötigen Sie keine Zugangsdaten, sondern können sofort mit den folgenden Kreditkartennummern Testzahlungen durchführen. Diese Transaktionen werden nicht in Ihrem Stripe Konto gelistet, sondern dienen ausschließlich zur Überprüfung des fehlerfreien Zahlungsvorgangs.<br /><br />&bull; 4242 4242 4242 4242 (Visa)<br />&bull; 5555 5555 5555 4444 (MasterCard)<br /><br />CVC und Gültigkeitsdatum sind jeweils beliebig wählbar.',
+			'description' => file_get_contents(__DIR__ . '/description.html'),
 			'autor' => 'VIISON GmbH',
 			'copyright' => 'Copyright © 2014, VIISON GmbH',
 			'license' => 'All rights reserved.',
@@ -34,15 +39,6 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 			'link' => 'http://www.viison.com/',
 			'version' => $this->getVersion()
 		);
-	}
-
-	/**
-	 * Returns the current version of this plugin.
-	 *
-	 * @return The current version of this plugin.
-	 */
-	public function getVersion() {
-		return '1.0.0';
 	}
 
 	/**
@@ -170,7 +166,7 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 	 * @return True if uninstallation was successful, otherwise false.
 	 */
 	public function uninstall() {
-		return parent::uninstall();
+		return true;
 	}
 
 	/* Events & Hooks */
