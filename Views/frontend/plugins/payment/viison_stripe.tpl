@@ -13,6 +13,7 @@
 			border: 1px solid #DF7373;
 		}
 		#viison-stripe-form .form-group {
+			clear: both;
 			width: 600px;
 			height: 38px;
 		}
