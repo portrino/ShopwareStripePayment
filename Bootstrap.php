@@ -147,6 +147,17 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 				$this->Application()->Models()->generateAttributeModels(array(
 					's_user_attributes'
 				));
+			case '1.0.1':
+				// Subscribe for the frontend account dispatch
+				$this->subscribeEvent(
+					'Enlight_Controller_Action_PostDispatch_Frontend_Account',
+					'onPostDispatchFrontendAccount'
+				);
+				// Subscribe for the controller path event of the custom accound controller
+				$this->subscribeEvent(
+					'Enlight_Controller_Dispatcher_ControllerPath_Frontend_ViisonStripePaymentAccount',
+					'onGetControllerPathFrontendViisonStripePaymentAccount'
+				);
 				break;
 			default:
 				return false;
@@ -266,6 +277,17 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 	}
 
 	/**
+	 * Adds the snippets and views of this plugin to the view.
+	 *
+	 * @param args The arguments passed by the method triggering the event.
+	 */
+	public function onPostDispatchFrontendAccount(Enlight_Event_EventArgs $args) {
+		// Add snippets and templates
+		$args->getSubject()->View()->addTemplateDir($this->Path() . 'Views/');
+		$args->getSubject()->View()->extendsTemplate('frontend/plugins/viison_stripe/account/content_right.tpl');
+	}
+
+	/**
 	 * Returns the path to the Frontend/ViisonStripePayment controller used for making payments.
 	 *
 	 * @param args The arguments passed by the method triggering the event.
@@ -273,6 +295,20 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 	 */
 	public function onGetControllerPathFrontendViisonStripePayment(Enlight_Event_EventArgs $args) {
 		return $this->Path() . 'Controllers/Frontend/ViisonStripePayment.php';
+	}
+
+	/**
+	 * Loads the snippets and views of this plugin and returns the path to the
+	 * Frontend/ViisonStripePaymentAccount controller, used for managing saved credit cards.
+	 *
+	 * @param args The arguments passed by the method triggering the event.
+	 * @return The path to the Frontend/ViisonStripePaymentAccount controller.
+	 */
+	public function onGetControllerPathFrontendViisonStripePaymentAccount(Enlight_Event_EventArgs $args) {
+		$this->Application()->Snippets()->addConfigDir($this->Path() . 'snippets/');
+		$this->Application()->Template()->addTemplateDir($this->Path() . 'Views/');
+
+		return $this->Path() . 'Controllers/Frontend/ViisonStripePaymentAccount.php';
 	}
 
 }
