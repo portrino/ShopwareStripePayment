@@ -158,12 +158,15 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Util
 	 */
 	public static function getCustomer() {
 		// Check if a user is logged in
-		if (!Shopware()->Session()->sOrderVariables['sUserLoggedIn']) {
+		if (empty(Shopware()->Session()->sUserId)) {
 			return null;
 		}
 
 		// Try to find the customer
-		$customerId = Shopware()->Session()->sOrderVariables['sUserData']['additional']['user']['customerId'];
+		$customerId = Shopware()->Session()->sUserId;
+		if ($customerId === null) {
+			return null;
+		}
 		$customerRepository = Shopware()->Models()->getRepository('\Shopware\Models\Customer\Customer');
 		$customer = $customerRepository->find($customerId);
 
