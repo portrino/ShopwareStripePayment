@@ -36,6 +36,10 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 		$percentageFee = 0.3;
 		$applicationFee = round($this->getAmount() * $percentageFee) + 5;
 
+		// Set the Stripe API key
+		$stripeSecretKey = Shopware_Plugins_Frontend_ViisonStripePayment_Util::stripeSecretKey();
+		Stripe::setApiKey($stripeSecretKey);
+
 		// Prepare the charge data
 		$chargeData = array(
 			'amount' => ($this->getAmount() * 100), // Amount has to be in cents!
@@ -44,20 +48,18 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 			'application_fee' => $applicationFee
 		);
 
-		// Try to find a Stripe customer
-		$customer = Shopware_Plugins_Frontend_ViisonStripePayment_Util::getCustomer();
-		if ($customer !== null && $customer->getAttribute()->getViisonStripeCustomerId() !== null) {
-			// Use the customer for the charge
-			$chargeData['customer'] = $customer->getAttribute()->getViisonStripeCustomerId();
-		} else {
-			// No customer set, try to find the transaction token instead
-			$transactionToken = Shopware()->Session()->stripeTransactionToken;
-			if (!empty($transactionToken)) {
-				// Use the transaction token for the charge
-				$chargeData['card'] = $transactionToken;
-			} else {
-				// Missing the transaction token
-				Shopware()->Session()->viisonStripePaymentError = 'Die Zahlung konnte nicht durchgeführt werden, da keine Stripe-Transaktion gefunden wurde. Bitte versuchen Sie es erneut.';
+		if (Shopware()->Session()->stripeTransactionToken !== null) {
+			// Create a new charge using the transaction token
+			$chargeData['card'] = Shopware()->Session()->stripeTransactionToken;
+		} else if (Shopware()->Session()->stripeCardId !== null) {
+			// Create a new charge using the selected card and the customer
+			$chargeData['card'] = Shopware()->Session()->stripeCardId;
+			try {
+				$stripeCustomer = Shopware_Plugins_Frontend_ViisonStripePayment_Util::getStripeCustomer();
+				$chargeData['customer'] = $stripeCustomer->id;
+			} catch (Exception $e) {
+				// The Stripe customer couldn't be loaded
+				Shopware()->Session()->viisonStripePaymentError = 'Die Zahlung konnte nicht durchgeführt werden, da die ausgewählte Kreditkarte nicht gefunden wurde. Bitte versuchen Sie es erneut.';
 				$this->redirect(array(
 					'controller' => 'checkout',
 					'action' => 'confirm',
@@ -65,15 +67,16 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 				));
 				return;
 			}
+		} else {
+			// No payment information provided
+			Shopware()->Session()->viisonStripePaymentError = 'Die Zahlung konnte nicht durchgeführt werden, da keine Stripe-Transaktion gefunden wurde. Bitte versuchen Sie es erneut.';
+			$this->redirect(array(
+				'controller' => 'checkout',
+				'action' => 'confirm',
+				'forceSecure' => !$this->testMode // Disable the secure mode for testing
+			));
+			return;
 		}
-
-		// Calculate the application fee (in cents)
-		$percentageFee = 0.3;
-		$applicationFee = round($this->getAmount() * $percentageFee) + 5;
-
-		// Set the Stripe API key
-		$stripeSecretKey = Shopware_Plugins_Frontend_ViisonStripePayment_Util::stripeSecretKey();
-		Stripe::setApiKey($stripeSecretKey);
 
 		try {
 			// Init the stripe payment
@@ -119,7 +122,9 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 		// Unset the values stored in the session
 		unset(Shopware()->Session()->stripeDeleteCardAfterPayment);
 		unset(Shopware()->Session()->stripeTransactionToken);
+		unset(Shopware()->Session()->stripeCardId);
 		unset(Shopware()->Session()->stripeCard);
+		unset(Shopware()->Session()->allStripeCards);
 
 		// Finish the checkout process
 		$this->redirect(array(

@@ -125,7 +125,31 @@
 				}, 500);
 			}
 
-			// Try to get a previously created card
+			// A helper method, which removes the error class from all input fields
+			function resetErrorFields() {
+				$('#stripe-card-holder').removeClass('instyle_error');
+				$('#stripe-card-number').removeClass('instyle_error');
+				$('#stripe-card-cvc').removeClass('instyle_error');
+				$('#stripe-card-expiry-month').parent('.outer-select').removeClass('instyle_error');
+				$('#stripe-card-expiry-year').parent('.outer-select').removeClass('instyle_error');
+			}
+
+			// A helper method, which sets not only the value of the select element, but also the displayed value
+			function updateSelect(selectElement, value, displayValue) {
+				// Update the selected options
+				selectElement.val(value);
+				// Update the displayed value
+				selectElement.siblings('.inner-select').first().children('span').first().html(displayValue);
+			}
+
+			// Try to get previously saved cards
+			{if $viisonAllStripeCardsRaw}
+				var allCards = JSON.parse('{$viisonAllStripeCardsRaw}');
+			{else}
+				var allCards = [];
+			{/if}
+
+			// Try to get a previously created/selected card
 			{if $viisonStripeCardRaw}
 				var card = JSON.parse('{$viisonStripeCardRaw}');
 			{else}
@@ -224,6 +248,8 @@
 						// Replace the values of some input fields
 						$('#stripe-card-number').val('XXXXXXXXXXXX' + card.last4);
 						$('#stripe-card-cvc').val('***');
+						// Remove the card id from the form
+						$('input[name="stripeCardId"]').remove();
 						// Add the stripe token and the card info to the order form and submit it
 						form.append('<input type="hidden" name="stripeTransactionToken" value="' + response['id'] + '" />');
 						form.append('<input type="hidden" name="stripeCard" value="" />');
@@ -231,6 +257,46 @@
 						form.submit();
 					}
 				});
+			});
+
+			if (card !== null) {
+				// Add the card id and data to the form
+				form.append('<input type="hidden" name="stripeCardId" value="' + card.id + '" />');
+				form.append('<input type="hidden" name="stripeCard" value="" />');
+				$('input[name="stripeCard"]').val(JSON.stringify(card));
+			}
+
+			// Observe the selection of saved credit cards
+			$('#stripe-saved-cards').change(function(event) {
+				// Find the selected card
+				for (var i = 0; i < allCards.length; i++) {
+					var selectedCard = allCards[i];
+					if (selectedCard.id === $(this).val()) {
+						// Save the card and enable the submission
+						canSubmitForm = true;
+						card = selectedCard;
+
+						// Remove the transaction token from the form
+						$('input[name="stripeTransactionToken"]').remove();
+
+						// Add the card id and info to the order form
+						form.append('<input type="hidden" name="stripeCardId" value="' + selectedCard.id + '" />');
+						form.append('<input type="hidden" name="stripeCard" value="" />');
+						$('input[name="stripeCard"]').val(JSON.stringify(selectedCard));
+
+						// Update the fields with the card data
+						resetErrorFields()
+						$('#stripe-card-holder').val(selectedCard.name);
+						$('#stripe-card-number').val('XXXXXXXXXXXX' + selectedCard.last4);
+						$('#stripe-card-cvc').val('***');
+						updateSelect($('#stripe-card-expiry-month'), selectedCard.exp_month, (100 + selectedCard.exp_month + '').substr(-2));
+						updateSelect($('#stripe-card-expiry-year'), selectedCard.exp_year, selectedCard.exp_year);
+
+						// Activate the save check box
+						$('#stripe-save-card').prop('checked', true);
+						break;
+					}
+				}
 			});
 
 			// Initialize CVC info popup
@@ -248,6 +314,19 @@
 		{* An error box *}
 		<div class="error-box" style="display: none;">
 		</div >
+		{if $viisonAllStripeCards|count > 0}
+			{* Credit card selection *}
+			<div class="form-group">
+				<label class="control-label" for="stripe-saved-cards">Gespeicherte Karten</label>
+				<div class="form-input adjust-margin">
+					<select id="stripe-saved-cards" style="width: 365px;">
+						{foreach from=$viisonAllStripeCards item=stripeCard}
+							<option value="{$stripeCard.id}"{if $stripeCard.id == $viisonStripeCard.id} selected{/if}>{$stripeCard.name} | {$stripeCard.brand} | &bull;&bull;&bull;&bull;{$stripeCard.last4} | {$stripeCard.exp_month}/{$stripeCard.exp_year}</option>
+						{/foreach}
+					</select>
+				</div>
+			</div>
+		{/if}
 		{* Card holder *}
 		<div class="form-group">
 			<label class="control-label" for="stripe-card-holder">{s namespace="frontend/plugins/payment/viison_stripe" name="form/card/holder"}{/s} *</label>

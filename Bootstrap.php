@@ -229,18 +229,40 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 				$view->viisonStripePaymentError = $stripeError;
 			}
 
-			// Check if a Stripe card is already exists
+			// Check if the Stripe cards are already loaded
+			if (empty(Shopware()->Session()->allStripeCards)) {
+				try {
+					// Load all cards and save them in the session
+					Shopware()->Session()->allStripeCards = Shopware_Plugins_Frontend_ViisonStripePayment_Util::getAllStripeCards();
+				} catch (Exception $e) {
+					unset(Shopware()->Session()->allStripeCards);
+				}
+			}
+
+			// Check if the default Stripe card is already loaded
 			if (Shopware()->Session()->stripeCard === null) {
-				Shopware_Plugins_Frontend_ViisonStripePayment_Util::loadStripeCard();
+				try {
+					// Load the default card and safe it in the session
+					Shopware()->Session()->stripeCard = Shopware_Plugins_Frontend_ViisonStripePayment_Util::getDefaultStripeCard();
+				} catch (Exception $e) {
+					unset(Shopware()->Session()->stripeCard);
+				}
 			}
 		}
 
-		if ($request->get('stripeTransactionToken')) {
+		// Update the form data
+		if ($request->get('stripeTransactionToken') !== null) {
 			// Save the stripe transaction token in the session
 			Shopware()->Session()->stripeTransactionToken = $request->get('stripeTransactionToken');
+			unset(Shopware()->Session()->stripeCardId);
 		} else {
 			// Simulate a new customer to make the payment selection in the checkout process visible
 			$view->sRegisterFinished = 'false';
+		}
+		if ($request->get('stripeCardId') !== null) {
+			// Save the stripe card id in the session
+			Shopware()->Session()->stripeCardId = $request->get('stripeCardId');
+			unset(Shopware()->Session()->stripeTransactionToken);
 		}
 		if ($request->get('stripeCard') !== null) {
 			// Save the stripe card info in the session
@@ -250,9 +272,14 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 		// Check if a new card token is provided and shall be saved for later use
 		if ($request->get('stripeSaveCard') === 'on' && Shopware()->Session()->stripeTransactionToken !== null) {
 			unset(Shopware()->Session()->stripeDeleteCardAfterPayment);
-			// Save the card info either in a new or an existing Stripe customer
 			try {
-				Shopware_Plugins_Frontend_ViisonStripePayment_Util::saveStripeCustomer();
+				// Save the card info either in a new or an existing Stripe customer
+				$transactionToken = Shopware()->Session()->stripeTransactionToken;
+				$newCard = Shopware_Plugins_Frontend_ViisonStripePayment_Util::saveStripeCard($transactionToken);
+
+				// Save the card id in the session and remove the token from the session
+				Shopware()->Session()->stripeCardId = $newCard->id;
+				unset(Shopware()->Session()->stripeTransactionToken);
 			} catch (Exception $e) {
 				// Append an error box to the view
 				$view->extendsTemplate('frontend/plugins/payment/viison_stripe_error.tpl');
@@ -264,6 +291,11 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 		}
 
 		// Update view parameters
+		if (Shopware()->Session()->allStripeCards !== null) {
+			// Write all cards to the template both JSON encoded and in a form usable by smarty
+			$view->viisonAllStripeCardsRaw = json_encode(Shopware()->Session()->allStripeCards);
+			$view->viisonAllStripeCards = Shopware()->Session()->allStripeCards;
+		}
 		if (Shopware()->Session()->stripeCard !== null) {
 			// Write the card info to the template both JSON encoded and in a form usable by smarty
 			$view->viisonStripeCardRaw = json_encode(Shopware()->Session()->stripeCard);

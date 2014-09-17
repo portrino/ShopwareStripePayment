@@ -4,6 +4,14 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Util
 {
 
 	/**
+	 * This field is used as a cache for the Stripe customer object of the
+	 * currently logged in user.
+	 *
+	 * @var Stripe_Customer
+	 */
+	private static $stripeCustomer;
+
+	/**
 	 * @return If test mode is activated, the default test public key. Otherwise the Stripe public key set in the plugin configuration.
 	 */
 	public static function stripePublicKey() {
@@ -21,113 +29,62 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Util
 
 	/**
 	 * Uses the Stripe customer id of the active user to retrieve the customer from Stripe
-	 * and store the customer's default card in the session.
+	 * and returns the customer's credit cards.
+	 *
+	 * @return An array containing information about all loaded credit cards.
+	 * @throws An exception, if loading the Stripe customer fails.
 	 */
-	public static function loadStripeCard() {
-		$customer = self::getCustomer();
-		if ($customer === null || $customer->getAccountMode() === 1 || $customer->getAttribute()->getViisonStripeCustomerId() === null) {
-			// Customer not found, without permanent user account or has no stripe customer associated with it
-			return;
+	public static function getAllStripeCards() {
+		// Get the Stripe customer
+		$customer = self::getStripeCustomer();
+		if ($customer === null || $customer->deleted) {
+			return array();
 		}
 
-		// Load the Stripe customer and store them in the session
-		try {
-			$stripeCustomerId = $customer->getAttribute()->getViisonStripeCustomerId();
-			$stripeCustomer = Stripe_Customer::retrieve($stripeCustomerId);
-			if ($stripeCustomer->deleted) {
-				// The user was deleted
-				unset(Shopware()->Session()->stripeCard);
-				return;
-			}
-		} catch (Exception $e) {
-			// Ignore exceptions in this case, because as a fallback the customer can always provide
-			// new credit card data
-			return;
-		}
+		// Get information about all cards
+		$cards = array_map(function ($card) {
+			return array(
+				'id' => $card->id,
+				'name' => $card->name,
+				'brand' => $card->brand,
+				'last4' => $card->last4,
+				'exp_month' => $card->exp_month,
+				'exp_year' => $card->exp_year
+			);
+		}, $customer->cards->data);
 
-		// Save the default card in the session
-		foreach ($stripeCustomer->cards->data as $card) {
-			if ($card->id === $stripeCustomer->default_card) {
-				// Save the required card data in the session
-				Shopware()->Session()->stripeCard = array(
-					'id' => $card->id,
-					'name' => $card->name,
-					'last4' => $card->last4,
-					'exp_month' => $card->exp_month,
-					'exp_year' => $card->exp_year
-				);
-				return;
-			}
-		}
+		// Sort the cards by id (which correspond to the date, the card was created/added)
+		usort($cards, function($cardA, $cardB) {
+			return strcmp($cardA['id'], $cardB['id']);
+		});
 
-		// The customer has no default card
-		unset(Shopware()->Session()->stripeCard);
+		return $cards;
 	}
 
 	/**
-	 * Tries to get the Stripe transaction token from the current session and uses it to
-	 * either add the card to an existing customer, associated with the active user, or
-	 * creates a new Stripe customer with that card. Finally it saves the basic card data
-	 * in the current session.
+	 * Uses the Stripe customer id of the active user to retrieve the customer from Stripe
+	 * and returns the customer's default credit card.
 	 *
-	 * @throws An exception, if creating a customer or updating an existing customer's cards throws an exception.
+	 * @return The default credit card or null, if no cards exist.
+	 * @throws An exception, if loading the Stripe customer fails.
 	 */
-	public static function saveStripeCustomer() {
-		$customer = self::getCustomer();
-		if ($customer === null || $customer->getAccountMode() === 1) {
-			// Customer not found or without permanent user account
-			return;
+	public static function getDefaultStripeCard() {
+		// Get the Stripe customer
+		$customer = self::getStripeCustomer();
+		if ($customer === null || $customer->deleted) {
+			return null;
 		}
 
-		// Check if a card token exists
-		$cardToken = Shopware()->Session()->stripeTransactionToken;
-		if ($cardToken === null) {
-			return;
-		}
-
-		// Check for an existing customer
-		$cardSaved = false;
-		if ($customer->getAttribute()->getViisonStripeCustomerId() !== null) {
-			// Save the card in the existing customer
-			$stripeCustomerId = $customer->getAttribute()->getViisonStripeCustomerId();
-			$stripeCustomer = Stripe_Customer::retrieve($stripeCustomerId);
-			if ($stripeCustomer !== null && !$stripeCustomer->deleted) {
-				// Add the card
-				$stripeCustomer->cards->create(array(
-					'card' => $cardToken
-				));
-				$cardSaved = true;
+		// Get all cards and try to find the one matching the default id
+		$cards = self::getAllStripeCards();
+		foreach ($cards as $card) {
+			if ($card['id'] === $customer->default_card) {
+				// Return the default card
+				return $card;
 			}
 		}
-		if (!$cardSaved) {
-			// Create a new customer using the card token
-			$stripeCustomer = Stripe_Customer::create(array(
-				'description' => self::getCustomerName(),
-				'email' => $customer->getEmail(),
-				'card' => $cardToken
-			));
 
-			// Save the Stripe customer id
-			$customer->getAttribute()->setViisonStripeCustomerId($stripeCustomer->id);
-			Shopware()->Models()->flush($customer->getAttribute());
-		}
-
-		// Remove the stripe token from the session because it is no longer valid
-		unset(Shopware()->Session()->stripeTransactionToken);
-
-		// Save the default card in the session
-		foreach ($stripeCustomer->cards->data as $card) {
-			if ($card->id === $stripeCustomer->default_card) {
-				Shopware()->Session()->stripeCard = array(
-					'id' => $card->id,
-					'name' => $card->name,
-					'last4' => $card->last4,
-					'exp_month' => $card->exp_month,
-					'exp_year' => $card->exp_year
-				);
-				break;
-			}
-		}
+		return null;
 	}
 
 	/**
@@ -138,6 +95,11 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Util
 	 * @throws An exception, if Stripe could not load the customer.
 	 */
 	public static function getStripeCustomer() {
+		// Check if customer is already loaded
+		if (self::$stripeCustomer !== null) {
+			return self::$stripeCustomer;
+		}
+
 		// Get the current logged in customer
 		$customer = self::getCustomer();
 		if ($customer === null || $customer->getAccountMode() === 1 || $customer->getAttribute()->getViisonStripeCustomerId() === null) {
@@ -145,10 +107,11 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Util
 			return null;
 		}
 
-		// Load and return the customer
+		// Load, save and return the customer
 		$stripeCustomerId = $customer->getAttribute()->getViisonStripeCustomerId();
+		self::$stripeCustomer = Stripe_Customer::retrieve($stripeCustomerId);
 
-		return Stripe_Customer::retrieve($stripeCustomerId);
+		return self::$stripeCustomer;
 	}
 
 	/**
@@ -190,6 +153,47 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Util
 
 		// Use first and last name
 		return trim($customer->getBilling()->getFirstName() . ' ' . $customer->getBilling()->getLastName());
+	}
+
+	/**
+	 * First tries to get an existing Stripe customer. If it exists, the transaction token is used
+	 * to add a new card to that customer. If not, a new Stripe customer is created and added the
+	 * card represented by the transaction token.
+	 *
+	 * @param transactionToken The token, which will be used to add/create a new Stripe card.
+	 * @return The Stripe_Card, which was created.
+	 */
+	public static function saveStripeCard($transactionToken) {
+		// Get the Stripe customer
+		$stripeCustomer = self::getStripeCustomer();
+		if ($stripeCustomer !== null && !$stripeCustomer->deleted) {
+			// Add the card to the existing customer
+			$newCard = $stripeCustomer->cards->create(array(
+				'card' => $transactionToken
+			));
+		} else {
+			// Get the currently active user
+			$customer = self::getCustomer();
+			if ($customer === null || $customer->getAccountMode() === 1) {
+				// Customer not found or without permanent user account
+				return;
+			}
+
+			// Create a new Stripe customer and add the card to them
+			$stripeCustomer = Stripe_Customer::create(array(
+				'description' => self::getCustomerName(),
+				'email' => $customer->getEmail(),
+				'card' => $transactionToken
+			));
+			$newCard = $stripeCustomer->cards->data[0];
+
+			// Save the Stripe customer id
+			$customer->getAttribute()->setViisonStripeCustomerId($stripeCustomer->id);
+			Shopware()->Models()->flush($customer->getAttribute());
+		}
+
+		// Return the created Stripe card
+		return $newCard;
 	}
 
 	/**
