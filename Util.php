@@ -131,26 +131,24 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Util
 	}
 
 	/**
-	 * Tries to delete this Stripe customer, associated with the active user,
-	 * and removes the Stripe customer id from the database.
+	 * First tries to find currently logged in user in the database and checks their stripe customer id.
+	 * If found, the customer information is loaded from Stripe and returned.
 	 *
-	 * @throws An exception, if the Stripe request deleting the customer throws an exception.
+	 * @return The customer, which was loaded from Stripe or null, if e.g. the customer does not exist.
+	 * @throws An exception, if Stripe could not load the customer.
 	 */
-	public static function deleteStripeCustomer() {
+	public static function getStripeCustomer() {
+		// Get the current logged in customer
 		$customer = self::getCustomer();
 		if ($customer === null || $customer->getAccountMode() === 1 || $customer->getAttribute()->getViisonStripeCustomerId() === null) {
 			// Customer not found, without permanent user account or has no stripe customer associated with it
-			return;
+			return null;
 		}
 
-		// Delete the customer from Stripe
+		// Load and return the customer
 		$stripeCustomerId = $customer->getAttribute()->getViisonStripeCustomerId();
-		$stripeCustomer = Stripe_Customer::retrieve($stripeCustomerId);
-		$stripeCustomer->delete();
 
-		// Remove the Stripe customerId from the customer attributes
-		$customer->getAttribute()->setViisonStripeCustomerId(null);
-		Shopware()->Models()->flush($customer->getAttribute());
+		return Stripe_Customer::retrieve($stripeCustomerId);
 	}
 
 	/**
@@ -189,6 +187,24 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Util
 
 		// Use first and last name
 		return trim($customer->getBilling()->getFirstName() . ' ' . $customer->getBilling()->getLastName());
+	}
+
+	/**
+	 * Tries to delete the Stripe card with the given id from
+	 * the Stripe customer, which is associated with the currently
+	 * logged in user.
+	 *
+	 * @param $cardId The Stripe id of the card, which shall be deleted.
+	 */
+	public static function deleteStripeCard($cardId) {
+		// Get the Stripe customer
+		$customer = self::getStripeCustomer();
+		if ($customer === null) {
+			return;
+		}
+
+		// Delete the card with the given id from Stripe
+		$customer->cards->retrieve($cardId)->delete();
 	}
 
 }

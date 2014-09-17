@@ -106,18 +106,18 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 			// and adding the order number is not essential to identify the payment
 		}
 
-		if (Shopware()->Session()->stripeDeleteCustomerAfterPayment === true) {
-			// Delete the Stripe customer
+		if (Shopware()->Session()->stripeDeleteCardAfterPayment === true) {
+			// Delete the Stripe card
 			try {
-				Shopware_Plugins_Frontend_ViisonStripePayment_Util::deleteStripeCustomer();
+				Shopware_Plugins_Frontend_ViisonStripePayment_Util::deleteStripeCard($charge->card->id);
 			} catch (Exception $e) {
 				// Ignore exceptions in this case, because the order has already been created
-				// and deleting the credit card/customer os assumed to be an optional operation
+				// and deleting the credit card is assumed to be an optional operation
 			}
 		}
 
 		// Unset the values stored in the session
-		unset(Shopware()->Session()->stripeDeleteCustomerAfterPayment);
+		unset(Shopware()->Session()->stripeDeleteCardAfterPayment);
 		unset(Shopware()->Session()->stripeTransactionToken);
 		unset(Shopware()->Session()->stripeCard);
 

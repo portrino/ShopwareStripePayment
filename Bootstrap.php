@@ -238,7 +238,7 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 
 		// Check if a new card token is provided and shall be saved for later use
 		if ($request->get('stripeSaveCard') === 'on' && Shopware()->Session()->stripeTransactionToken !== null) {
-			unset(Shopware()->Session()->stripeDeleteCustomerAfterPayment);
+			unset(Shopware()->Session()->stripeDeleteCardAfterPayment);
 			// Save the card info either in a new or an existing Stripe customer
 			try {
 				Shopware_Plugins_Frontend_ViisonStripePayment_Util::saveStripeCustomer();
@@ -248,8 +248,8 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 				$view->viisonStripePaymentError = $e->getMessage();
 			}
 		} else if ($request->get('stripeSaveCard') === 'off') {
-			// Mark the Stripe customer to be deleted after the payment
-			Shopware()->Session()->stripeDeleteCustomerAfterPayment = true;
+			// Mark the Stripe card to be deleted after the payment
+			Shopware()->Session()->stripeDeleteCardAfterPayment = true;
 		}
 
 		// Update view parameters
