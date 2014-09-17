@@ -1,8 +1,5 @@
 <?php
 
-include_once(__DIR__ . '/../../lib/StripePHP/Stripe.php');
-include_once(__DIR__ . '/../../Util.php');
-
 /**
  * The controller handling the main payment process using the stripe API.
  *

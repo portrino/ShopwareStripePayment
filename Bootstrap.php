@@ -1,7 +1,7 @@
 <?php
 
-include_once(__DIR__ . '/lib/StripePHP/Stripe.php');
-include_once(__DIR__ . '/Util.php');
+require_once(__DIR__ . '/lib/StripePHP/Stripe.php');
+require_once(__DIR__ . '/Util.php');
 
 /**
  * This plugin offers a payment method, which uses the stripe JavaScript SDK and API
