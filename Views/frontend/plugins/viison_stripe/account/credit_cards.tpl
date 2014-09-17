@@ -2,7 +2,7 @@
 
 {* Main content *}
 {block name='frontend_index_content'}
-	<div id="center" class="grid_16 register viison_stripe_credit_cards">
+	<div id="center" class="grid_16 orders viison_stripe_credit_cards">
 		<h1>
 			{s name='credit_cards/title' namespace='frontend/plugins/viison_stripe/account'}{/s}
 		</h1>
