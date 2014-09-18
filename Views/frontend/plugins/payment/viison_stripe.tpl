@@ -233,6 +233,7 @@
 				if (errorMessages.length > 0) {
 					// At least one field is invalid
 					handleStripeError(errorMessages.join('<br />'));
+					return;
 				}
 
 				// Send the credit card information to stripe
