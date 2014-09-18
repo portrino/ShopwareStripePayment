@@ -134,6 +134,13 @@
 				$('#stripe-card-expiry-year').parent('.outer-select').removeClass('instyle_error');
 			}
 
+			// A helper method, which will remove all nodes from the DOM, which contain Stripe data
+			function resetCustomStripeFormFields() {
+				$('input[name="stripeTransactionToken"]').remove();
+				$('input[name="stripeCardId"]').remove();
+				$('input[name="stripeCard"]').remove();
+			}
+
 			// A helper method, which sets not only the value of the select element, but also the displayed value
 			function updateSelect(selectElement, value, displayValue) {
 				// Update the selected options
@@ -248,9 +255,9 @@
 						// Replace the values of some input fields
 						$('#stripe-card-number').val('XXXXXXXXXXXX' + card.last4);
 						$('#stripe-card-cvc').val('***');
-						// Remove the card id from the form
-						$('input[name="stripeCardId"]').remove();
-						// Add the stripe token and the card info to the order form and submit it
+						// Remove the old transaction token, card id and info from the form
+						resetCustomStripeFormFields()
+						// Add the new stripe token and the card info to the order form and submit it
 						form.append('<input type="hidden" name="stripeTransactionToken" value="' + response['id'] + '" />');
 						form.append('<input type="hidden" name="stripeCard" value="" />');
 						$('input[name="stripeCard"]').val(JSON.stringify(response['card']));
@@ -276,10 +283,10 @@
 						canSubmitForm = true;
 						card = selectedCard;
 
-						// Remove the transaction token from the form
-						$('input[name="stripeTransactionToken"]').remove();
+						// Remove old the transaction token, card id and info from the form
+						resetCustomStripeFormFields()
 
-						// Add the card id and info to the order form
+						// Add the new card id and info to the order form
 						form.append('<input type="hidden" name="stripeCardId" value="' + selectedCard.id + '" />');
 						form.append('<input type="hidden" name="stripeCard" value="" />');
 						$('input[name="stripeCard"]').val(JSON.stringify(selectedCard));
