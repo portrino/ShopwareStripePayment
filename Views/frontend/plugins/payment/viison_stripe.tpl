@@ -256,7 +256,7 @@
 						$('#stripe-card-number').val('XXXXXXXXXXXX' + card.last4);
 						$('#stripe-card-cvc').val('***');
 						// Remove the old transaction token, card id and info from the form
-						resetCustomStripeFormFields()
+						resetCustomStripeFormFields();
 						// Add the new stripe token and the card info to the order form and submit it
 						form.append('<input type="hidden" name="stripeTransactionToken" value="' + response['id'] + '" />');
 						form.append('<input type="hidden" name="stripeCard" value="" />');
@@ -292,7 +292,7 @@
 					updateSelect($('#stripe-card-expiry-year'), year, year);
 
 					// Remove the old transaction token, card id and info from the form
-					resetCustomStripeFormFields()
+					resetCustomStripeFormFields();
 
 					// Activate the save check box
 					$('#stripe-save-card').prop('checked', true);
@@ -309,7 +309,7 @@
 						card = selectedCard;
 
 						// Remove old the transaction token, card id and info from the form
-						resetCustomStripeFormFields()
+						resetCustomStripeFormFields();
 
 						// Add the new card id and info to the order form
 						form.append('<input type="hidden" name="stripeCardId" value="' + selectedCard.id + '" />');
