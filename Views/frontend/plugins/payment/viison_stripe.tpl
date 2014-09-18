@@ -275,6 +275,31 @@
 
 			// Observe the selection of saved credit cards
 			$('#stripe-saved-cards').change(function(event) {
+				if ($(this).val() === 'new') {
+					// A new, empty card was selected
+					// Remove the card and disable the submission
+					canSubmitForm = false;
+					card = null;
+
+					// Clear/reset all input fields
+					resetErrorFields()
+					$('#stripe-card-holder').val('');
+					$('#stripe-card-number').val('');
+					$('#stripe-card-cvc').val('');
+					var month = new Date().getMonth() + 1;
+					updateSelect($('#stripe-card-expiry-month'), month, (100 + month + '').substr(-2));
+					var year = new Date().getFullYear();
+					updateSelect($('#stripe-card-expiry-year'), year, year);
+
+					// Remove the old transaction token, card id and info from the form
+					resetCustomStripeFormFields()
+
+					// Activate the save check box
+					$('#stripe-save-card').prop('checked', true);
+
+					return;
+				}
+
 				// Find the selected card
 				for (var i = 0; i < allCards.length; i++) {
 					var selectedCard = allCards[i];
@@ -321,19 +346,18 @@
 		{* An error box *}
 		<div class="error-box" style="display: none;">
 		</div >
-		{if $viisonAllStripeCards|count > 0}
-			{* Credit card selection *}
-			<div class="form-group">
-				<label class="control-label" for="stripe-saved-cards">Gespeicherte Karten</label>
-				<div class="form-input adjust-margin">
-					<select id="stripe-saved-cards" style="width: 365px;">
-						{foreach from=$viisonAllStripeCards item=stripeCard}
-							<option value="{$stripeCard.id}"{if $stripeCard.id == $viisonStripeCard.id} selected{/if}>{$stripeCard.name} | {$stripeCard.brand} | &bull;&bull;&bull;&bull;{$stripeCard.last4} | {$stripeCard.exp_month}/{$stripeCard.exp_year}</option>
-						{/foreach}
-					</select>
-				</div>
+		{* Credit card selection *}
+		<div class="form-group">
+			<label class="control-label" for="stripe-saved-cards">Gespeicherte Karten</label>
+			<div class="form-input adjust-margin">
+				<select id="stripe-saved-cards" style="width: 365px;">
+					<option value="new"{if $viisonAllStripeCards|count == 0} selected{/if}>Neue Karte</option>
+					{foreach from=$viisonAllStripeCards item=stripeCard}
+						<option value="{$stripeCard.id}"{if $stripeCard.id == $viisonStripeCard.id} selected{/if}>{$stripeCard.name} | {$stripeCard.brand} | &bull;&bull;&bull;&bull;{$stripeCard.last4} | {$stripeCard.exp_month}/{$stripeCard.exp_year}</option>
+					{/foreach}
+				</select>
 			</div>
-		{/if}
+		</div>
 		{* Card holder *}
 		<div class="form-group">
 			<label class="control-label" for="stripe-card-holder">{s namespace="frontend/plugins/payment/viison_stripe" name="form/card/holder"}{/s} *</label>
