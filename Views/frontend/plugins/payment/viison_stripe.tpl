@@ -134,6 +134,14 @@
 				$('#stripe-card-expiry-year').parent('.outer-select').removeClass('instyle_error');
 			}
 
+			// A helper method, which updates the oldVal properties of all Stripe input fields
+			function updateOldValues() {
+				// Update the oldVal used for change detection
+				$('input[id^="stripe-card"], select[id^="stripe-card"]').each(function() {
+					$(this).data('oldVal', $(this).val());
+				});
+			}
+
 			// A helper method, which will remove all nodes from the DOM, which contain Stripe data
 			function resetCustomStripeFormFields() {
 				$('input[name="stripeTransactionToken"]').remove();
@@ -291,6 +299,8 @@
 					updateSelect($('#stripe-card-expiry-month'), month, (100 + month + '').substr(-2));
 					var year = new Date().getFullYear();
 					updateSelect($('#stripe-card-expiry-year'), year, year);
+					// Update the oldVal used for change detection
+					updateOldValues();
 
 					// Remove the old transaction token, card id and info from the form
 					resetCustomStripeFormFields();
@@ -324,12 +334,38 @@
 						$('#stripe-card-cvc').val('***');
 						updateSelect($('#stripe-card-expiry-month'), selectedCard.exp_month, (100 + selectedCard.exp_month + '').substr(-2));
 						updateSelect($('#stripe-card-expiry-year'), selectedCard.exp_year, selectedCard.exp_year);
+						// Update the oldVal used for change detection
+						updateOldValues();
 
 						// Activate the save check box
 						$('#stripe-save-card').prop('checked', true);
 						break;
 					}
 				}
+			});
+
+			// Add an observer to all Stripe form fields, which sets the card selection to 'new card'
+			$('input[id^="stripe-card"], select[id^="stripe-card"]').each(function() {
+				var elem = $(this);
+				// Save the current value
+				elem.data('oldVal', elem.val());
+				// Observe changes
+				elem.bind('propertychange keyup input paste', function(event) {
+					// Check if value has changed
+					if (elem.data('oldVal') != elem.val()) {
+						// Update the oldVal and the card selection
+						elem.data('oldVal', elem.val());
+						var newCard = $('option[value="new"]');
+						updateSelect($('#stripe-saved-cards'), newCard.html(), newCard.html());
+						// Remove the card and disable the submission
+						canSubmitForm = false;
+						card = null;
+						// Remove old the transaction token, card id and info from the form
+						resetCustomStripeFormFields();
+						// Activate the save check box
+						$('#stripe-save-card').prop('checked', true);
+					}
+				});
 			});
 
 			// Initialize CVC info popup
