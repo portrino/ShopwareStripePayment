@@ -102,7 +102,6 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Util
 
 		// Get the current logged in customer
 		$customer = self::getCustomer();
-		var_dump($customer->getAttribute());
 		if ($customer === null || $customer->getAccountMode() === 1 || $customer->getAttribute() === null || $customer->getAttribute()->getViisonStripeCustomerId() === null) {
 			// Customer not found, without permanent user account or has no stripe customer associated with it
 			return null;
