@@ -159,6 +159,17 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 					'onGetControllerPathFrontendViisonStripePaymentAccount'
 				);
 			case '1.1.0':
+				// Subscribe for the post dispatch event of the backend order controller
+				$this->subscribeEvent(
+					'Enlight_Controller_Action_PostDispatch_Backend_Order',
+					'onPostDispatchBackendOrder',
+					'-100'
+				);
+				// Subscribe for the Stripe backend controller path
+				$this->subscribeEvent(
+					'Enlight_Controller_Dispatcher_ControllerPath_Backend_ViisonStripePayment',
+					'onGetControllerPathBackendViisonStripePayment'
+				);
 				// Next release
 				break;
 			default:
@@ -335,6 +346,33 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 		// Add snippets and templates
 		$args->getSubject()->View()->addTemplateDir($this->Path() . 'Views/');
 		$args->getSubject()->View()->extendsTemplate('frontend/plugins/viison_stripe/account/content_right.tpl');
+	}
+
+	/**
+	 * Includes the custom backend order controllers, models, stores and views.
+	 *
+	 * @param $args The event parameters.
+	 */
+	public function onPostDispatchBackendOrder(Enlight_Event_EventArgs $args) {
+		// Add snippets directory
+		$this->Application()->Snippets()->addConfigDir($this->Path() . 'Snippets/');
+
+		// Add View directory
+		$view = $args->getSubject()->View();
+		$view->addTemplateDir($this->Path() . 'Views/');
+		if ($args->getRequest()->getActionName() === 'load') {
+			$view->extendsTemplate('backend/plugins/viison_stripe/order_detail_position_refund.js');
+		}
+	}
+
+	/**
+	 * Returns the path to the Backend/ViisonStripePayment controller used for making payments.
+	 *
+	 * @param args The arguments passed by the method triggering the event.
+	 * @return The path to the Backend/ViisonStripePayment controller.
+	 */
+	public function onGetControllerPathBackendViisonStripePayment(Enlight_Event_EventArgs $args) {
+		return $this->Path() . 'Controllers/Backend/ViisonStripePayment.php';
 	}
 
 	/**
