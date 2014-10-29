@@ -343,7 +343,7 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 	 * @param args The arguments passed by the method triggering the event.
 	 */
 	public function onPostDispatchFrontendAccount(Enlight_Event_EventArgs $args) {
-		// Add snippets and templates
+		// Add templates
 		$args->getSubject()->View()->addTemplateDir($this->Path() . 'Views/');
 		$args->getSubject()->View()->extendsTemplate('frontend/plugins/viison_stripe/account/content_right.tpl');
 	}
