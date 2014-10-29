@@ -355,7 +355,7 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 	 * @return The path to the Frontend/ViisonStripePaymentAccount controller.
 	 */
 	public function onGetControllerPathFrontendViisonStripePaymentAccount(Enlight_Event_EventArgs $args) {
-		$this->Application()->Snippets()->addConfigDir($this->Path() . 'snippets/');
+		$this->Application()->Snippets()->addConfigDir($this->Path() . 'Snippets/');
 		$this->Application()->Template()->addTemplateDir($this->Path() . 'Views/');
 
 		return $this->Path() . 'Controllers/Frontend/ViisonStripePaymentAccount.php';
