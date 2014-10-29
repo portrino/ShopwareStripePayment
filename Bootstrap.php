@@ -1,6 +1,6 @@
 <?php
 
-require_once(__DIR__ . '/lib/StripePHP/Stripe.php');
+require_once(__DIR__ . '/Library/StripePHP/Stripe.php');
 require_once(__DIR__ . '/Util.php');
 
 /**
