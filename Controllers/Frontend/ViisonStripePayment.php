@@ -27,60 +27,21 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 	 * 'payed'. Finally the user is redirected to the 'finish' action of the checkout process.
 	 */
 	public function indexAction() {
-		// Get the necessary user info
-		$user = $this->getUser();
-		$userEmail = $user['additional']['user']['email'];
-		$customerNumber = $user['billingaddress']['customernumber'];
-
-		// Calculate the application fee (in cents)
-		$percentageFee = 0.3;
-		$applicationFee = round($this->getAmount() * $percentageFee) + 5;
-
 		// Set the Stripe API key
 		$stripeSecretKey = Shopware_Plugins_Frontend_ViisonStripePayment_Util::stripeSecretKey();
 		Stripe::setApiKey($stripeSecretKey);
 
-		// Prepare the charge data
-		$chargeData = array(
-			'amount' => ($this->getAmount() * 100), // Amount has to be in cents!
-			'currency' => $this->getCurrencyShortName(),
-			'description' => ($userEmail . ' / Kunden-Nr.: ' . $customerNumber),
-			'application_fee' => $applicationFee
-		);
-
-		if (Shopware()->Session()->stripeTransactionToken !== null) {
-			// Create a new charge using the transaction token
-			$chargeData['card'] = Shopware()->Session()->stripeTransactionToken;
-		} else if (Shopware()->Session()->stripeCardId !== null) {
-			// Create a new charge using the selected card and the customer
-			$chargeData['card'] = Shopware()->Session()->stripeCardId;
-			try {
-				$stripeCustomer = Shopware_Plugins_Frontend_ViisonStripePayment_Util::getStripeCustomer();
-				$chargeData['customer'] = $stripeCustomer->id;
-			} catch (Exception $e) {
-				// The Stripe customer couldn't be loaded
-				Shopware()->Session()->viisonStripePaymentError = 'Die Zahlung konnte nicht durchgeführt werden, da die ausgewählte Kreditkarte nicht gefunden wurde. Bitte versuchen Sie es erneut.';
-				$this->redirect(array(
-					'controller' => 'checkout',
-					'action' => 'confirm',
-					'forceSecure' => !$this->testMode // Disable the secure mode for testing
-				));
-				return;
-			}
-		} else {
-			// No payment information provided
-			Shopware()->Session()->viisonStripePaymentError = 'Die Zahlung konnte nicht durchgeführt werden, da keine Stripe-Transaktion gefunden wurde. Bitte versuchen Sie es erneut.';
-			$this->redirect(array(
-				'controller' => 'checkout',
-				'action' => 'confirm',
-				'forceSecure' => !$this->testMode // Disable the secure mode for testing
-			));
-			return;
-		}
-
 		try {
+			// Prepare the charge
+			$chargeData = $this->getChargeData();
+
 			// Init the stripe payment
 			$charge = Stripe_Charge::create($chargeData);
+			if ($charge->cvc_check === 'fail') {
+				// The CVC check failed. This is not tolerated, although the shop's Stripe account might be
+				// configured to not decline charges, whose CVC check failed.
+				throw new Exception('The provided security code (CVC) is invalid.');
+			}
 		} catch (Exception $e) {
 			// Save the exception message in the session and redirect to the checkout confirm view
 			Shopware()->Session()->viisonStripePaymentError = 'Die Zahlung konnte nicht durchgeführt werden, da folgender Fehler aufgetreten ist: ' . $e->getMessage();
@@ -133,6 +94,53 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 			'forceSecure' => !$this->testMode // Disable the secure mode for testing
 			// 'sUniqueID' => 'SOME_ID' // This id will be displayed in the order summary with some additional text
 		));
+	}
+
+	/**
+	 * Gathers all the data, which is needed to create a new Stripe charge, from the
+	 * active session. If the a Stripe card id is found, it is used to retrieve the
+	 * corresponding Stripe customer instance.
+	 *
+	 * @return An array containing the charge data.
+	 * @throws An exception, if the found Stripe credit card was not found or neither a payment token, nor a card id was found.
+	 */
+	public function getChargeData() {
+		// Get the necessary user info
+		$user = $this->getUser();
+		$userEmail = $user['additional']['user']['email'];
+		$customerNumber = $user['billingaddress']['customernumber'];
+
+		// Calculate the application fee (in cents)
+		$percentageFee = 0.3;
+		$applicationFee = round($this->getAmount() * $percentageFee) + 5;
+
+		// Prepare the charge data
+		$chargeData = array(
+			'amount' => ($this->getAmount() * 100), // Amount has to be in cents!
+			'currency' => $this->getCurrencyShortName(),
+			'description' => ($userEmail . ' / Kunden-Nr.: ' . $customerNumber),
+			'application_fee' => $applicationFee
+		);
+
+		if (Shopware()->Session()->stripeTransactionToken !== null) {
+			// Create a new charge using the transaction token
+			$chargeData['card'] = Shopware()->Session()->stripeTransactionToken;
+		} else if (Shopware()->Session()->stripeCardId !== null) {
+			// Create a new charge using the selected card and the customer
+			$chargeData['card'] = Shopware()->Session()->stripeCardId;
+			try {
+				$stripeCustomer = Shopware_Plugins_Frontend_ViisonStripePayment_Util::getStripeCustomer();
+				$chargeData['customer'] = $stripeCustomer->id;
+			} catch (Exception $e) {
+				// The Stripe customer couldn't be loaded
+				throw new Exception('Die ausgewählte Kreditkarte wurde nicht gefunden.');
+			}
+		} else {
+			// No payment information provided
+			throw new Exception('Die Stripe-Transaktion wurde nicht gefunden.');
+		}
+
+		return $chargeData;
 	}
 
 }
