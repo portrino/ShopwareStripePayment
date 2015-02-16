@@ -35,7 +35,7 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 			'autor' => 'VIISON GmbH',
 			'copyright' => 'Copyright © 2014, VIISON GmbH',
 			'license' => 'All rights reserved.',
-			'support' => 'http://www.viison.com/',
+			'support' => 'support@viison.com',
 			'link' => 'http://www.viison.com/',
 			'version' => $this->getVersion()
 		);
