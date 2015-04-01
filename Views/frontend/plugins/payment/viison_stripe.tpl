@@ -372,7 +372,7 @@
 			$('#viison-stripe-cvc-info-button').click(function(event) {
 				$(event.target).find('.viison-stripe-cvc-info-popup').show();
 			});
-			$('#viison-stripe-cvc-info-popup-close').click(function() {
+			$('#viison-stripe-cvc-info-popup-close').click(function(event) {
 				$(event.target).closest('.viison-stripe-cvc-info-popup').hide();
 			});
 		});
