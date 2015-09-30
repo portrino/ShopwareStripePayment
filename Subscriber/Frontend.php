@@ -9,7 +9,7 @@ use Enlight\Event\SubscriberInterface,
 /**
  * The subscriber for frontend controllers.
  *
- * @copyright Copyright (c) 2015, Viison GmbH
+ * @copyright Copyright (c) 2015, VIISON GmbH
  */
 class Frontend implements SubscriberInterface
 {

@@ -9,7 +9,7 @@ require_once(__DIR__ . '/Library/StripePHP/Stripe.php');
  * to make payments. Because none of the credit card information is send to the server,
  * this plugin can be used without being PCI compliant.
  *
- * @copyright Copyright (c) 2014, VIISON GmbH
+ * @copyright Copyright (c) 2015, VIISON GmbH
  */
 class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_Components_Plugin_Bootstrap
 {
@@ -34,7 +34,7 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 			'label' => 'Stripe Payment',
 			'description' => file_get_contents(__DIR__ . '/description.html'),
 			'autor' => 'VIISON GmbH',
-			'copyright' => 'Copyright © 2014, VIISON GmbH',
+			'copyright' => 'Copyright © 2015, VIISON GmbH',
 			'license' => 'All rights reserved.',
 			'support' => 'support@viison.com',
 			'link' => 'http://www.viison.com/',

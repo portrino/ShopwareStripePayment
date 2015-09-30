@@ -14,6 +14,8 @@ include_once(__DIR__ . '/../Controllers/Frontend/ViisonStripePayment.php');
 /**
  * This is a implementation of the PaymentProvider interface defined in ViisonPickwareConnector.
  * It can be instantiated to perform basic operations like preparing payments.
+ *
+ * @copyright Copyright (c) 2015, VIISON GmbH
  */
 class ViisonStripePayment_Classes_PaymentProvider implements ViisonPickwareConnector_API_PaymentProvider
 {

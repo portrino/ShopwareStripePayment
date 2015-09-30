@@ -5,7 +5,7 @@ use Shopware\Plugins\ViisonStripePayment\Util;
 /**
  * The controller handling the main payment process using the stripe API.
  *
- * @copyright Copyright (c) 2014, Viison GmbH
+ * @copyright Copyright (c) 2015, VIISON GmbH
  */
 class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Controllers_Frontend_Payment
 {

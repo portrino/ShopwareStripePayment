@@ -5,7 +5,7 @@ use Shopware\Plugins\ViisonStripePayment\Util;
 /**
  * The general backend controller, which handles refundings.
  *
- * @copyright Copyright (c) 2014, Viison GmbH
+ * @copyright Copyright (c) 2015, VIISON GmbH
  */
 class Shopware_Controllers_Backend_ViisonStripePayment extends Shopware_Controllers_Backend_ExtJs
 {

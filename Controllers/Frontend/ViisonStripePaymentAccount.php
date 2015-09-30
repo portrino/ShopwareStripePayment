@@ -6,7 +6,7 @@ use Shopware\Plugins\ViisonStripePayment\Util;
  * This controller provides two actions for listing all credit cards of the currently logged in user
  * and for deleting a selected credit card.
  *
- * @copyright Copyright (c) 2014, Viison GmbH
+ * @copyright Copyright (c) 2015, VIISON GmbH
  */
 class Shopware_Controllers_Frontend_ViisonStripePaymentAccount extends Shopware_Controllers_Frontend_Account
 {

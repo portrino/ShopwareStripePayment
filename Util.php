@@ -2,6 +2,11 @@
 
 namespace Shopware\Plugins\ViisonStripePayment;
 
+/**
+ * Utility functions used across this plugin.
+ *
+ * @copyright Copyright (c) 2015, VIISON GmbH
+ */
 class Util
 {
 

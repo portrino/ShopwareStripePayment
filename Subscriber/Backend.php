@@ -8,7 +8,7 @@ use Enlight\Event\SubscriberInterface,
 /**
  * The subscriber for backend controllers.
  *
- * @copyright Copyright (c) 2015, Viison GmbH
+ * @copyright Copyright (c) 2015, VIISON GmbH
  */
 class Backend implements SubscriberInterface
 {
