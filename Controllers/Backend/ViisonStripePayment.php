@@ -1,5 +1,7 @@
 <?php
 
+use Shopware\Plugins\ViisonStripePayment\Util;
+
 /**
  * The general backend controller, which handles refundings.
  *
@@ -60,7 +62,7 @@ class Shopware_Controllers_Backend_ViisonStripePayment extends Shopware_Controll
 		}
 
 		// Set the Stripe API key
-		$stripeSecretKey = Shopware_Plugins_Frontend_ViisonStripePayment_Util::stripeSecretKey();
+		$stripeSecretKey = Util::stripeSecretKey();
 		Stripe::setApiKey($stripeSecretKey);
 
 		// Load the charge and add new refund to it

@@ -1,5 +1,7 @@
 <?php
 
+use Shopware\Plugins\ViisonStripePayment\Util;
+
 /**
  * This controller provides two actions for listing all credit cards of the currently logged in user
  * and for deleting a selected credit card.
@@ -32,12 +34,12 @@ class Shopware_Controllers_Frontend_ViisonStripePaymentAccount extends Shopware_
 		$this->View()->extendsTemplate('frontend/plugins/viison_stripe/account/content_right.tpl');
 
 		// Set the Stripe API key
-		$stripeSecretKey = Shopware_Plugins_Frontend_ViisonStripePayment_Util::stripeSecretKey();
+		$stripeSecretKey = Util::stripeSecretKey();
 		Stripe::setApiKey($stripeSecretKey);
 
 		try {
 			// Get the customer
-			$customer = Shopware_Plugins_Frontend_ViisonStripePayment_Util::getStripeCustomer();
+			$customer = Util::getStripeCustomer();
 			if ($customer === null) {
 				// No Stripe customer found, hence return no cards
 				$this->View()->creditCards = array();
@@ -81,7 +83,7 @@ class Shopware_Controllers_Frontend_ViisonStripePaymentAccount extends Shopware_
 	 */
 	public function deleteCreditCardAction() {
 		// Set the Stripe API key
-		$stripeSecretKey = Shopware_Plugins_Frontend_ViisonStripePayment_Util::stripeSecretKey();
+		$stripeSecretKey = Util::stripeSecretKey();
 		Stripe::setApiKey($stripeSecretKey);
 
 		try {
@@ -90,7 +92,7 @@ class Shopware_Controllers_Frontend_ViisonStripePaymentAccount extends Shopware_
 			if ($cardId === null) {
 				throw new Exception('Missing field "cardId".');
 			}
-			Shopware_Plugins_Frontend_ViisonStripePayment_Util::deleteStripeCard($cardId);
+			Util::deleteStripeCard($cardId);
 		} catch (Exception $e) {
 			Shopware()->Session()->stripeErrorMessage = 'Beim Löschen der Kreditkarte ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.';
 		}

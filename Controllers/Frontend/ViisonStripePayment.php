@@ -1,5 +1,7 @@
 <?php
 
+use Shopware\Plugins\ViisonStripePayment\Util;
+
 /**
  * The controller handling the main payment process using the stripe API.
  *
@@ -28,7 +30,7 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 	 */
 	public function indexAction() {
 		// Set the Stripe API key
-		$stripeSecretKey = Shopware_Plugins_Frontend_ViisonStripePayment_Util::stripeSecretKey();
+		$stripeSecretKey = Util::stripeSecretKey();
 		Stripe::setApiKey($stripeSecretKey);
 
 		try {
@@ -73,7 +75,7 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 		if (Shopware()->Session()->stripeDeleteCardAfterPayment === true) {
 			// Delete the Stripe card
 			try {
-				Shopware_Plugins_Frontend_ViisonStripePayment_Util::deleteStripeCard($charge->card->id);
+				Util::deleteStripeCard($charge->card->id);
 			} catch (Exception $e) {
 				// Ignore exceptions in this case, because the order has already been created
 				// and deleting the credit card is assumed to be an optional operation
@@ -129,7 +131,7 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 			// Create a new charge using the selected card and the customer
 			$chargeData['card'] = Shopware()->Session()->stripeCardId;
 			try {
-				$stripeCustomer = Shopware_Plugins_Frontend_ViisonStripePayment_Util::getStripeCustomer();
+				$stripeCustomer = Util::getStripeCustomer();
 				$chargeData['customer'] = $stripeCustomer->id;
 			} catch (Exception $e) {
 				// The Stripe customer couldn't be loaded

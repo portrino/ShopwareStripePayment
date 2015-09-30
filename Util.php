@@ -1,6 +1,8 @@
 <?php
 
-class Shopware_Plugins_Frontend_ViisonStripePayment_Util
+namespace Shopware\Plugins\ViisonStripePayment;
+
+class Util
 {
 
 	/**
@@ -109,7 +111,7 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Util
 
 		// Load, save and return the customer
 		$stripeCustomerId = $customer->getAttribute()->getViisonStripeCustomerId();
-		self::$stripeCustomer = Stripe_Customer::retrieve($stripeCustomerId);
+		self::$stripeCustomer = \Stripe_Customer::retrieve($stripeCustomerId);
 
 		return self::$stripeCustomer;
 	}
@@ -180,7 +182,7 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Util
 			}
 
 			// Create a new Stripe customer and add the card to them
-			$stripeCustomer = Stripe_Customer::create(array(
+			$stripeCustomer = \Stripe_Customer::create(array(
 				'description' => self::getCustomerName(),
 				'email' => $customer->getEmail(),
 				'card' => $transactionToken
