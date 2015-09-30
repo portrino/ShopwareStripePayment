@@ -50,34 +50,7 @@ Ext.define('Shopware.apps.ViisonStripe.Order.view.detail.position.refund.Window'
 				this.createForm()
 			],
 			dockedItems: [
-				{
-					xtype: 'toolbar',
-					dock: 'bottom',
-					ui: 'shopware-ui',
-					padding: 10,
-					items: [
-						{
-							xtype: 'component',
-							flex: 1
-						}, {
-							xtype: 'button',
-							text: '{s name=order/view/detail/position/refund/window/cancel_button}{/s}',
-							cls: 'secondary',
-							scope: this,
-							handler: function() {
-								this.close();
-							}
-						}, {
-							xtype: 'button',
-							text: '{s name=order/view/detail/position/refund/window/confirm_button}{/s}',
-							cls: 'primary',
-							scope: this,
-							handler: function() {
-								this.fireEvent('performRefund', this);
-							}
-						}
-					]
-				}
+				this.createToolbar()
 			]
 		};
 
@@ -112,6 +85,39 @@ Ext.define('Shopware.apps.ViisonStripe.Order.view.detail.position.refund.Window'
 		});
 
 		return this.form;
+	},
+
+	/**
+	 * @return A toolbar containing a 'cancel' and a 'save' button.
+	 */
+	createToolbar: function() {
+		return Ext.create('Ext.toolbar.Toolbar', {
+			dock: 'bottom',
+			ui: 'shopware-ui',
+			padding: 10,
+			items: [
+				{
+					xtype: 'component',
+					flex: 1
+				}, {
+					xtype: 'button',
+					text: '{s name=order/view/detail/position/refund/window/cancel_button}{/s}',
+					cls: 'secondary',
+					scope: this,
+					handler: function() {
+						this.close();
+					}
+				}, {
+					xtype: 'button',
+					text: '{s name=order/view/detail/position/refund/window/confirm_button}{/s}',
+					cls: 'primary',
+					scope: this,
+					handler: function() {
+						this.fireEvent('performRefund', this);
+					}
+				}
+			]
+		});
 	}
 
 });
