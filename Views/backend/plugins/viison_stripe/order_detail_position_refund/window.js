@@ -27,6 +27,14 @@ Ext.define('Shopware.apps.ViisonStripe.Order.view.detail.position.refund.Window'
 
 		this.addEvents(
 			/**
+			 * Event will be fired, if an edited row is saved.
+			 *
+			 * @event performRefund
+			 * @param window This window.
+			 * @param record The record whose quantity has changed.
+			 */
+			'positionQuantityChanged',
+			/**
 			 * Event will be fired when the user clicks the 'refund' button.
 			 *
 			 * @event performRefund
@@ -39,14 +47,7 @@ Ext.define('Shopware.apps.ViisonStripe.Order.view.detail.position.refund.Window'
 			layout: 'border',
 			border: false,
 			items: [
-				{
-					xtype: 'grid',
-					region: 'center',
-					layout: 'fit',
-					store: this.store,
-					columns: this.gridColumns,
-					border: false
-				},
+				this.createGrid(),
 				this.createForm()
 			],
 			dockedItems: [
@@ -55,6 +56,74 @@ Ext.define('Shopware.apps.ViisonStripe.Order.view.detail.position.refund.Window'
 		};
 
 		this.callParent(arguments);
+	},
+
+	/**
+	 * @return A new refund position grid panel.
+	 */
+	createGrid: function() {
+		return Ext.create('Ext.grid.Panel', {
+			region: 'center',
+			layout: 'fit',
+			store: this.store,
+			border: false,
+			viewConfig: {
+				markDirty: false
+			},
+			columns: [{
+				xtype: 'gridcolumn',
+				header: '{s name=order/view/detail/position/refund/window/grid/column/article_numer}{/s}',
+				dataIndex: 'articleNumber',
+				flex: 2
+			}, {
+				xtype: 'gridcolumn',
+				header: '{s name=order/view/detail/position/refund/window/grid/column/article_name}{/s}',
+				dataIndex: 'articleName',
+				flex: 4
+			}, {
+				xtype: 'gridcolumn',
+				header: '{s name=order/view/detail/position/refund/window/grid/column/quantity}{/s}',
+				dataIndex: 'quantity',
+				flex: 1,
+				editor: {
+					xtype: 'numberfield',
+					allowBlank: false,
+					allowDecimals: false,
+					minValue: 0,
+					padding: '0 5 0 0'
+				}
+			}, {
+				xtype: 'gridcolumn',
+				header: '{s name=order/view/detail/position/refund/window/grid/column/price}{/s}',
+				dataIndex: 'price',
+				align: 'right',
+				flex: 1,
+				renderer: function(value, metaData, record) {
+					return Ext.util.Format.number(value, '0.000,00 €/i');
+				}
+			}, {
+				xtype: 'gridcolumn',
+				header: '{s name=order/view/detail/position/refund/window/grid/column/total}{/s}',
+				dataIndex: 'total',
+				align: 'right',
+				flex: 1,
+				renderer: function(value, metaData, record) {
+					return Ext.util.Format.number(value, '0.000,00 €/i');
+				}
+			}],
+			plugins: [
+				Ext.create('Ext.grid.plugin.RowEditing', {
+					clicksToEdit: 2,
+					autoCancel: true,
+					listeners: {
+						scope: this,
+						edit: function(editor, event) {
+							this.fireEvent('positionQuantityChanged', this, event.record);
+						}
+					}
+				})
+			]
+		});
 	},
 
 	/**

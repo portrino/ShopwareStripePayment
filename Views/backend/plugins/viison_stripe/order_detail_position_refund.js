@@ -89,6 +89,7 @@ Ext.define('Shopware.apps.ViisonStripe.Order.controller.Detail', {
 				openRefundWindow: this.onOpenRefundWindow
 			},
 			'viison-stripe-refund-window': {
+				positionQuantityChanged: this.onPositionQuantityChanged,
 				performRefund: this.onPerformRefund
 			}
 		});
@@ -127,22 +128,36 @@ Ext.define('Shopware.apps.ViisonStripe.Order.controller.Detail', {
 			data: data
 		});
 
-		// Copy some of the columns of the position grid
-		var gridColumns = [];
-		Ext.each(positionPanel.getColumns(positionPanel.orderPositionGrid), function(column) {
-			if (['articleNumber', 'articleName', 'quantity', 'price', 'total'].indexOf(column.dataIndex) !== -1) {
-				gridColumns.push(column);
-			}
-		});
-
 		// Create and open a new window with the store, columns and total amount
 		var refundWindow = Ext.create('Shopware.apps.ViisonStripe.Order.view.detail.position.refund.Window', {
 			orderRecord: positionPanel.record,
 			store: store,
-			gridColumns: gridColumns,
 			total: total
 		});
 		refundWindow.show();
+	},
+
+	/**
+	 * Updates the total amount of the changed position as well as the
+	 * total refund amount.
+	 *
+	 * @param refundWindow The window firing the event.
+	 * @param record The changed record.
+	 */
+	onPositionQuantityChanged: function(refundWindow, record) {
+		// Update item total
+		var newItemTotal = record.get('quantity') * record.get('price');
+		record.set('total', newItemTotal);
+
+		// Update overall total
+		var newOverallTotal = 0;
+		refundWindow.store.each(function(item) {
+			newOverallTotal += item.get('total');
+		});
+		refundWindow.total = newOverallTotal;
+		refundWindow.form.getForm().setValues({
+			total: Ext.util.Format.currency(newOverallTotal, ' &euro;', 2, true)
+		});
 	},
 
 	/**
