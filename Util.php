@@ -27,6 +27,9 @@ class Util
 		// Set the Stripe API key
 		$stripeSecretKey = self::stripeSecretKey();
 		Stripe\Stripe::setApiKey($stripeSecretKey);
+
+		// Set API version manually until changing it for the app and all accounts using it
+		Stripe\Stripe::setApiVersion('2015-09-23');
 	}
 
 	/**
@@ -69,7 +72,7 @@ class Util
 				'exp_month' => $card->exp_month,
 				'exp_year' => $card->exp_year
 			);
-		}, $customer->cards->data);
+		}, $customer->sources->data);
 
 		// Sort the cards by id (which correspond to the date, the card was created/added)
 		usort($cards, function($cardA, $cardB) {
@@ -96,7 +99,7 @@ class Util
 		// Get all cards and try to find the one matching the default id
 		$cards = self::getAllStripeCards();
 		foreach ($cards as $card) {
-			if ($card['id'] === $customer->default_card) {
+			if ($card['id'] === $customer->default_source) {
 				// Return the default card
 				return $card;
 			}
@@ -188,8 +191,8 @@ class Util
 		$stripeCustomer = self::getStripeCustomer();
 		if ($stripeCustomer !== null && !$stripeCustomer->deleted) {
 			// Add the card to the existing customer
-			$newCard = $stripeCustomer->cards->create(array(
-				'card' => $transactionToken
+			$newCard = $stripeCustomer->sources->create(array(
+				'source' => $transactionToken
 			));
 		} else {
 			// Get the currently active user
@@ -203,9 +206,9 @@ class Util
 			$stripeCustomer = Stripe\Customer::create(array(
 				'description' => self::getCustomerName(),
 				'email' => $customer->getEmail(),
-				'card' => $transactionToken
+				'source' => $transactionToken
 			));
-			$newCard = $stripeCustomer->cards->data[0];
+			$newCard = $stripeCustomer->sources->data[0];
 
 			// Save the Stripe customer id
 			$customer->getAttribute()->setViisonStripeCustomerId($stripeCustomer->id);
@@ -232,7 +235,7 @@ class Util
 		}
 
 		// Delete the card with the given id from Stripe
-		$customer->cards->retrieve($cardId)->delete();
+		$customer->sources->retrieve($cardId)->delete();
 	}
 
 }

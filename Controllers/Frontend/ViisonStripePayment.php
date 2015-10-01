@@ -73,7 +73,7 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 		if (Shopware()->Session()->stripeDeleteCardAfterPayment === true) {
 			// Delete the Stripe card
 			try {
-				Util::deleteStripeCard($charge->card->id);
+				Util::deleteStripeCard($charge->source->id);
 			} catch (Exception $e) {
 				// Ignore exceptions in this case, because the order has already been created
 				// and deleting the credit card is assumed to be an optional operation

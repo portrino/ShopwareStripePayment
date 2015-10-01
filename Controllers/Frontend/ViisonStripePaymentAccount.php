@@ -51,7 +51,7 @@ class Shopware_Controllers_Frontend_ViisonStripePaymentAccount extends Shopware_
 					'number' => ('XXXXXXXXXXXX ' . $card->last4),
 					'expiryDate' => (((strlen($card->exp_month) === 1) ? '0' : '') . $card->exp_month . '/' . $card->exp_year)
 				);
-			}, $customer->cards->data);
+			}, $customer->sources->data);
 
 			// Sort the cards by id (which correspond to the date, the card was created/added)
 			usort($cards, function($cardA, $cardB) {
