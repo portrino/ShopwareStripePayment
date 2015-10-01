@@ -15,14 +15,11 @@ class Backend implements SubscriberInterface
 
 	private $path;
 
-	private $snippetManager;
-
 	/**
 	 * @param bootstrap The plugin bootstrap, used as an DI container.
 	 */
 	public function __construct(Bootstrap $bootstrap) {
 		$this->path = $bootstrap->Path();
-		$this->snippetManager = $bootstrap->get('snippets');
 	}
 
 	/**
@@ -42,10 +39,7 @@ class Backend implements SubscriberInterface
 	 */
 	public function onPostDispatchOrder(Enlight_Event_EventArgs $args) {
 		if ($args->getRequest()->getActionName() === 'load') {
-			// Add snippets and views
-			$this->snippetManager->addConfigDir($this->path . 'Snippets/');
-			$args->getSubject()->View()->addTemplateDir($this->path . 'Views/');
-			$args->getSubject()->View()->extendsTemplate('backend/plugins/viison_stripe/order_detail_position_refund.js');
+			$args->getSubject()->View()->extendsTemplate('backend/viison_stripe_payment/order_detail_position_refund.js');
 		}
 	}
 

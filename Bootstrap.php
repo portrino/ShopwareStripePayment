@@ -209,6 +209,7 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 	public function onDispatchLoopStartup(Enlight_Event_EventArgs $args) {
 		$this->get('events')->addSubscriber(new Subscriber\Backend($this));
 		$this->get('events')->addSubscriber(new Subscriber\Frontend($this));
+		$this->get('events')->addSubscriber(new Subscriber\Theme($this));
 	}
 
 }

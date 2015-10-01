@@ -16,17 +16,11 @@ class Frontend implements SubscriberInterface
 
 	private $path;
 
-	private $snippetManager;
-
-	private $templateManager;
-
 	/**
 	 * @param bootstrap The plugin bootstrap, used as an DI container.
 	 */
 	public function __construct(Bootstrap $bootstrap) {
 		$this->path = $bootstrap->Path();
-		$this->snippetManager = $bootstrap->get('snippets');
-		$this->templateManager = $bootstrap->get('template');
 	}
 
 	/**
@@ -58,11 +52,6 @@ class Frontend implements SubscriberInterface
 		$request = $args->getRequest();
 		$response = $args->getSubject()->Response();
 		$view = $args->getSubject()->View();
-
-		// Add snippets and views
-		$this->snippetManager->addConfigDir($this->path . 'Snippets/');
-		$view->addTemplateDir($this->path . 'Views/');
-
 		if (!$request->isDispatched() || $response->isException() || $request->getModuleName() !== 'frontend' || !$view->hasTemplate()) {
 			return;
 		}
@@ -164,15 +153,12 @@ class Frontend implements SubscriberInterface
 	}
 
 	/**
-	 * Adds the snippets and views of this plugin to the view.
+	 * Adds views of this plugin to the account template.
 	 *
 	 * @param args The arguments passed by the method triggering the event.
 	 */
 	public function onPostDispatchAccount(Enlight_Event_EventArgs $args) {
-		// Add snippets and views
-		$this->snippetManager->addConfigDir($this->path . 'Snippets/');
-		$args->getSubject()->View()->addTemplateDir($this->path . 'Views/');
-		$args->getSubject()->View()->extendsTemplate('frontend/plugins/viison_stripe/account/content_right.tpl');
+		$args->getSubject()->View()->extendsTemplate('frontend/viison_stripe_payment/account/content_right.tpl');
 	}
 
 	/**
@@ -186,17 +172,12 @@ class Frontend implements SubscriberInterface
 	}
 
 	/**
-	 * Loads the snippets and views of this plugin and returns the path to the
-	 * Frontend/ViisonStripePaymentAccount controller, used for managing saved credit cards.
+	 * Returns the path to the Frontend/ViisonStripePaymentAccount controller used for managing saved credit cards.
 	 *
 	 * @param args The arguments passed by the method triggering the event.
 	 * @return The path to the Frontend/ViisonStripePaymentAccount controller.
 	 */
 	public function onGetControllerPathViisonStripePaymentAccount(Enlight_Event_EventArgs $args) {
-		// Add snippets and views
-		$this->snippetManager->addConfigDir($this->path . 'Snippets/');
-		$this->templateManager->addTemplateDir($this->path . 'Views/');
-
 		return $this->path . 'Controllers/Frontend/ViisonStripePaymentAccount.php';
 	}
 

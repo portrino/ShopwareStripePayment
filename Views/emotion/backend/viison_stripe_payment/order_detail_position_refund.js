@@ -73,8 +73,8 @@ Ext.define('Shopware.apps.ViisonStripe.Order.view.detail.Position', {
 
 //{block name="backend/order/controller/detail" append}
 	// Include the refund model and window
-	//{include file="backend/plugins/viison_stripe/order_detail_position_refund/item.js"}
-	//{include file="backend/plugins/viison_stripe/order_detail_position_refund/window.js"}
+	//{include file="backend/viison_stripe_payment/order_detail_position_refund/item.js"}
+	//{include file="backend/viison_stripe_payment/order_detail_position_refund/window.js"}
 
 Ext.define('Shopware.apps.ViisonStripe.Order.controller.Detail', {
 
