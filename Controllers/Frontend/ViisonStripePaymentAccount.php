@@ -34,26 +34,8 @@ class Shopware_Controllers_Frontend_ViisonStripePaymentAccount extends Shopware_
 		$this->View()->extendsTemplate('frontend/plugins/viison_stripe/account/content_right.tpl');
 
 		try {
-			// Get the customer
-			$customer = Util::getStripeCustomer();
-			if ($customer === null) {
-				// No Stripe customer found, hence return no cards
-				$this->View()->creditCards = array();
-				return;
-			}
-
-			// Save the cards in the list
-			$cards = array_map(function ($card) {
-				return array(
-					'id' => $card->id,
-					'holder' => $card->name,
-					'type' => $card->brand,
-					'number' => ('XXXXXXXXXXXX ' . $card->last4),
-					'expiryDate' => (((strlen($card->exp_month) === 1) ? '0' : '') . $card->exp_month . '/' . $card->exp_year)
-				);
-			}, $customer->sources->data);
-
-			// Sort the cards by id (which correspond to the date, the card was created/added)
+			// Load all cards of the customer and sort them by id (which correspond to the date, the card was created/added)
+			$cards = Util::getAllStripeCards();
 			usort($cards, function($cardA, $cardB) {
 				return strcmp($cardA['id'], $cardB['id']);
 			});

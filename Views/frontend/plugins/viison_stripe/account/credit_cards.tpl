@@ -42,16 +42,16 @@
 				{foreach name=stripeCreditCards from=$creditCards item=creditCard}
 					<div class="table_row {if $smarty.foreach.stripeCreditCards.last}lastrow{/if}">
 						<div class="grid_3 bold">
-							{$creditCard.holder}
+							{$creditCard.name}
 						</div>
 						<div class="grid_3">
-							{$creditCard.type}
+							{$creditCard.brand}
 						</div>
 						<div class="grid_4" style="margin-top: 15px;">
-							{$creditCard.number}
+							XXXXXXXXXXXX {$creditCard.last4}
 						</div>
 						<div class="grid_2">
-							{$creditCard.expiryDate}
+							{$creditCard.exp_month|string_format:"%02d"}/{$creditCard.exp_year}
 						</div>
 						<div class="grid_3 textright">
 							<strong>
