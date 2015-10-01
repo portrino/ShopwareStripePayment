@@ -21,6 +21,15 @@ class Util
 	private static $stripeCustomer;
 
 	/**
+	 * Sets the Stripe secret key.
+	 */
+	public static function initStripeAPI() {
+		// Set the Stripe API key
+		$stripeSecretKey = self::stripeSecretKey();
+		Stripe\Stripe::setApiKey($stripeSecretKey);
+	}
+
+	/**
 	 * @return If test mode is activated, the default test public key. Otherwise the Stripe public key set in the plugin configuration.
 	 */
 	public static function stripePublicKey() {
@@ -104,6 +113,7 @@ class Util
 	 * @throws An exception, if Stripe could not load the customer.
 	 */
 	public static function getStripeCustomer() {
+		self::initStripeAPI();
 		// Check if customer is already loaded
 		if (self::$stripeCustomer !== null) {
 			return self::$stripeCustomer;
@@ -173,6 +183,7 @@ class Util
 	 * @return The Stripe_Card, which was created.
 	 */
 	public static function saveStripeCard($transactionToken) {
+		self::initStripeAPI();
 		// Get the Stripe customer
 		$stripeCustomer = self::getStripeCustomer();
 		if ($stripeCustomer !== null && !$stripeCustomer->deleted) {
@@ -213,6 +224,7 @@ class Util
 	 * @param $cardId The Stripe id of the card, which shall be deleted.
 	 */
 	public static function deleteStripeCard($cardId) {
+		self::initStripeAPI();
 		// Get the Stripe customer
 		$customer = self::getStripeCustomer();
 		if ($customer === null) {

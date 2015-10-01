@@ -62,12 +62,9 @@ class Shopware_Controllers_Backend_ViisonStripePayment extends Shopware_Controll
 			return;
 		}
 
-		// Set the Stripe API key
-		$stripeSecretKey = Util::stripeSecretKey();
-		Stripe\Stripe::setApiKey($stripeSecretKey);
-
 		// Load the charge and add new refund to it
 		try {
+			Util::initStripeAPI();
 			$charge = Stripe\Charge::retrieve($order->getTransactionId());
 			$charge->refund(array(
 				'amount' => intval($amount * 100)

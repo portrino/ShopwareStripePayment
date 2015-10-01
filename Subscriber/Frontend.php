@@ -4,8 +4,7 @@ namespace Shopware\Plugins\ViisonStripePayment\Subscriber;
 
 use Enlight\Event\SubscriberInterface,
 	\Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap as Bootstrap,
-	Shopware\Plugins\ViisonStripePayment\Util,
-	Stripe;
+	Shopware\Plugins\ViisonStripePayment\Util;
 
 /**
  * The subscriber for frontend controllers.
@@ -70,10 +69,6 @@ class Frontend implements SubscriberInterface
 
 		// Inject the credit card logos into the template
 		$view->extendsTemplate('frontend/plugins/payment/viison_stripe_card_logos.tpl');
-
-		// Set the Stripe API key
-		$stripeSecretKey = Util::stripeSecretKey();
-		Stripe\Stripe::setApiKey($stripeSecretKey);
 
 		if ($request->getActionName() === 'confirm') {
 			// Set the stripe public key

@@ -30,15 +30,12 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 	 * 'payed'. Finally the user is redirected to the 'finish' action of the checkout process.
 	 */
 	public function indexAction() {
-		// Set the Stripe API key
-		$stripeSecretKey = Util::stripeSecretKey();
-		Stripe\Stripe::setApiKey($stripeSecretKey);
-
 		try {
 			// Prepare the charge
 			$chargeData = $this->getChargeData();
 
 			// Init the stripe payment
+			Util::initStripeAPI();
 			$charge = Stripe\Charge::create($chargeData);
 			if ($charge->cvc_check === 'fail') {
 				// The CVC check failed. This is not tolerated, although the shop's Stripe account might be
