@@ -1,6 +1,7 @@
 <?php
 
-use Shopware\Plugins\ViisonStripePayment\Util;
+use Shopware\Plugins\ViisonStripePayment\Util,
+	Stripe;
 
 /**
  * This controller provides two actions for listing all credit cards of the currently logged in user
@@ -35,7 +36,7 @@ class Shopware_Controllers_Frontend_ViisonStripePaymentAccount extends Shopware_
 
 		// Set the Stripe API key
 		$stripeSecretKey = Util::stripeSecretKey();
-		Stripe::setApiKey($stripeSecretKey);
+		Stripe\Stripe::setApiKey($stripeSecretKey);
 
 		try {
 			// Get the customer
@@ -84,7 +85,7 @@ class Shopware_Controllers_Frontend_ViisonStripePaymentAccount extends Shopware_
 	public function deleteCreditCardAction() {
 		// Set the Stripe API key
 		$stripeSecretKey = Util::stripeSecretKey();
-		Stripe::setApiKey($stripeSecretKey);
+		Stripe\Stripe::setApiKey($stripeSecretKey);
 
 		try {
 			// Delete the card with the given id

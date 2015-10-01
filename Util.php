@@ -2,6 +2,8 @@
 
 namespace Shopware\Plugins\ViisonStripePayment;
 
+use Stripe;
+
 /**
  * Utility functions used across this plugin.
  *
@@ -116,7 +118,7 @@ class Util
 
 		// Load, save and return the customer
 		$stripeCustomerId = $customer->getAttribute()->getViisonStripeCustomerId();
-		self::$stripeCustomer = \Stripe_Customer::retrieve($stripeCustomerId);
+		self::$stripeCustomer = Stripe\Customer::retrieve($stripeCustomerId);
 
 		return self::$stripeCustomer;
 	}
@@ -187,7 +189,7 @@ class Util
 			}
 
 			// Create a new Stripe customer and add the card to them
-			$stripeCustomer = \Stripe_Customer::create(array(
+			$stripeCustomer = Stripe\Customer::create(array(
 				'description' => self::getCustomerName(),
 				'email' => $customer->getEmail(),
 				'card' => $transactionToken

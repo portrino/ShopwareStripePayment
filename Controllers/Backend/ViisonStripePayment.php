@@ -1,6 +1,7 @@
 <?php
 
-use Shopware\Plugins\ViisonStripePayment\Util;
+use Shopware\Plugins\ViisonStripePayment\Util,
+	Stripe;
 
 /**
  * The general backend controller, which handles refundings.
@@ -63,11 +64,11 @@ class Shopware_Controllers_Backend_ViisonStripePayment extends Shopware_Controll
 
 		// Set the Stripe API key
 		$stripeSecretKey = Util::stripeSecretKey();
-		Stripe::setApiKey($stripeSecretKey);
+		Stripe\Stripe::setApiKey($stripeSecretKey);
 
 		// Load the charge and add new refund to it
 		try {
-			$charge = Stripe_Charge::retrieve($order->getTransactionId());
+			$charge = Stripe\Charge::retrieve($order->getTransactionId());
 			$charge->refund(array(
 				'amount' => intval($amount * 100)
 			));

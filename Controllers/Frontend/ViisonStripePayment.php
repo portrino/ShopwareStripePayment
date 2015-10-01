@@ -1,6 +1,7 @@
 <?php
 
-use Shopware\Plugins\ViisonStripePayment\Util;
+use Shopware\Plugins\ViisonStripePayment\Util,
+	Stripe;
 
 /**
  * The controller handling the main payment process using the stripe API.
@@ -31,14 +32,14 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 	public function indexAction() {
 		// Set the Stripe API key
 		$stripeSecretKey = Util::stripeSecretKey();
-		Stripe::setApiKey($stripeSecretKey);
+		Stripe\Stripe::setApiKey($stripeSecretKey);
 
 		try {
 			// Prepare the charge
 			$chargeData = $this->getChargeData();
 
 			// Init the stripe payment
-			$charge = Stripe_Charge::create($chargeData);
+			$charge = Stripe\Charge::create($chargeData);
 			if ($charge->cvc_check === 'fail') {
 				// The CVC check failed. This is not tolerated, although the shop's Stripe account might be
 				// configured to not decline charges, whose CVC check failed.

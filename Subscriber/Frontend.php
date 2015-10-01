@@ -4,7 +4,8 @@ namespace Shopware\Plugins\ViisonStripePayment\Subscriber;
 
 use Enlight\Event\SubscriberInterface,
 	\Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap as Bootstrap,
-	Shopware\Plugins\ViisonStripePayment\Util;
+	Shopware\Plugins\ViisonStripePayment\Util,
+	Stripe;
 
 /**
  * The subscriber for frontend controllers.
@@ -72,7 +73,7 @@ class Frontend implements SubscriberInterface
 
 		// Set the Stripe API key
 		$stripeSecretKey = Util::stripeSecretKey();
-		\Stripe::setApiKey($stripeSecretKey);
+		Stripe\Stripe::setApiKey($stripeSecretKey);
 
 		if ($request->getActionName() === 'confirm') {
 			// Set the stripe public key

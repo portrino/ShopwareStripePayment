@@ -2,7 +2,9 @@
 
 use Shopware\Plugins\ViisonStripePayment\Subscriber;
 
-require_once(__DIR__ . '/Library/StripePHP/Stripe.php');
+if (!class_exists('\Stripe\Stripe') && file_exists(__DIR__ . '/vendor/autoload.php')) {
+	require_once(__DIR__ . '/vendor/autoload.php');
+}
 
 /**
  * This plugin offers a payment method, which uses the stripe JavaScript SDK and API
