@@ -151,11 +151,15 @@
 			}
 
 			// A helper method, which sets not only the value of the select element, but also the displayed value
-			function updateSelect(selectElement, value, displayValue) {
+			function updateSelect(selectElement, value, keepFormFields) {
 				// Update the selected options
 				selectElement.val(value);
-				// Update the displayed value
-				selectElement.siblings('.inner-select').first().children('span').first().html(displayValue);
+				// Fire a change event on the select elements to re-initialise its fancy selectbox UI
+				// and pass the optional extra parameter, which, if set to true, prevents other custom
+				// selection change listeners from clearing the form fields
+				selectElement.trigger('change', [
+					keepFormFields
+				]);
 			}
 
 			// Try to get previously saved cards
@@ -284,7 +288,10 @@
 			}
 
 			// Observe the selection of saved credit cards
-			$('#stripe-saved-cards').change(function(event) {
+			$('#stripe-saved-cards').change(function(event, keepFormFields) {
+				if (keepFormFields === true) {
+					return;
+				}
 				if ($(this).val() === 'new') {
 					// A new, empty card was selected
 					// Remove the card and disable the submission
@@ -297,9 +304,9 @@
 					$('#stripe-card-number').val('');
 					$('#stripe-card-cvc').val('');
 					var month = new Date().getMonth() + 1;
-					updateSelect($('#stripe-card-expiry-month'), month, (100 + month + '').substr(-2));
+					updateSelect($('#stripe-card-expiry-month'), month);
 					var year = new Date().getFullYear();
-					updateSelect($('#stripe-card-expiry-year'), year, year);
+					updateSelect($('#stripe-card-expiry-year'), year);
 					// Update the oldVal used for change detection
 					updateOldValues();
 
@@ -333,8 +340,8 @@
 						$('#stripe-card-holder').val(selectedCard.name);
 						$('#stripe-card-number').val('XXXXXXXXXXXX' + selectedCard.last4);
 						$('#stripe-card-cvc').val('***');
-						updateSelect($('#stripe-card-expiry-month'), selectedCard.exp_month, (100 + selectedCard.exp_month + '').substr(-2));
-						updateSelect($('#stripe-card-expiry-year'), selectedCard.exp_year, selectedCard.exp_year);
+						updateSelect($('#stripe-card-expiry-month'), selectedCard.exp_month);
+						updateSelect($('#stripe-card-expiry-year'), selectedCard.exp_year);
 						// Update the oldVal used for change detection
 						updateOldValues();
 
@@ -357,7 +364,7 @@
 						// Update the oldVal and the card selection
 						elem.data('oldVal', elem.val());
 						var newCard = $('option[value="new"]');
-						updateSelect($('#stripe-saved-cards'), newCard.html(), newCard.html());
+						updateSelect($('#stripe-saved-cards'), newCard.html(), true);
 						// Remove the card and disable the submission
 						canSubmitForm = false;
 						card = null;
