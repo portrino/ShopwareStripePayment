@@ -3,6 +3,8 @@
 namespace Shopware\Plugins\ViisonStripePayment\Subscriber;
 
 use Enlight\Event\SubscriberInterface,
+	Shopware\Components\Theme\LessDefinition,
+	Doctrine\Common\Collections\ArrayCollection,
 	\Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap as Bootstrap;
 
 /**
@@ -30,7 +32,9 @@ class Theme implements SubscriberInterface
 	 */
 	public static function getSubscribedEvents() {
 		return array(
-			'Enlight_Controller_Action_PostDispatchSecure' => 'onPostDispatchSecure'
+			'Enlight_Controller_Action_PostDispatchSecure' => 'onPostDispatchSecure',
+			'Theme_Compiler_Collect_Plugin_Javascript' => 'onCollectPluginJavascriptFiles',
+			'Theme_Compiler_Collect_Plugin_Less' => 'onCollectPluginLESSFiles'
 		);
 	}
 
@@ -53,6 +57,47 @@ class Theme implements SubscriberInterface
 			$this->path . 'Views/' . $templateType . '/',
 			'viisonStripePayment'
 		);
+
+		// Add the shared template directory
+		$this->templateManager->addTemplateDir(
+			$this->path . 'Views/shared/',
+			'viisonStripePayment_shared'
+		);
+	}
+
+	/* Shopware 5+ theme compilation */
+
+	/**
+	 * Adds Stripe's jQuery payment plugin as well as the custom Stripe payment library
+	 * to the Javascript resources which are minified.
+	 *
+	 * @param args The arguments passed by the method triggering the event.
+	 * @return An array collection containing the paths to custom Javascript libraries of this plugin.
+	 */
+	public function onCollectPluginJavascriptFiles(Enlight_Event_EventArgs $args) {
+		return new ArrayCollection(array(
+			$this->path . 'Views/shared/frontend/viison_stripe_payment/_resources/javascript/jquery.payment.min.js',
+			$this->path . 'Views/shared/frontend/viison_stripe_payment/_resources/javascript/viison_stripe_payment.js'
+		));
+	}
+
+	/**
+	 * Adds this plugin's LESS files to the compile path.
+	 *
+	 * @param args The arguments passed by the method triggering the event.
+	 * @return An array collection containing the paths to custom LESS files.
+	 */
+	public function onCollectPluginLESSFiles(Enlight_Event_EventArgs $args) {
+		return new ArrayCollection(array(
+			new LessDefinition(
+				array(),
+				array(
+					$this->path . 'Views/responsive/frontend/_public/src/less/checkout.less',
+					$this->path . 'Views/responsive/frontend/_public/src/less/account.less'
+				),
+				$this->path . 'Views/responsive/'
+			)
+		));
 	}
 
 }

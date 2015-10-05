@@ -43,11 +43,11 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 				throw new Exception('The provided security code (CVC) is invalid.');
 			}
 		} catch (Exception $e) {
-			// Save the exception message in the session and redirect to the checkout confirm view
+			// Save the exception message in the session and redirect to the checkout confirm/index view
 			Shopware()->Session()->viisonStripePaymentError = 'Die Zahlung konnte nicht durchgeführt werden, da folgender Fehler aufgetreten ist: ' . $e->getMessage();
 			$this->redirect(array(
 				'controller' => 'checkout',
-				'action' => 'confirm',
+				'action' => (Shopware()->Shop()->getTemplate()->getVersion() < 3) ? 'confirm' : 'index',
 				'forceSecure' => !$this->testMode // Disable the secure mode for testing
 			));
 			return;

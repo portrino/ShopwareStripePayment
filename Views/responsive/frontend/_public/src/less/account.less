@@ -1,0 +1,47 @@
+.account--viison-stripe-payment {
+	&.register--content {
+		display: block;
+		width: 100%
+	}
+	.card-table {
+		.unitize(padding, 20);
+		.table--header {
+			margin: 0;
+		}
+		.table--header,
+		.table--tr {
+			border-bottom: 1px solid @panel-border;
+			&.is--last-row {
+				border-bottom: 0;
+			}
+		}
+		.panel--td {
+			.unitize-padding(15, 10);
+			&.contains--button {
+				.unitize-padding(10, 10);
+			}
+		}
+		.panel--th,
+		.panel--td {
+			width: 20%;
+		}
+	}
+}
+
+@media screen and (min-width: @tabletViewportWidth) {
+	.sidebar-main {
+		.is--ctl-ViisonStripePaymentAccount.is--user & {
+			display: block;
+			& + .content--wrapper {
+				.unitize(margin-left, 260);
+			}
+		}
+		.is--ctl-ViisonStripePaymentAccount & {
+			.categories--headline,
+			.categories--navigation,
+			.shop-sites--container {
+				display: none;
+			}
+		}
+	}
+}

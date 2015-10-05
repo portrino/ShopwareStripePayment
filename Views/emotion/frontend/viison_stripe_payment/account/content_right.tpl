@@ -4,7 +4,7 @@
 	{* Add Stripe credit card management *}
 	<li>
 		<a href="{url controller='ViisonStripePaymentAccount' action='manageCreditCards'}">
-			{s name='content_right/payment/credit_cards' namespace='frontend/plugins/viison_stripe/account'}{/s}
+			{s namespace='frontend/plugins/viison_stripe/account' name='credit_cards/title'}{/s}
 		</a>
 	</li>
 {/block}

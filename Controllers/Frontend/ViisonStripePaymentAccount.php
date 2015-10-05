@@ -30,8 +30,14 @@ class Shopware_Controllers_Frontend_ViisonStripePaymentAccount extends Shopware_
 	 */
 	public function manageCreditCardsAction() {
 		// Load the template
-		$this->View()->loadTemplate('frontend/viison_stripe_payment/account/credit_cards.tpl');
-		$this->View()->extendsTemplate('frontend/viison_stripe_payment/account/content_right.tpl');
+		if (Shopware()->Shop()->getTemplate()->getVersion() >= 3) {
+			// Shopware 5
+			$this->View()->loadTemplate('frontend/account/viison_stripe_payment_credit_cards.tpl');
+		} else {
+			// Shopware 4
+			$this->View()->loadTemplate('frontend/viison_stripe_payment/account/credit_cards.tpl');
+			$this->View()->extendsTemplate('frontend/viison_stripe_payment/account/content_right.tpl');
+		}
 
 		try {
 			// Load all cards of the customer and sort them by id (which correspond to the date, the card was created/added)

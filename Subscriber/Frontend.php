@@ -52,14 +52,18 @@ class Frontend implements SubscriberInterface
 		$request = $args->getRequest();
 		$response = $args->getSubject()->Response();
 		$view = $args->getSubject()->View();
-		if (!$request->isDispatched() || $response->isException() || $request->getModuleName() !== 'frontend' || !$view->hasTemplate()) {
+		if (!$request->isDispatched() || $response->isException() || !$view->hasTemplate()) {
 			return;
 		}
 
-		// Inject the credit card logos into the template
-		$view->extendsTemplate('frontend/plugins/payment/viison_stripe_card_logos.tpl');
+		$actionName = $request->getActionName();
+		if (in_array($actionName, array('confirm', 'shippingPayment', 'saveShippingPayment'))) {
+			if ($actionName === 'confirm' && Shopware()->Shop()->getTemplate()->getVersion() < 3) {
+				// Shopware 4: Inject the error box and credit card logos into the template
+				$view->extendsTemplate('frontend/viison_stripe_payment/checkout/confirm.tpl');
+				$view->extendsTemplate('frontend/viison_stripe_payment/checkout/card_logos.tpl');
+			}
 
-		if ($request->getActionName() === 'confirm') {
 			// Set the stripe public key
 			$view->viisonStripePublicKey = Util::stripePublicKey();
 
@@ -67,9 +71,7 @@ class Frontend implements SubscriberInterface
 			$stripeError = Shopware()->Session()->viisonStripePaymentError;
 			if (!empty($stripeError)) {
 				unset(Shopware()->Session()->viisonStripePaymentError);
-
-				// Append an error box to the view
-				$view->extendsTemplate('frontend/plugins/payment/viison_stripe_error.tpl');
+				// Write the error message to the view
 				$view->viisonStripePaymentError = $stripeError;
 			}
 
@@ -125,8 +127,7 @@ class Frontend implements SubscriberInterface
 				Shopware()->Session()->stripeCardId = $newCard->id;
 				unset(Shopware()->Session()->stripeTransactionToken);
 			} catch (Exception $e) {
-				// Append an error box to the view
-				$view->extendsTemplate('frontend/plugins/payment/viison_stripe_error.tpl');
+				// Write the error message to the view
 				$view->viisonStripePaymentError = $e->getMessage();
 			}
 		} else if ($request->get('stripeSaveCard') === 'off') {
@@ -158,7 +159,10 @@ class Frontend implements SubscriberInterface
 	 * @param args The arguments passed by the method triggering the event.
 	 */
 	public function onPostDispatchAccount(Enlight_Event_EventArgs $args) {
-		$args->getSubject()->View()->extendsTemplate('frontend/viison_stripe_payment/account/content_right.tpl');
+		if (Shopware()->Shop()->getTemplate()->getVersion() < 3) {
+			// Shopware 4
+			$args->getSubject()->View()->extendsTemplate('frontend/viison_stripe_payment/account/content_right.tpl');
+		}
 	}
 
 	/**

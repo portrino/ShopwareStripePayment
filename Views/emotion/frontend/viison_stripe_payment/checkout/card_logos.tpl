@@ -1,9 +1,10 @@
 {block name="frontend_checkout_payment_fieldset_description"}
 	{if $Controller != "account" && $payment_mean.name == "viison_stripe"}
-		{* Inject the credit card logos before the additional description *}
 		<style type="text/css">
-			{include file="frontend/viison_stripe_payment/_resources/styles/stripe_credit_card_logos.css"}
+			{* Include shared CSS for credit card logo SVGs *}
+			{include file="frontend/viison_stripe_payment/_resources/styles/credit_card_logos.css"}
 		</style>
+		{* Inject the credit card logos before the additional description *}
 		<div class="grid_10 last">
 			{* Credit card logos *}
 			<div class="card visa"></div>
