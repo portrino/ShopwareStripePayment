@@ -110,16 +110,11 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 		$userEmail = $user['additional']['user']['email'];
 		$customerNumber = $user['billingaddress']['customernumber'];
 
-		// Calculate the application fee (in cents)
-		$percentageFee = 0.3;
-		$applicationFee = round($this->getAmount() * $percentageFee) + 5;
-
 		// Prepare the charge data
 		$chargeData = array(
 			'amount' => ($this->getAmount() * 100), // Amount has to be in cents!
 			'currency' => $this->getCurrencyShortName(),
-			'description' => ($userEmail . ' / Kunden-Nr.: ' . $customerNumber),
-			'application_fee' => $applicationFee
+			'description' => ($userEmail . ' / Kunden-Nr.: ' . $customerNumber)
 		);
 
 		if (Shopware()->Session()->stripeTransactionToken !== null) {
