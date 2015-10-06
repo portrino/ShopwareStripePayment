@@ -15,8 +15,11 @@
 		</div>
 
 		{* An error box *}
-		<div id="viison-stripe-error-box" class="panel alert has--border is--rounded is--error outer-error-box" style="display: none;">
-			<div class="panel--body is--wide error-content"></div>
+		<div id="viison-stripe-error-box" class="alert is--error is--rounded" style="display: none;">
+			<div class="alert--icon">
+				<i class="icon--element icon--cross"></i>
+			</div>
+			<div class="alert--content error-content"></div>
 		</div>
 
 		{* The mail form field table *}
@@ -52,11 +55,13 @@
 				<div id="viison-stripe-cvc-info-button" class="help panel--td"></div>
 			</div>
 			{* Expiry date *}
+			{strip}
 			<div class="panel--tr expiry-date">
 				<label for="stripe-card-expiry-month" class="panel--td">{s namespace="frontend/plugins/payment/viison_stripe" name="form/card/expiry"}{/s} *</label>
 				<select id="stripe-card-expiry-month" class="panel--td"></select>
 				<select id="stripe-card-expiry-year" class="panel--td"></select>
 			</div>
+			{/strip}
 		</div>
 
 		{if $customerAccountMode == 0}
