@@ -8,12 +8,12 @@
 		</h1>
 
 		{* Error messages *}
-		{if $errorMessage}
+		{if $viisonStripePaymentError}
 			<div class="error">
 				<h2>
 					{s name='credit_cards/error/title' namespace='frontend/plugins/viison_stripe/account'}{/s}
 				</h2>
-				{$errorMessage}
+				{$viisonStripePaymentError}
 			</div>
 		{/if}
 

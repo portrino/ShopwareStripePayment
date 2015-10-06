@@ -56,7 +56,7 @@ class Shopware_Controllers_Frontend_ViisonStripePaymentAccount extends Shopware_
 
 		// Set the view data
 		$this->View()->creditCards = $cards;
-		$this->View()->errorMessage = Shopware()->Session()->stripeErrorMessage;
+		$this->View()->viisonStripePaymentError = Shopware()->Session()->stripeErrorMessage;
 		unset(Shopware()->Session()->stripeErrorMessage);
 	}
 

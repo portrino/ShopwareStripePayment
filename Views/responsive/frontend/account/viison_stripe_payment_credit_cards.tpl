@@ -11,6 +11,13 @@
 {* Main content *}
 {block name="frontend_index_content"}
 	<div class="account--viison-stripe-payment account--content register--content" data-register="true">
+		{* Error handling *}
+		{capture name="viisonStripeErrorTitleCapture"}
+			{s name="credit_cards/error/title"}{/s}
+		{/capture}
+		{assign var="viisonStripeErrorTitle" value=$smarty.capture.viisonStripeErrorTitleCapture}
+		{include file="frontend/checkout/viison_stripe_payment_error.tpl"}
+
 		{* Headline *}
 		<div class="account--welcome">
 			<h1 class="panel--title">{s name="credit_cards/title"}{/s}</h1>
