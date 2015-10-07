@@ -156,6 +156,7 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 
 		return array(
 			'success' => true,
+			'message' => 'Bitte leeren Sie den gesamten Shop Cache, kompilieren Sie die Shop Themes neu und aktivieren Sie die Zahlart "Stripe", um sie verfügbar zu machen.',
 			'invalidateCache' => array(
 				'backend',
 				'frontend',
