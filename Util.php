@@ -28,8 +28,9 @@ class Util
 		$stripeSecretKey = self::stripeSecretKey();
 		Stripe\Stripe::setApiKey($stripeSecretKey);
 
-		// Set API version manually until changing it for the app and all accounts using it
-		Stripe\Stripe::setApiVersion('2015-09-23');
+		// Set API version manually to make all plugin versions working, no matter which
+		// version is selected in the Stripe app settings
+		Stripe\Stripe::setApiVersion('2015-10-01');
 	}
 
 	/**
