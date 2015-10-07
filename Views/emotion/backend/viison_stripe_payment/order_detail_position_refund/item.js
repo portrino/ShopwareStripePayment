@@ -1,3 +1,5 @@
+//{namespace name=backend/plugins/viison_stripe/order_detail_position_refund}
+
 /**
  * A model, which represents a simple version of an order item, which are used
  * to refund some of the items of an order.
