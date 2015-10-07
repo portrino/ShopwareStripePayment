@@ -27,9 +27,20 @@ class Backend implements SubscriberInterface
 	 */
 	public static function getSubscribedEvents() {
 		return array(
+			'Enlight_Controller_Action_PostDispatch_Backend_Index' => 'onPostDispatchIndex',
 			'Enlight_Controller_Action_PostDispatch_Backend_Order' => array('onPostDispatchOrder', -100),
 			'Enlight_Controller_Dispatcher_ControllerPath_Backend_ViisonStripePayment' => 'onGetControllerPathViisonStripePayment'
 		);
+	}
+
+	/**
+	 * Includes the custom backend header extension, which loads the Stripe detial tap alongside
+	 * the order app.
+	 *
+	 * @param $args The event parameters.
+	 */
+	public function onPostDispatchIndex(Enlight_Event_EventArgs $args) {
+		$args->getSubject()->View()->extendsTemplate('backend/viison_stripe_payment/index/header.tpl');
 	}
 
 	/**
@@ -40,6 +51,7 @@ class Backend implements SubscriberInterface
 	public function onPostDispatchOrder(Enlight_Event_EventArgs $args) {
 		if ($args->getRequest()->getActionName() === 'load') {
 			$args->getSubject()->View()->extendsTemplate('backend/viison_stripe_payment/order_detail_position_refund.js');
+			$args->getSubject()->View()->extendsTemplate('backend/viison_stripe_payment/order_detail_stripe_dashboard_button.js');
 		}
 	}
 
