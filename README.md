@@ -1,4 +1,4 @@
 ShopwareStripePayment
 =====================
 
-Stripe payment integration for Shopware
+Stripe payment integration for Shopware 4/5
