@@ -80,7 +80,7 @@ class Frontend implements SubscriberInterface
 				try {
 					// Load all cards and save them in the session
 					Shopware()->Session()->allStripeCards = Util::getAllStripeCards();
-				} catch (Exception $e) {
+				} catch (\Exception $e) {
 					unset(Shopware()->Session()->allStripeCards);
 				}
 			}
@@ -90,7 +90,7 @@ class Frontend implements SubscriberInterface
 				try {
 					// Load the default card and safe it in the session
 					Shopware()->Session()->stripeCard = Util::getDefaultStripeCard();
-				} catch (Exception $e) {
+				} catch (\Exception $e) {
 					unset(Shopware()->Session()->stripeCard);
 				}
 			}
@@ -126,7 +126,7 @@ class Frontend implements SubscriberInterface
 				// Save the card id in the session and remove the token from the session
 				Shopware()->Session()->stripeCardId = $newCard->id;
 				unset(Shopware()->Session()->stripeTransactionToken);
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				// Write the error message to the view
 				$view->viisonStripePaymentError = $e->getMessage();
 			}
