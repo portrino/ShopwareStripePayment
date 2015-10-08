@@ -22,7 +22,7 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 	 * @return The current version of this plugin.
 	 */
 	public function getVersion() {
-		return '1.3.0';
+		return '1.3.1';
 	}
 
 	/**
@@ -150,6 +150,8 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 					'onDispatchLoopStartup'
 				);
 			case '1.3.0':
+				// Nothing to do
+			case '1.3.1':
 				// Next release
 				break;
 			default:
