@@ -10,6 +10,9 @@ if (file_exists($interface)) {
 
 include_once(__DIR__ . '/../Controllers/Frontend/ViisonStripePayment.php');
 
+use Shopware\Plugins\ViisonStripePayment\Util,
+	Stripe;
+
 
 /**
  * This is a implementation of the PaymentProvider interface defined in ViisonPickwareConnector.
@@ -60,7 +63,7 @@ class ViisonStripePayment_Classes_PaymentProvider implements ViisonPickwareConne
 	public function getPaymentMethodConfiguration($paymentMethodId) {
 		// Get the public Stripe key and add it to the configuration
 		return array(
-			'publicKey' => Shopware_Plugins_Frontend_ViisonStripePayment_Util::stripePublicKey()
+			'publicKey' => Util::stripePublicKey()
 		);
 	}
 
@@ -92,7 +95,7 @@ class ViisonStripePayment_Classes_PaymentProvider implements ViisonPickwareConne
 		}
 
 		// Set the Stripe API key
-		$stripeSecretKey = Shopware_Plugins_Frontend_ViisonStripePayment_Util::stripeSecretKey();
+		$stripeSecretKey = Util::stripeSecretKey();
 		Stripe::setApiKey($stripeSecretKey);
 
 		try {
@@ -107,7 +110,7 @@ class ViisonStripePayment_Classes_PaymentProvider implements ViisonPickwareConne
 			$chargeData = $stripePaymentController->getChargeData();
 
 			// Init the stripe payment
-			$charge = Stripe_Charge::create($chargeData);
+			$charge = Stripe\Charge::create($chargeData);
 		} catch (Exception $e) {
 			throw new Exception('The payment could not be processed, because an error occurred: \"' . $e->getMessage() . '\"');
 		}
