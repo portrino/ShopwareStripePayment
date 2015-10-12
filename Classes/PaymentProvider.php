@@ -94,9 +94,6 @@ class ViisonStripePayment_Classes_PaymentProvider implements ViisonPickwareConne
 			throw new Exception('Cannot process payment without "stripeToken".');
 		}
 
-		// Set the Stripe API key
-		$stripeSecretKey = Util::stripeSecretKey();
-		Stripe::setApiKey($stripeSecretKey);
 
 		try {
 			// Create a new Stripe payment controller passing an empty request and response to its constructor
@@ -110,6 +107,7 @@ class ViisonStripePayment_Classes_PaymentProvider implements ViisonPickwareConne
 			$chargeData = $stripePaymentController->getChargeData();
 
 			// Init the stripe payment
+			Util::initStripeAPI();
 			$charge = Stripe\Charge::create($chargeData);
 		} catch (Exception $e) {
 			throw new Exception('The payment could not be processed, because an error occurred: \"' . $e->getMessage() . '\"');
