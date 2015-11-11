@@ -55,6 +55,52 @@
 			height: 100%;
 			background-color: rgba(0,0,0,0.3);
 		}
+		#viison-stripe-cvc-info-popup {
+			display: none;
+			position: absolute;
+			margin: auto;
+			top: 0;
+			left: 0;
+			bottom: 0;
+			right: 0;
+			width: 100%;
+			height: 480px;
+		}
+		.viison-stripe-cvc-info-popup-container {
+			position: absolute;
+			margin-left: -400px;
+			padding: 10px 20px;
+			border: 2px solid #AAA;
+			border-radius: 8px;
+			top: 0;
+			left: 50%;
+			width: 740px;
+			height: 460px;
+			background-color: white;
+		}
+		#viison-stripe-cvc-info-popup-close {
+			position: absolute;
+			top: -10px;
+			right: -10px;
+			width: 45px;
+			height: 45px;
+			background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxNi4wLjQsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkViZW5lXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB3aWR0aD0iNDVweCIgaGVpZ2h0PSI0NXB4IiB2aWV3Qm94PSIwIDAgNDUgNDUiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDQ1IDQ1IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxjaXJjbGUgZmlsbD0iI0ZGRkZGRiIgY3g9IjIyLjUiIGN5PSIyMi41IiByPSIyMi41Ii8+DQo8cGF0aCBpZD0ieC1tYXJrLTQtaWNvbiIgZmlsbD0iIzMzMzMzMyIgZD0iTTQyLjAwNCwyMi41YzAtMTAuNzgxLTguNzI1LTE5LjUwNC0xOS41MDQtMTkuNTA0Yy0xMC43ODEsMC0xOS41MDQsOC43MjUtMTkuNTA0LDE5LjUwNA0KCWMwLDEwLjc4MSw4LjcyNSwxOS41MDQsMTkuNTA0LDE5LjUwNEMzMy4yODEsNDIuMDA0LDQyLjAwNCwzMy4yNzksNDIuMDA0LDIyLjV6IE0zMC42NDYsMzUuMDEybC03LjkxLTcuOTFsLTcuOTExLDcuOTExDQoJbC00LjI1LTQuMjUxbDcuOTA5LTcuOTFsLTcuOTEtNy45MWw0LjI1MS00LjI0OWw3LjkwOSw3LjkwOGw3LjkwNy03LjkwOWw0LjI1Miw0LjI1bC03LjkwOSw3LjkwOWw3LjkxLDcuOTA4TDMwLjY0NiwzNS4wMTJ6Ii8+DQo8L3N2Zz4NCg==');
+			background-repeat: no-repeat;
+			background-position: top left;
+			cursor: pointer;
+		}
+		.viison-stripe-cvc-info-popup-cardtype {
+			display: inline-block;
+			padding: 30px;
+			width: 310px;
+			vertical-align: top;
+		}
+		.viison-strip-cvc-infotext {
+			padding-top: 30px;
+			font-size: 15px;
+			line-height: 1.3;
+			color: #555555;
+		}
 	</style>
 	{* Include and set up the Stripe SDK *}
 	<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
@@ -140,7 +186,14 @@
 
 		{* An initially hidden CVC info popup window *}
 		<div class="viison-stripe-cvc-info-popup-overlay">
-			{include file="frontend/viison_stripe_payment/checkout/viison_stripe_cvc_info_popup.tpl"}
+			<div id="viison-stripe-cvc-info-popup">
+				{strip}
+				<div class="viison-stripe-cvc-info-popup-container">
+					<div id="viison-stripe-cvc-info-popup-close"></div>
+					{include file="frontend/viison_stripe_payment/checkout/viison_stripe_cvc_info.tpl"}
+				</div>
+				{/strip}
+			</div>
 		</div>
 	</div>
 {/if}

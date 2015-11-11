@@ -52,7 +52,13 @@
 				<label for="stripe-card-cvc" class="panel--td">{s namespace="frontend/plugins/payment/viison_stripe" name="form/card/cvc"}{/s} *</label>
 				{* Set a placeholder, if a previously created card is set *}
 				<input id="stripe-card-cvc" type="text" size="5" class="panel--td" value="{if $viisonStripeCard}***{/if}">
-				<div id="viison-stripe-cvc-info-button" class="help panel--td"></div>
+				<div class="help panel--td"
+					data-modalbox="true"
+					data-content="{url controller="ViisonStripePayment" action="cvcInfo" fullPath}"
+					data-mode="ajax"
+					data-height="430"
+					data-width="650">
+				</div>
 			</div>
 			{* Expiry date *}
 			{strip}
@@ -79,9 +85,6 @@
 		<div class="description">
 			{s namespace="frontend/plugins/payment/viison_stripe" name="form/description"}{/s}
 		</div>
-
-		{* An initially hidden CVC info popup window *}
-		{include file="frontend/viison_stripe_payment/checkout/viison_stripe_cvc_info_popup.tpl"}
 	</div>
 	<script type="text/javascript">
 		// Save the payment ID to make it accessible

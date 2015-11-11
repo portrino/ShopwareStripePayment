@@ -97,6 +97,11 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 	}
 
 	/**
+	 * Renders the content of cvc info popup.
+	 */
+	public function cvcInfoAction() {}
+
+	/**
 	 * Gathers all the data, which is needed to create a new Stripe charge, from the
 	 * active session. If the a Stripe card id is found, it is used to retrieve the
 	 * corresponding Stripe customer instance.

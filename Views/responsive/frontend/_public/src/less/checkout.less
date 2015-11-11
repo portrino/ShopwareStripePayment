@@ -75,30 +75,22 @@
 	}
 }
 
-.viison-stripe-cvc-info-popup-container {
-	width: 90vw !important;
-	margin-left: -45vw !important;
-	.unitize(margin-top, 15);
-	padding: 0 !important;
-	height: 95vh !important;
-	.unitize(max-height, 460) !important;
+.viison-stripe-cvc-info-wrapper {
+	.unitize(padding-top, 40);
+	text-align: center;
+}
 
-	.viison-stripe-cvc-info-wrapper {
-		.unitize-padding(10, 10);
-		height: 100%;
-		text-align: center;
-		overflow-y: auto;
+.viison-stripe-cvc-info-popup-cardtype {
+	display: inline-block;
+	.unitize-padding(10, 10);
+	.unitize(max-width, 280);
+	vertical-align: top;
+}
 
-		.viison-stripe-cvc-info-popup-cardtype {
-			.unitize-padding(10, 10);
-			width: 100%;
-			.unitize(max-width, 310);
-		}
-
-		.viison-strip-cvc-infotext {
-			text-align: left;
-		}
-	}
+.viison-strip-cvc-infotext {
+	.unitize(padding-top, 15);
+	.unitize(padding-bottom, 20);
+	text-align: left;
 }
 
 // Phone Landscape styling
@@ -152,28 +144,14 @@
 		}
 	}
 
-	.viison-stripe-cvc-info-popup-container {
-		position: absolute !important;
-		margin-left: -370px !important;
-		padding: 0 !important;
-		border: 2px solid #AAA !important;
-		border-radius: 8px !important;
-		top: 0 !important;
-		left: 50% !important;
-		width: 740px !important;
-		height: 460px !important;
-		background-color: white !important;
+	.viison-stripe-cvc-info-wrapper {
+		padding-top: 0;
+	}
 
-		.viison-stripe-cvc-info-wrapper {
-			.unitize-padding(15, 15);
-			height: auto;
-			overflow: hidden;
-
-			.viison-stripe-cvc-info-popup-cardtype {
-				.unitize-padding(30, 30);
-				width: 310px;
-			}
-		}
+	.viison-stripe-cvc-info-popup-cardtype {
+		.unitize-padding(30, 30);
+		max-width: none;
+		width: 310px;
 	}
 }
 
@@ -238,4 +216,3 @@
 		}
 	}
 }
-
