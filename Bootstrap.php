@@ -22,7 +22,7 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 	 * @return The current version of this plugin.
 	 */
 	public function getVersion() {
-		return '1.3.2';
+		return '1.3.3';
 	}
 
 	/**
@@ -168,6 +168,8 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 				$element->setDescription('Tragen Sie hier Ihren öffentlichen Schlüssel ("Publishable Key") ein. Diesen finden Sie im Stripe Dashboard unter "Account Settings" > "API Keys" im Feld "Live Publishable Key"');
 				$element->setLabel('Stripe Publishable Key');
 				$modelManager->persist($element);
+			case '1.3.3':
+				// Next release
 				break;
 			default:
 				return false;
