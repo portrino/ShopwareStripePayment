@@ -25,8 +25,8 @@ if (ViisonStripePayment.isViisonStripePaymentSelected()) {
 	}
 	// Pre-selected expiry date
 	if ('{$viisonStripeCard}') {
-		viisonStripeFormSetupData.selectedMonth = {$viisonStripeCard.exp_month};
-		viisonStripeFormSetupData.selectedYear = {$viisonStripeCard.exp_year};
+		viisonStripeFormSetupData.selectedMonth = parseInt('{$viisonStripeCard.exp_month}');
+		viisonStripeFormSetupData.selectedYear = parseInt('{$viisonStripeCard.exp_year}');
 	}
 
 	// Stripe form setup
