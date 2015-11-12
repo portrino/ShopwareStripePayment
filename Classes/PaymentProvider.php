@@ -10,8 +10,7 @@ if (file_exists($interface)) {
 
 include_once(__DIR__ . '/../Controllers/Frontend/ViisonStripePayment.php');
 
-use Shopware\Plugins\ViisonStripePayment\Util,
-	Stripe;
+use Shopware\Plugins\ViisonStripePayment\Util;
 
 
 /**

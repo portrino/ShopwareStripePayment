@@ -1,7 +1,6 @@
 <?php
 
-use Shopware\Plugins\ViisonStripePayment\Util,
-	Stripe;
+use Shopware\Plugins\ViisonStripePayment\Util;
 
 /**
  * The controller handling the main payment process using the stripe API.
