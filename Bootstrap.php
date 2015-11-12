@@ -60,7 +60,11 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 	 * @return True if the update was successful, otherwise false.
 	 */
 	public function update($oldVersion) {
+		// Prepare some helpers
 		$form = $this->Form();
+		$modelManager = $this->get('models');
+		$database = $this->get('db');
+
 		switch ($oldVersion) {
 			case 'install':
 				// Create the stripe payment method
@@ -116,7 +120,7 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 				);
 			case '1.0.0':
 				// Add an attribute to the user for storing the Stripe customer id
-				$this->Application()->Models()->addAttribute(
+				$modelManager->addAttribute(
 					's_user_attributes',
 					'viison',
 					'stripe_customer_id',
@@ -124,7 +128,7 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 				);
 
 				// Rebuild the user attributes model
-				$this->Application()->Models()->generateAttributeModels(array(
+				$modelManager->generateAttributeModels(array(
 					's_user_attributes'
 				));
 			case '1.0.1':
@@ -167,14 +171,14 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 	public function uninstall() {
 		try {
 			// Remove database columns
-			$this->Application()->Models()->removeAttribute(
+			$this->get('models')->removeAttribute(
 				's_user_attributes',
 				'viison',
 				'stripe_customer_id'
 			);
 
 			// Rebuild the user attributes model
-			$this->Application()->Models()->generateAttributeModels(array(
+			$this->get('models')->generateAttributeModels(array(
 				's_user_attributes'
 			));
 		} catch (Exception $e) {
