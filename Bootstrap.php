@@ -54,15 +54,7 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 	}
 
 	/**
-	 * Adds new events and configurations:
-	 *	- since 1.0.0:
-	 *		* A payment method representing stripe credit card payments
-	 *		* A configuration element for the stripe connect public key
-	 *		* A configuration element for the stripe connect secret key
-	 *		* A configuration element for the stripe connect refresh token
-	 *		* A configuration element for enabling the test mode
-	 *	- since 1.0.1:
-	 *		* A custom user attribute field for storing the Stripe customer id
+	 * Adds new event subscriptions and configurations.
 	 *
 	 * @param $oldVersion The currently installed version of this plugin.
 	 * @return True if the update was successful, otherwise false.
