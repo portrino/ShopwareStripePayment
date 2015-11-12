@@ -146,7 +146,16 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 			case '1.3.1':
 				// Nothing to do
 			case '1.3.2':
-				// Next release
+				// Remove the 'refresh token' and 'test mode' configuration form elements
+				$database->query(
+				   'DELETE FROM s_core_config_elements
+					WHERE form_id = (
+						SELECT id
+						FROM s_core_config_forms
+						WHERE name = \'ViisonStripePayment\'
+					)
+					AND name IN (\'stripeRefreshToken\', \'testMode\')'
+				);
 				break;
 			default:
 				return false;

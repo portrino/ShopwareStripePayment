@@ -34,19 +34,17 @@ class Util
 	}
 
 	/**
-	 * @return If test mode is activated, the default test public key. Otherwise the Stripe public key set in the plugin configuration.
+	 * @return The Stripe public key set in the plugin configuration.
 	 */
 	public static function stripePublicKey() {
-		$testMode = Shopware()->Plugins()->Frontend()->ViisonStripePayment()->Config()->get('testMode');
-		return ($testMode) ? 'pk_test_bA2NxqEoDlCGBM2WiyTQClBN' : Shopware()->Plugins()->Frontend()->ViisonStripePayment()->Config()->get('stripePublicKey');
+		return Shopware()->Plugins()->Frontend()->ViisonStripePayment()->Config()->get('stripePublicKey');
 	}
 
 	/**
-	 * @return If test mode is activated, the default test secret key. Otherwise the Stripe secret key set in the plugin configuration.
+	 * @return The Stripe secret key set in the plugin configuration.
 	 */
 	public static function stripeSecretKey() {
-		$testMode = Shopware()->Plugins()->Frontend()->ViisonStripePayment()->Config()->get('testMode');
-		return ($testMode) ? 'sk_test_8cku9VMwOVl7wMfPYFX1NUwd' : Shopware()->Plugins()->Frontend()->ViisonStripePayment()->Config()->get('stripeSecretKey');
+		return Shopware()->Plugins()->Frontend()->ViisonStripePayment()->Config()->get('stripeSecretKey');
 	}
 
 	/**

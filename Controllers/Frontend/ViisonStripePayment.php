@@ -11,18 +11,6 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 {
 
 	/**
-	 * A boolean indicating whether the test mode is active.
-	 */
-	private $testMode = false;
-
-	/**
-	 * Updates the testMode flag.
-	 */
-	public function preDispatch() {
-		$this->testMode = Shopware()->Plugins()->Frontend()->ViisonStripePayment()->Config()->get('testMode');
-	}
-
-	/**
 	 * Retrieves the generated stripe transaction token and uses it to
 	 * charge the customer via the stripe API. After a successful payment,
 	 * the stripe transaction id is safed in the order and its status is updated to
@@ -46,8 +34,7 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 			Shopware()->Session()->viisonStripePaymentError = 'Die Zahlung konnte nicht durchgeführt werden, da folgender Fehler aufgetreten ist: ' . $e->getMessage();
 			$this->redirect(array(
 				'controller' => 'checkout',
-				'action' => (Shopware()->Shop()->getTemplate()->getVersion() < 3) ? 'confirm' : 'index',
-				'forceSecure' => !$this->testMode // Disable the secure mode for testing
+				'action' => (Shopware()->Shop()->getTemplate()->getVersion() < 3) ? 'confirm' : 'index'
 			));
 			return;
 		}
@@ -89,8 +76,7 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 		// Finish the checkout process
 		$this->redirect(array(
 			'controller' => 'checkout',
-			'action' => 'finish',
-			'forceSecure' => !$this->testMode // Disable the secure mode for testing
+			'action' => 'finish'
 			// 'sUniqueID' => 'SOME_ID' // This id will be displayed in the order summary with some additional text
 		));
 	}
