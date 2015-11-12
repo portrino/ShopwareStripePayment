@@ -11,6 +11,11 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 {
 
 	/**
+	 * The platform name used as meta data when creating a new charg.e
+	 */
+	const STRIPE_PLATFORM_NAME = 'UMXJ4nBknsWR3LN_shopware_v50';
+
+	/**
 	 * Retrieves the generated stripe transaction token and uses it to
 	 * charge the customer via the stripe API. After a successful payment,
 	 * the stripe transaction id is safed in the order and its status is updated to
@@ -104,7 +109,10 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 		$chargeData = array(
 			'amount' => ($this->getAmount() * 100), // Amount has to be in cents!
 			'currency' => $this->getCurrencyShortName(),
-			'description' => ($userEmail . ' / Kunden-Nr.: ' . $customerNumber)
+			'description' => ($userEmail . ' / Kunden-Nr.: ' . $customerNumber),
+			'metadata' => array(
+				'platform_name' => self::STRIPE_PLATFORM_NAME
+			)
 		);
 
 		if (Shopware()->Session()->stripeTransactionToken !== null) {
