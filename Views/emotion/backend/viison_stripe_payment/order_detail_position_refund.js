@@ -31,7 +31,7 @@ Ext.define('Shopware.apps.ViisonStripe.Order.view.detail.Position', {
 		var toolbar = this.callParent(arguments);
 
 		// Check if the order was payed with Stripe
-		if (this.record.getPaymentStore.first().raw.action === 'viison_stripe_payment') {
+		if (this.record.getPaymentStore.first() && this.record.getPaymentStore.first().raw.action === 'viison_stripe_payment') {
 			// Add the refund button
 			this.viisonStripeRefundPositionButton = Ext.create('Ext.button.Button', {
 				iconCls: 'sprite-money--minus',
