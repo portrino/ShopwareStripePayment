@@ -27,8 +27,8 @@ class Backend implements SubscriberInterface
 	 */
 	public static function getSubscribedEvents() {
 		return array(
-			'Enlight_Controller_Action_PostDispatch_Backend_Index' => 'onPostDispatchIndex',
-			'Enlight_Controller_Action_PostDispatch_Backend_Order' => array('onPostDispatchOrder', -100),
+			'Enlight_Controller_Action_PostDispatchSecure_Backend_Index' => 'onPostDispatchIndex',
+			'Enlight_Controller_Action_PostDispatchSecure_Backend_Order' => array('onPostDispatchOrder', -100),
 			'Enlight_Controller_Dispatcher_ControllerPath_Backend_ViisonStripePayment' => 'onGetControllerPathViisonStripePayment'
 		);
 	}

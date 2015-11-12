@@ -28,8 +28,8 @@ class Frontend implements SubscriberInterface
 	 */
 	public static function getSubscribedEvents() {
 		return array(
-			'Enlight_Controller_Action_PostDispatch_Frontend_Checkout' => 'onPostDispatchCheckout',
-			'Enlight_Controller_Action_PostDispatch_Frontend_Account' => 'onPostDispatchAccount',
+			'Enlight_Controller_Action_PostDispatchSecure_Frontend_Checkout' => 'onPostDispatchCheckout',
+			'Enlight_Controller_Action_PostDispatchSecure_Frontend_Account' => 'onPostDispatchAccount',
 			'Enlight_Controller_Dispatcher_ControllerPath_Frontend_ViisonStripePayment' => 'onGetControllerPathViisonStripePayment',
 			'Enlight_Controller_Dispatcher_ControllerPath_Frontend_ViisonStripePaymentAccount' => 'onGetControllerPathViisonStripePaymentAccount'
 		);
@@ -52,9 +52,6 @@ class Frontend implements SubscriberInterface
 		$request = $args->getRequest();
 		$response = $args->getSubject()->Response();
 		$view = $args->getSubject()->View();
-		if (!$request->isDispatched() || $response->isException() || !$view->hasTemplate()) {
-			return;
-		}
 
 		$actionName = $request->getActionName();
 		if (in_array($actionName, array('confirm', 'shippingPayment', 'saveShippingPayment'))) {
