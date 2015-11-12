@@ -16,18 +16,18 @@ if (ViisonStripePayment.isViisonStripePaymentSelected()) {
 		}
 	};
 	// Pre-selected card
-	{if $viisonStripeCardRaw}
+	if ('{$viisonStripeCardRaw}') {
 		viisonStripeFormSetupData.card = JSON.parse('{$viisonStripeCardRaw}');
-	{/if}
+	}
 	// Available cards
-	{if $viisonAllStripeCardsRaw}
+	if ('{$viisonAllStripeCardsRaw}') {
 		viisonStripeFormSetupData.allCards = JSON.parse('{$viisonAllStripeCardsRaw}');
-	{/if}
+	}
 	// Pre-selected expiry date
-	{if $viisonStripeCard}
+	if ('{$viisonStripeCard}') {
 		viisonStripeFormSetupData.selectedMonth = {$viisonStripeCard.exp_month};
 		viisonStripeFormSetupData.selectedYear = {$viisonStripeCard.exp_year};
-	{/if}
+	}
 
 	// Stripe form setup
 	ViisonStripePayment.init(viisonStripeFormSetupData);
