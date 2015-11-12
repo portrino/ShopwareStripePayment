@@ -1,37 +1,83 @@
-.account--viison-stripe-payment {
-	&.register--content {
+.account--viison-stripe-payment-credit-cards {
+	border: 1px solid @panel-border;
+	p {
+		.unitize(font-size, 14);
+	}
+	.viison-stripe-payment--table-header {
+		display: none;
+		background: @panel-table-header-bg;
+		.panel--th {
+			color: @panel-table-header-color;
+		}
+	}
+	.panel--tr {
+		.unitize-padding(10, 0);
+	}
+	.panel--td {
+		.clearfix();
+		.unitize-padding(5, 10);
 		display: block;
-		width: 100%
+		float: none;
 	}
-	.card-table {
-		.unitize(padding, 20);
-		.table--header {
-			margin: 0;
-		}
-		.table--header,
-		.table--tr {
-			border-bottom: 1px solid @panel-border;
-			&.is--last-row {
-				border-bottom: 0;
-			}
-		}
-		.panel--td {
-			.unitize-padding(15, 10);
-			&.contains--button {
-				.unitize-padding(10, 10);
-			}
-		}
-		.panel--th,
-		.panel--td {
-			width: 20%;
-		}
+	.column--label,
+	.column--value {
+		width: 50%;
+		float: left;
 	}
-	.alert {
-		margin: 0;
+	.column--label {
+		font-weight: 600;
+	}
+	.column--actions {
+		.is--align-center;
 	}
 }
 
 @media screen and (min-width: @tabletViewportWidth) {
+	.account--viison-stripe-payment-credit-cards {
+		.viison-stripe-payment--table-header {
+			display: block;
+		}
+		.panel--tr {
+			padding: 0;
+			border-width: 0 0 1px 0;
+			&.is--last-row {
+				border: 0;
+			}
+		}
+		.panel--td {
+			.unitize-padding(10, 10);
+			display: inline-block;
+			float: left;
+		}
+		.viison-stripe-payment--item {
+			margin: 0;
+		}
+		.column--label {
+			display: none;
+		}
+		.column--value {
+			width: 100%;
+			float: none;
+		}
+		.column--owner {
+			width: 25%;
+		}
+		.column--number,
+		.column--type,
+		.column--expiry-date {
+			width: 20%;
+		}
+		.column--actions {
+			.is--align-right;
+			.btn {
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				max-width: 100%;
+			}
+		}
+	}
+
 	.sidebar-main {
 		.is--ctl-ViisonStripePaymentAccount.is--user & {
 			display: block;
