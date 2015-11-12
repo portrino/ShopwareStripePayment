@@ -81,8 +81,7 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 					array(
 						'label' => 'Stripe Public Key',
 						'value' => '',
-						'description' => 'Tragen Sie hier Ihren öffentlichen Schlüssel ("Public Key") ein, den Sie im Zuge der Registrierung bei Stripe erhalten haben.',
-						'scope' => Shopware_Components_Form::SCOPE_SHOP
+						'description' => 'Tragen Sie hier Ihren öffentlichen Schlüssel ("Public Key") ein, den Sie im Zuge der Registrierung bei Stripe erhalten haben.'
 					)
 				);
 				// Add a config element for the stripe secret key
@@ -92,8 +91,7 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 					array(
 						'label' => 'Stripe Secret Key',
 						'value' => '',
-						'description' => 'Tragen Sie hier Ihren geheimen Schlüssel ("Secret Key") ein, den Sie im Zuge der Registrierung bei Stripe erhalten haben.',
-						'scope' => Shopware_Components_Form::SCOPE_SHOP
+						'description' => 'Tragen Sie hier Ihren geheimen Schlüssel ("Secret Key") ein, den Sie im Zuge der Registrierung bei Stripe erhalten haben.'
 					)
 				);
 				// Add a config element for the stripe refresh token
@@ -103,8 +101,7 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 					array(
 						'label' => 'Stripe Refresh Token',
 						'value' => '',
-						'description' => 'Tragen Sie hier Ihren Token zur aktualisierung der Schlüssel ("Refresh Token") ein, den Sie im Zuge der Registrierung bei Stripe erhalten haben.',
-						'scope' => Shopware_Components_Form::SCOPE_SHOP
+						'description' => 'Tragen Sie hier Ihren Token zur aktualisierung der Schlüssel ("Refresh Token") ein, den Sie im Zuge der Registrierung bei Stripe erhalten haben.'
 					)
 				);
 				// Add a config element for activating the test mode
@@ -114,8 +111,7 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 					array(
 						'label' => 'Testmodus aktivieren',
 						'value' => false,
-						'description' => 'Im Testmodus werden die verwendeten Kreditkarten nicht belastet. Hinweis: Die eingegebenen Zugangsdaten werden bei im Testmodus durch Testdaten ersetzt.',
-						'scope' => Shopware_Components_Form::SCOPE_SHOP
+						'description' => 'Im Testmodus werden die verwendeten Kreditkarten nicht belastet. Hinweis: Die eingegebenen Zugangsdaten werden bei im Testmodus durch Testdaten ersetzt.'
 					)
 				);
 			case '1.0.0':
