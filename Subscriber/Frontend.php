@@ -14,6 +14,9 @@ use Enlight\Event\SubscriberInterface,
 class Frontend implements SubscriberInterface
 {
 
+	/**
+	 * @var string $path
+	 */
 	private $path;
 
 	/**
@@ -30,8 +33,8 @@ class Frontend implements SubscriberInterface
 		return array(
 			'Enlight_Controller_Action_PostDispatchSecure_Frontend_Checkout' => 'onPostDispatchCheckout',
 			'Enlight_Controller_Action_PostDispatchSecure_Frontend_Account' => 'onPostDispatchAccount',
-			'Enlight_Controller_Dispatcher_ControllerPath_Frontend_ViisonStripePayment' => 'onGetControllerPathViisonStripePayment',
-			'Enlight_Controller_Dispatcher_ControllerPath_Frontend_ViisonStripePaymentAccount' => 'onGetControllerPathViisonStripePaymentAccount'
+			'Enlight_Controller_Dispatcher_ControllerPath_Frontend_ViisonStripePayment' => 'onCustomFrontendControllerPath',
+			'Enlight_Controller_Dispatcher_ControllerPath_Frontend_ViisonStripePaymentAccount' => 'onCustomFrontendControllerPath'
 		);
 	}
 
@@ -52,7 +55,6 @@ class Frontend implements SubscriberInterface
 		$request = $args->getRequest();
 		$response = $args->getSubject()->Response();
 		$view = $args->getSubject()->View();
-
 		$actionName = $request->getActionName();
 		if (in_array($actionName, array('confirm', 'shippingPayment', 'saveShippingPayment'))) {
 			if ($actionName === 'confirm' && Shopware()->Shop()->getTemplate()->getVersion() < 3) {
@@ -163,23 +165,18 @@ class Frontend implements SubscriberInterface
 	}
 
 	/**
-	 * Returns the path to the Frontend/ViisonStripePayment controller used for making payments.
+	 * Returns the path to the requested custom frontend controller.
 	 *
 	 * @param args The arguments passed by the method triggering the event.
-	 * @return The path to the Frontend/ViisonStripePayment controller.
+	 * @return The path to the frontend controller.
 	 */
-	public function onGetControllerPathViisonStripePayment(Enlight_Event_EventArgs $args) {
-		return $this->path . 'Controllers/Frontend/ViisonStripePayment.php';
-	}
+	public function onCustomFrontendControllerPath(Enlight_Event_EventArgs $args) {
+		$controllerName = $args->getRequest()->getControllerName();
+		if ($controllerName === 'viison_stripe_payment') {
+			$controllerName = 'ViisonStripePayment';
+		}
 
-	/**
-	 * Returns the path to the Frontend/ViisonStripePaymentAccount controller used for managing saved credit cards.
-	 *
-	 * @param args The arguments passed by the method triggering the event.
-	 * @return The path to the Frontend/ViisonStripePaymentAccount controller.
-	 */
-	public function onGetControllerPathViisonStripePaymentAccount(Enlight_Event_EventArgs $args) {
-		return $this->path . 'Controllers/Frontend/ViisonStripePaymentAccount.php';
+		return $this->path . 'Controllers/Frontend/' . $controllerName .'.php';
 	}
 
 }

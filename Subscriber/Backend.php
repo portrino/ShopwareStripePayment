@@ -13,6 +13,9 @@ use Enlight\Event\SubscriberInterface,
 class Backend implements SubscriberInterface
 {
 
+	/**
+	 * @var string $path
+	 */
 	private $path;
 
 	/**

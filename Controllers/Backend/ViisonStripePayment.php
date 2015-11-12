@@ -46,7 +46,7 @@ class Shopware_Controllers_Backend_ViisonStripePayment extends Shopware_Controll
 		$comment = $this->Request()->getParam('comment');
 
 		// Try to get order
-		$order = Shopware()->Models()->getRepository('Shopware\Models\Order\Order')->findOneById($orderId);
+		$order = $this->get('models')->find('Shopware\Models\Order\Order', $orderId);
 		if ($order === null) {
 			// Order does not exist
 			$this->View()->success = false;
@@ -99,7 +99,7 @@ class Shopware_Controllers_Backend_ViisonStripePayment extends Shopware_Controll
 		}
 		$internalComment .= "--------------------------------------------------------------\n";
 		$order->setInternalComment($internalComment);
-		Shopware()->Models()->flush($order);
+		$this->get('models')->flush($order);
 
 		// Respond with the new internal comment
 		$this->View()->success = true;

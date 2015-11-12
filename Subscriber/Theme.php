@@ -15,8 +15,14 @@ use Enlight\Event\SubscriberInterface,
 class Theme implements SubscriberInterface
 {
 
+	/**
+	 * @var string $path
+	 */
 	private $path;
 
+	/**
+	 * @var Enlight_Template_Manager $templateManager
+	 */
 	private $templateManager;
 
 	/**
