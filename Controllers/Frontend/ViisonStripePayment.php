@@ -109,10 +109,10 @@ class Shopware_Controllers_Frontend_ViisonStripePayment extends Shopware_Control
 
 		if (Shopware()->Session()->stripeTransactionToken !== null) {
 			// Create a new charge using the transaction token
-			$chargeData['card'] = Shopware()->Session()->stripeTransactionToken;
+			$chargeData['source'] = Shopware()->Session()->stripeTransactionToken;
 		} else if (Shopware()->Session()->stripeCardId !== null) {
 			// Create a new charge using the selected card and the customer
-			$chargeData['card'] = Shopware()->Session()->stripeCardId;
+			$chargeData['source'] = Shopware()->Session()->stripeCardId;
 			try {
 				$stripeCustomer = Util::getStripeCustomer();
 				$chargeData['customer'] = $stripeCustomer->id;
