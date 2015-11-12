@@ -156,6 +156,18 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 					)
 					AND name IN (\'stripeRefreshToken\', \'testMode\')'
 				);
+
+				// Rename and re-order the reamining config
+				$modelManager->flush($form);
+				$element = $form->getElement('stripeSecretKey');
+				$element->setPosition(0);
+				$element->setDescription('Tragen Sie hier Ihren geheimen Schlüssel ("Secret Key") ein. Diesen finden Sie im Stripe Dashboard unter "Account Settings" > "API Keys" im Feld "Live Secret Key"');
+				$modelManager->persist($element);
+				$element = $form->getElement('stripePublicKey');
+				$element->setPosition(1);
+				$element->setDescription('Tragen Sie hier Ihren öffentlichen Schlüssel ("Publishable Key") ein. Diesen finden Sie im Stripe Dashboard unter "Account Settings" > "API Keys" im Feld "Live Publishable Key"');
+				$element->setLabel('Stripe Publishable Key');
+				$modelManager->persist($element);
 				break;
 			default:
 				return false;
