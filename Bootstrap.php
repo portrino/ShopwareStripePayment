@@ -7,9 +7,7 @@ if (!class_exists('\Stripe\Stripe') && file_exists(__DIR__ . '/vendor/autoload.p
 }
 
 /**
- * This plugin offers a payment method, which uses the stripe JavaScript SDK and API
- * to make payments. Because none of the credit card information is send to the server,
- * this plugin can be used without being PCI compliant.
+ * This plugin offers a credit card payment method using Stripe.
  *
  * @copyright Copyright (c) 2015, VIISON GmbH
  */
@@ -22,7 +20,7 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 	 * @return The current version of this plugin.
 	 */
 	public function getVersion() {
-		return '1.3.3';
+		return '1.0.0';
 	}
 
 	/**
@@ -60,67 +58,56 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 	 * @return True if the update was successful, otherwise false.
 	 */
 	public function update($oldVersion) {
-		// Prepare some helpers
-		$form = $this->Form();
-		$modelManager = $this->get('models');
-		$database = $this->get('db');
-
 		switch ($oldVersion) {
 			case 'install':
-				// Create the stripe payment method
-				$this->createPayment(
-					array(
-						'active' => 0,
-						'name' => 'viison_stripe',
-						'description' => 'Stripe',
-						'template' => 'viison_stripe.tpl',
-						'action' => 'viison_stripe_payment',
-						'additionalDescription' => ''
-					)
+				// Add static event subscribers
+				$this->subscribeEvent(
+					'Enlight_Controller_Front_DispatchLoopStartup',
+					'onDispatchLoopStartup'
 				);
-				// Add a config element for the stripe public key
-				$form->setElement(
-					'text',
-					'stripePublicKey',
-					array(
-						'label' => 'Stripe Public Key',
-						'value' => '',
-						'description' => 'Tragen Sie hier Ihren öffentlichen Schlüssel ("Public Key") ein, den Sie im Zuge der Registrierung bei Stripe erhalten haben.'
-					)
-				);
+
+				// Check whether the payment method already exists
+				$stripePaymentMethod = $this->get('models')->getRepository('Shopware\Models\Payment\Payment')->findOneBy(array(
+					'action' => 'viison_stripe_payment'
+				));
+				if ($stripePaymentMethod === null) {
+					// Create the stripe payment method
+					$this->createPayment(
+						array(
+							'active' => 0,
+							'name' => 'viison_stripe',
+							'description' => 'Stripe Kreditkarte',
+							'template' => 'viison_stripe.tpl',
+							'action' => 'viison_stripe_payment',
+							'class' => 'ViisonStripePaymentMethod',
+							'additionalDescription' => ''
+						)
+					);
+				}
+
 				// Add a config element for the stripe secret key
-				$form->setElement(
+				$this->Form()->setElement(
 					'text',
 					'stripeSecretKey',
 					array(
 						'label' => 'Stripe Secret Key',
-						'value' => '',
-						'description' => 'Tragen Sie hier Ihren geheimen Schlüssel ("Secret Key") ein, den Sie im Zuge der Registrierung bei Stripe erhalten haben.'
+						'description' => 'Tragen Sie hier Ihren geheimen Schlüssel ("Secret Key") ein. Diesen finden Sie im Stripe Dashboard unter "Account Settings" > "API Keys" im Feld "Live Secret Key".',
+						'value' => ''
 					)
 				);
-				// Add a config element for the stripe refresh token
-				$form->setElement(
+				// Add a config element for the stripe public key
+				$this->Form()->setElement(
 					'text',
-					'stripeRefreshToken',
+					'stripePublicKey',
 					array(
-						'label' => 'Stripe Refresh Token',
-						'value' => '',
-						'description' => 'Tragen Sie hier Ihren Token zur aktualisierung der Schlüssel ("Refresh Token") ein, den Sie im Zuge der Registrierung bei Stripe erhalten haben.'
+						'label' => 'Stripe Publishable Key',
+						'description' => 'Tragen Sie hier Ihren öffentlichen Schlüssel ("Publishable Key") ein. Diesen finden Sie im Stripe Dashboard unter "Account Settings" > "API Keys" im Feld "Live Publishable Key".',
+						'value' => ''
 					)
 				);
-				// Add a config element for activating the test mode
-				$form->setElement(
-					'checkbox',
-					'testMode',
-					array(
-						'label' => 'Testmodus aktivieren',
-						'value' => false,
-						'description' => 'Im Testmodus werden die verwendeten Kreditkarten nicht belastet. Hinweis: Die eingegebenen Zugangsdaten werden bei im Testmodus durch Testdaten ersetzt.'
-					)
-				);
-			case '1.0.0':
+
 				// Add an attribute to the user for storing the Stripe customer id
-				$modelManager->addAttribute(
+				$this->get('models')->addAttribute(
 					's_user_attributes',
 					'viison',
 					'stripe_customer_id',
@@ -128,47 +115,10 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 				);
 
 				// Rebuild the user attributes model
-				$modelManager->generateAttributeModels(array(
+				$this->get('models')->generateAttributeModels(array(
 					's_user_attributes'
 				));
-			case '1.0.1':
-				// Nothing to do
-			case '1.1.0':
-				// Nothing to do
-			case '1.2.0':
-				// Add static event subscribers
-				$this->subscribeEvent(
-					'Enlight_Controller_Front_DispatchLoopStartup',
-					'onDispatchLoopStartup'
-				);
-			case '1.3.0':
-				// Nothing to do
-			case '1.3.1':
-				// Nothing to do
-			case '1.3.2':
-				// Remove the 'refresh token' and 'test mode' configuration form elements
-				$database->query(
-				   'DELETE FROM s_core_config_elements
-					WHERE form_id = (
-						SELECT id
-						FROM s_core_config_forms
-						WHERE name = \'ViisonStripePayment\'
-					)
-					AND name IN (\'stripeRefreshToken\', \'testMode\')'
-				);
-
-				// Rename and re-order the reamining config
-				$modelManager->flush($form);
-				$element = $form->getElement('stripeSecretKey');
-				$element->setPosition(0);
-				$element->setDescription('Tragen Sie hier Ihren geheimen Schlüssel ("Secret Key") ein. Diesen finden Sie im Stripe Dashboard unter "Account Settings" > "API Keys" im Feld "Live Secret Key"');
-				$modelManager->persist($element);
-				$element = $form->getElement('stripePublicKey');
-				$element->setPosition(1);
-				$element->setDescription('Tragen Sie hier Ihren öffentlichen Schlüssel ("Publishable Key") ein. Diesen finden Sie im Stripe Dashboard unter "Account Settings" > "API Keys" im Feld "Live Publishable Key"');
-				$element->setLabel('Stripe Publishable Key');
-				$modelManager->persist($element);
-			case '1.3.3':
+			case '1.0.0':
 				// Next release
 				break;
 			default:
@@ -177,7 +127,7 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 
 		return array(
 			'success' => true,
-			'message' => 'Bitte leeren Sie den gesamten Shop Cache, kompilieren Sie die Shop Themes neu und aktivieren Sie die Zahlart "Stripe", um sie verfügbar zu machen.',
+			'message' => 'Bitte leeren Sie den gesamten Shop Cache, aktivieren Sie das Plugin und Kompilieren Sie anschließend die Shop Themes neu. Aktivieren Sie abschließend die Zahlart "Stripe Kreditkarte", um sie verfügbar zu machen.',
 			'invalidateCache' => array(
 				'backend',
 				'frontend',
@@ -220,8 +170,6 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 			$this->Path()
 		);
 	}
-
-	/* Events & Hooks */
 
 	/**
 	 * Adds all subscribers to the event manager.
