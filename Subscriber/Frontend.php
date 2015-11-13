@@ -99,6 +99,7 @@ class Frontend implements SubscriberInterface
 		if ($request->get('stripeTransactionToken') !== null) {
 			// Save the stripe transaction token in the session
 			Shopware()->Session()->stripeTransactionToken = $request->get('stripeTransactionToken');
+			unset(Shopware()->Session()->stripeCard);
 			unset(Shopware()->Session()->stripeCardId);
 		} else {
 			// Simulate a new customer to make the payment selection in the checkout process visible
