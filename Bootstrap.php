@@ -229,6 +229,7 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 	 * @param args The arguments passed by the method triggering the event.
 	 */
 	public function onDispatchLoopStartup(Enlight_Event_EventArgs $args) {
+		$this->get('events')->addSubscriber(new Subscriber\Payment());
 		$this->get('events')->addSubscriber(new Subscriber\Backend($this));
 		$this->get('events')->addSubscriber(new Subscriber\Frontend($this));
 		$this->get('events')->addSubscriber(new Subscriber\Theme($this));
