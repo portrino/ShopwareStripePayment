@@ -122,7 +122,8 @@ class Frontend implements SubscriberInterface
 				$transactionToken = Shopware()->Session()->stripeTransactionToken;
 				$newCard = Util::saveStripeCard($transactionToken);
 
-				// Save the card id in the session and remove the token from the session
+				// Save the card and its ID in the session and remove the token from the session
+				Shopware()->Session()->stripeCard = $newCard;
 				Shopware()->Session()->stripeCardId = $newCard['id'];
 				unset(Shopware()->Session()->stripeTransactionToken);
 			} catch (\Exception $e) {
@@ -144,6 +145,8 @@ class Frontend implements SubscriberInterface
 			// Write the card info to the template both JSON encoded and in a form usable by smarty
 			$view->viisonStripeCardRaw = json_encode(Shopware()->Session()->stripeCard);
 			$view->viisonStripeCard = Shopware()->Session()->stripeCard;
+			// Save the pre-selected the card ID in the session to allow quick checkout
+			Shopware()->Session()->stripeCardId = Shopware()->Session()->stripeCard['id'];
 		}
 		$customer = Util::getCustomer();
 		if ($customer !== null) {
