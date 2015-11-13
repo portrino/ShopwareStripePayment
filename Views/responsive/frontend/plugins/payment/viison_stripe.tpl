@@ -1,4 +1,4 @@
-{if $Controller != "account" && $payment_mean.name == 'viison_stripe'}
+{if $Controller != "account" && $payment_mean.action == "viison_stripe_payment"}
 	{* The main container for filling in the credit card information *}
 	<style type="text/css">
 		{* Include shared CSS for credit card logo SVGs *}

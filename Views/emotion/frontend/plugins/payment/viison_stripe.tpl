@@ -1,4 +1,4 @@
-{if $Controller != "account" && $payment_mean.name == 'viison_stripe'}
+{if $Controller != "account" && $payment_mean.action == "viison_stripe_payment"}
 	{* Additional styling for the stripe payment box *}
 	<style type="text/css">
 		#viison-stripe-error-box {
