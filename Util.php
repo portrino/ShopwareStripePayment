@@ -62,16 +62,10 @@ class Util
 		}
 
 		// Get information about all cards
-		$cards = array_map(function ($card) {
-			return array(
-				'id' => $card->id,
-				'name' => $card->name,
-				'brand' => $card->brand,
-				'last4' => $card->last4,
-				'exp_month' => $card->exp_month,
-				'exp_year' => $card->exp_year
-			);
-		}, $customer->sources->data);
+		$cards = array();
+		foreach ($customer->sources->data as $card) {
+			$cards[] = self::convertStripeCardToArray($card);
+		}
 
 		// Sort the cards by id (which correspond to the date, the card was created/added)
 		usort($cards, function($cardA, $cardB) {
@@ -235,6 +229,23 @@ class Util
 
 		// Delete the card with the given id from Stripe
 		$customer->sources->retrieve($cardId)->delete();
+	}
+
+	/**
+	 * Converts the given Stripe card instance to an array.
+	 *
+	 * @param Stripe\Card $card
+	 * @return array
+	 */
+	private static function convertStripeCardToArray($card) {
+		return array(
+			'id' => $card->id,
+			'name' => $card->name,
+			'brand' => $card->brand,
+			'last4' => $card->last4,
+			'exp_month' => $card->exp_month,
+			'exp_year' => $card->exp_year
+		);
 	}
 
 }
