@@ -176,7 +176,7 @@ class Util
 	 * card represented by the transaction token.
 	 *
 	 * @param transactionToken The token, which will be used to add/create a new Stripe card.
-	 * @return The Stripe_Card, which was created.
+	 * @return An array containing the data of the created Stripe card.
 	 */
 	public static function saveStripeCard($transactionToken) {
 		self::initStripeAPI();
@@ -192,7 +192,7 @@ class Util
 			$customer = self::getCustomer();
 			if ($customer === null || $customer->getAccountMode() === 1) {
 				// Customer not found or without permanent user account
-				return;
+				return null;
 			}
 
 			// Create a new Stripe customer and add the card to them
@@ -208,8 +208,8 @@ class Util
 			Shopware()->Models()->flush($customer->getAttribute());
 		}
 
-		// Return the created Stripe card
-		return $newCard;
+		// Return the created Stripe card array
+		return self::convertStripeCardToArray($newCard);
 	}
 
 	/**

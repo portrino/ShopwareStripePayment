@@ -123,7 +123,7 @@ class Frontend implements SubscriberInterface
 				$newCard = Util::saveStripeCard($transactionToken);
 
 				// Save the card id in the session and remove the token from the session
-				Shopware()->Session()->stripeCardId = $newCard->id;
+				Shopware()->Session()->stripeCardId = $newCard['id'];
 				unset(Shopware()->Session()->stripeTransactionToken);
 			} catch (\Exception $e) {
 				// Write the error message to the view
