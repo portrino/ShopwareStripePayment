@@ -3,8 +3,7 @@
 namespace Shopware\Plugins\ViisonStripePayment\Components;
 
 use ShopwarePlugin\PaymentMethods\Components\GenericPaymentMethod,
-	Shopware\Plugins\ViisonStripePayment\Util,
-	Enlight_Controller_Request_Request as Request;
+	Shopware\Plugins\ViisonStripePayment\Util;
 
 /**
  * A simplified payment method instance that is only used to validate the Stripe payment
