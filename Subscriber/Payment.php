@@ -22,14 +22,17 @@ class Payment implements SubscriberInterface
 	}
 
 	/**
-	 * Adds the path to the Stripe payment method class to the return value.
+	 * Adds the path to the Stripe payment method class to the return value,
+	 * if a Shopware 5 theme is used in the active shop.
 	 *
 	 * @param args The arguments passed by the method triggering the event.
 	 */
 	public function onAddPaymentClass(Enlight_Event_EventArgs $args) {
-		$dirs = $args->getReturn();
-		$dirs['ViisonStripePaymentMethod'] = 'Shopware\Plugins\ViisonStripePayment\Components\ViisonStripePaymentMethod';
-		$args->setReturn($dirs);
+		if (Shopware()->Shop()->getTemplate()->getVersion() >= 3) {
+			$dirs = $args->getReturn();
+			$dirs['ViisonStripePaymentMethod'] = 'Shopware\Plugins\ViisonStripePayment\Components\ViisonStripePaymentMethod';
+			$args->setReturn($dirs);
+		}
 	}
 
 }
