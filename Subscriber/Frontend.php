@@ -67,11 +67,9 @@ class Frontend implements SubscriberInterface
 			$view->viisonStripePublicKey = Util::stripePublicKey();
 
 			// Check for an error
-			$stripeError = Shopware()->Session()->viisonStripePaymentError;
-			if (!empty($stripeError)) {
+			if (!empty(Shopware()->Session()->viisonStripePaymentError)) {
+				$view->viisonStripePaymentError = Shopware()->Session()->viisonStripePaymentError;
 				unset(Shopware()->Session()->viisonStripePaymentError);
-				// Write the error message to the view
-				$view->viisonStripePaymentError = $stripeError;
 			}
 
 			// Check if the Stripe cards are already loaded
