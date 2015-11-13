@@ -77,6 +77,13 @@ class Shopware_Controllers_Frontend_ViisonStripePaymentAccount extends Shopware_
 			Shopware()->Session()->stripeErrorMessage = 'Beim Löschen der Kreditkarte ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.';
 		}
 
+		// Clear all checkout related fields from the session to avoid caching deleted credit cards
+		unset(Shopware()->Session()->stripeDeleteCardAfterPayment);
+		unset(Shopware()->Session()->stripeTransactionToken);
+		unset(Shopware()->Session()->stripeCardId);
+		unset(Shopware()->Session()->stripeCard);
+		unset(Shopware()->Session()->allStripeCards);
+
 		// Redirect to the manage action
 		$this->redirect(array(
 			'controller' => $this->Request()->getControllerName(),
