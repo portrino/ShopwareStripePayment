@@ -54,7 +54,7 @@
 				<input id="stripe-card-cvc" type="text" size="5" class="panel--td" value="{if $viisonStripeCard}***{/if}">
 				<div class="stripe-card-cvc--help help panel--td"
 					data-modalbox="true"
-					data-content="{url controller="ViisonStripePayment" action="cvcInfo" fullPath}"
+					data-content="{url controller="ViisonStripePayment" action="cvcInfo" forceSecure}"
 					data-mode="ajax"
 					data-height="430"
 					data-width="650">
