@@ -52,7 +52,7 @@
 				<label for="stripe-card-cvc" class="panel--td">{s namespace="frontend/plugins/payment/viison_stripe" name="form/card/cvc"}{/s} *</label>
 				{* Set a placeholder, if a previously created card is set *}
 				<input id="stripe-card-cvc" type="text" size="5" class="panel--td" value="{if $viisonStripeCard}***{/if}">
-				<div class="help panel--td"
+				<div class="stripe-card-cvc--help help panel--td"
 					data-modalbox="true"
 					data-content="{url controller="ViisonStripePayment" action="cvcInfo" fullPath}"
 					data-mode="ajax"

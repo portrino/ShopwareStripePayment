@@ -13,6 +13,7 @@
 		// See also: https://github.com/shopware/shopware/pull/357
 		$.subscribe('plugin/swShippingPayment/onInputChanged', function(event, shippingPayment) {
 			shippingPayment.$el.find('select:not([data-no-fancy-select="true"])').swSelectboxReplacement();
+			shippingPayment.$el.find('.stripe-card-cvc--help').swModalbox();
 		});
 
 		$(document).ready(function() {
