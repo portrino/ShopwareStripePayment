@@ -1,6 +1,6 @@
 <?php
 
-use Shopware\Plugins\ViisonStripePayment\Subscriber;
+use Shopware\Plugins\StripePayment\Subscriber;
 
 if (!class_exists('\Stripe\Stripe') && file_exists(__DIR__ . '/vendor/autoload.php')) {
 	require_once(__DIR__ . '/vendor/autoload.php');
@@ -11,7 +11,7 @@ if (!class_exists('\Stripe\Stripe') && file_exists(__DIR__ . '/vendor/autoload.p
  *
  * @copyright Copyright (c) 2015, VIISON GmbH
  */
-class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_Components_Plugin_Bootstrap
+class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Components_Plugin_Bootstrap
 {
 
 	/**
@@ -36,8 +36,8 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 			'autor' => 'VIISON GmbH',
 			'copyright' => 'Copyright © 2015, VIISON GmbH',
 			'license' => 'All rights reserved.',
-			'support' => 'support@viison.com',
-			'link' => 'http://www.viison.com/',
+			'support' => 'info@stripe.com',
+			'link' => 'http://www.stripe.com/',
 			'version' => $this->getVersion()
 		);
 	}
@@ -68,18 +68,18 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 
 				// Check whether the payment method already exists
 				$stripePaymentMethod = $this->get('models')->getRepository('Shopware\Models\Payment\Payment')->findOneBy(array(
-					'action' => 'viison_stripe_payment'
+					'action' => 'stripe_payment'
 				));
 				if ($stripePaymentMethod === null) {
 					// Create the stripe payment method
 					$this->createPayment(
 						array(
 							'active' => 0,
-							'name' => 'viison_stripe',
+							'name' => 'stripe_payment',
 							'description' => 'Stripe Kreditkarte',
-							'template' => 'viison_stripe.tpl',
-							'action' => 'viison_stripe_payment',
-							'class' => 'ViisonStripePaymentMethod',
+							'template' => 'stripe_payment.tpl',
+							'action' => 'stripe_payment',
+							'class' => 'StripePaymentMethod',
 							'additionalDescription' => ''
 						)
 					);
@@ -109,8 +109,8 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 				// Add an attribute to the user for storing the Stripe customer id
 				$this->get('models')->addAttribute(
 					's_user_attributes',
-					'viison',
-					'stripe_customer_id',
+					'stripe',
+					'customer_id',
 					'varchar(255)'
 				);
 
@@ -148,8 +148,8 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 			// Remove database columns
 			$this->get('models')->removeAttribute(
 				's_user_attributes',
-				'viison',
-				'stripe_customer_id'
+				'stripe',
+				'customer_id'
 			);
 
 			// Rebuild the user attributes model
@@ -168,7 +168,7 @@ class Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap extends Shopware_C
 	 */
 	public function afterInit() {
 		$this->get('Loader')->registerNamespace(
-			'Shopware\Plugins\ViisonStripePayment',
+			'Shopware\Plugins\StripePayment',
 			$this->Path()
 		);
 	}

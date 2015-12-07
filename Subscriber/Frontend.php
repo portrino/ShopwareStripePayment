@@ -1,10 +1,10 @@
 <?php
 
-namespace Shopware\Plugins\ViisonStripePayment\Subscriber;
+namespace Shopware\Plugins\StripePayment\Subscriber;
 
 use Enlight\Event\SubscriberInterface,
-	\Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap as Bootstrap,
-	Shopware\Plugins\ViisonStripePayment\Util;
+	\Shopware_Plugins_Frontend_StripePayment_Bootstrap as Bootstrap,
+	Shopware\Plugins\StripePayment\Util;
 
 /**
  * The subscriber for frontend controllers.
@@ -33,8 +33,8 @@ class Frontend implements SubscriberInterface
 		return array(
 			'Enlight_Controller_Action_PostDispatchSecure_Frontend_Checkout' => 'onPostDispatchCheckout',
 			'Enlight_Controller_Action_PostDispatchSecure_Frontend_Account' => 'onPostDispatchAccount',
-			'Enlight_Controller_Dispatcher_ControllerPath_Frontend_ViisonStripePayment' => 'onCustomFrontendControllerPath',
-			'Enlight_Controller_Dispatcher_ControllerPath_Frontend_ViisonStripePaymentAccount' => 'onCustomFrontendControllerPath'
+			'Enlight_Controller_Dispatcher_ControllerPath_Frontend_StripePayment' => 'onCustomFrontendControllerPath',
+			'Enlight_Controller_Dispatcher_ControllerPath_Frontend_StripePaymentAccount' => 'onCustomFrontendControllerPath'
 		);
 	}
 
@@ -59,17 +59,17 @@ class Frontend implements SubscriberInterface
 		if (in_array($actionName, array('confirm', 'shippingPayment', 'saveShippingPayment'))) {
 			if ($actionName === 'confirm' && Shopware()->Shop()->getTemplate()->getVersion() < 3) {
 				// Shopware 4: Inject the error box and credit card logos into the template
-				$view->extendsTemplate('frontend/viison_stripe_payment/checkout/confirm.tpl');
-				$view->extendsTemplate('frontend/viison_stripe_payment/checkout/card_logos.tpl');
+				$view->extendsTemplate('frontend/stripe_payment/checkout/confirm.tpl');
+				$view->extendsTemplate('frontend/stripe_payment/checkout/card_logos.tpl');
 			}
 
 			// Set the stripe public key
-			$view->viisonStripePublicKey = Util::stripePublicKey();
+			$view->stripePublicKey = Util::stripePublicKey();
 
 			// Check for an error
-			if (!empty(Shopware()->Session()->viisonStripePaymentError)) {
-				$view->viisonStripePaymentError = Shopware()->Session()->viisonStripePaymentError;
-				unset(Shopware()->Session()->viisonStripePaymentError);
+			if (!empty(Shopware()->Session()->stripePaymentError)) {
+				$view->stripePaymentError = Shopware()->Session()->stripePaymentError;
+				unset(Shopware()->Session()->stripePaymentError);
 			}
 
 			// Check if the Stripe cards are already loaded
@@ -127,7 +127,7 @@ class Frontend implements SubscriberInterface
 				unset(Shopware()->Session()->stripeTransactionToken);
 			} catch (\Exception $e) {
 				// Write the error message to the view
-				$view->viisonStripePaymentError = $e->getMessage();
+				$view->stripePaymentError = $e->getMessage();
 			}
 		} else if ($request->get('stripeSaveCard') === 'off') {
 			// Mark the Stripe card to be deleted after the payment
@@ -137,13 +137,13 @@ class Frontend implements SubscriberInterface
 		// Update view parameters
 		if (Shopware()->Session()->allStripeCards !== null) {
 			// Write all cards to the template both JSON encoded and in a form usable by smarty
-			$view->viisonAllStripeCardsRaw = json_encode(Shopware()->Session()->allStripeCards);
-			$view->viisonAllStripeCards = Shopware()->Session()->allStripeCards;
+			$view->allStripeCardsRaw = json_encode(Shopware()->Session()->allStripeCards);
+			$view->allStripeCards = Shopware()->Session()->allStripeCards;
 		}
 		if (Shopware()->Session()->stripeCard !== null) {
 			// Write the card info to the template both JSON encoded and in a form usable by smarty
-			$view->viisonStripeCardRaw = json_encode(Shopware()->Session()->stripeCard);
-			$view->viisonStripeCard = Shopware()->Session()->stripeCard;
+			$view->stripeCardRaw = json_encode(Shopware()->Session()->stripeCard);
+			$view->stripeCard = Shopware()->Session()->stripeCard;
 			// Save the pre-selected the card ID in the session to allow quick checkout
 			Shopware()->Session()->stripeCardId = Shopware()->Session()->stripeCard['id'];
 		}
@@ -162,7 +162,7 @@ class Frontend implements SubscriberInterface
 	public function onPostDispatchAccount(Enlight_Event_EventArgs $args) {
 		if (Shopware()->Shop()->getTemplate()->getVersion() < 3) {
 			// Shopware 4
-			$args->getSubject()->View()->extendsTemplate('frontend/viison_stripe_payment/account/content_right.tpl');
+			$args->getSubject()->View()->extendsTemplate('frontend/stripe_payment/account/content_right.tpl');
 		}
 	}
 
@@ -174,8 +174,8 @@ class Frontend implements SubscriberInterface
 	 */
 	public function onCustomFrontendControllerPath(Enlight_Event_EventArgs $args) {
 		$controllerName = $args->getRequest()->getControllerName();
-		if ($controllerName === 'viison_stripe_payment') {
-			$controllerName = 'ViisonStripePayment';
+		if ($controllerName === 'stripe_payment') {
+			$controllerName = 'StripePayment';
 		}
 
 		return $this->path . 'Controllers/Frontend/' . $controllerName .'.php';

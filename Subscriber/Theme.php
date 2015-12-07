@@ -1,11 +1,11 @@
 <?php
 
-namespace Shopware\Plugins\ViisonStripePayment\Subscriber;
+namespace Shopware\Plugins\StripePayment\Subscriber;
 
 use Enlight\Event\SubscriberInterface,
 	Shopware\Components\Theme\LessDefinition,
 	Doctrine\Common\Collections\ArrayCollection,
-	\Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap as Bootstrap;
+	\Shopware_Plugins_Frontend_StripePayment_Bootstrap as Bootstrap;
 
 /**
  * The subscriber providing the theme/template extensions.
@@ -61,13 +61,13 @@ class Theme implements SubscriberInterface
 		// Add the template directory for the used template type
 		$this->templateManager->addTemplateDir(
 			$this->path . 'Views/' . $templateType . '/',
-			'viisonStripePayment'
+			'stripePayment'
 		);
 
 		// Add the shared template directory
 		$this->templateManager->addTemplateDir(
 			$this->path . 'Views/shared/',
-			'viisonStripePayment_shared'
+			'stripePayment_shared'
 		);
 	}
 
@@ -82,8 +82,8 @@ class Theme implements SubscriberInterface
 	 */
 	public function onCollectPluginJavascriptFiles(Enlight_Event_EventArgs $args) {
 		return new ArrayCollection(array(
-			$this->path . 'Views/shared/frontend/viison_stripe_payment/_resources/javascript/jquery.payment.min.js',
-			$this->path . 'Views/shared/frontend/viison_stripe_payment/_resources/javascript/viison_stripe_payment.js'
+			$this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/jquery.payment.min.js',
+			$this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/stripe_payment.js'
 		));
 	}
 

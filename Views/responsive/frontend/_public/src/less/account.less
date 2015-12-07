@@ -1,9 +1,9 @@
-.account--viison-stripe-payment-credit-cards {
+.account--stripe-payment-credit-cards {
 	border: 1px solid @panel-border;
 	p {
 		.unitize(font-size, 14);
 	}
-	.viison-stripe-payment--table-header {
+	.stripe-payment--table-header {
 		display: none;
 		background: @panel-table-header-bg;
 		.panel--th {
@@ -33,8 +33,8 @@
 }
 
 @media screen and (min-width: @tabletViewportWidth) {
-	.account--viison-stripe-payment-credit-cards {
-		.viison-stripe-payment--table-header {
+	.account--stripe-payment-credit-cards {
+		.stripe-payment--table-header {
 			display: block;
 		}
 		.panel--tr {
@@ -49,7 +49,7 @@
 			display: inline-block;
 			float: left;
 		}
-		.viison-stripe-payment--item {
+		.stripe-payment--item {
 			margin: 0;
 		}
 		.column--label {
@@ -79,13 +79,13 @@
 	}
 
 	.sidebar-main {
-		.is--ctl-ViisonStripePaymentAccount.is--user & {
+		.is--ctl-StripePaymentAccount.is--user & {
 			display: block;
 			& + .content--wrapper {
 				.unitize(margin-left, 260);
 			}
 		}
-		.is--ctl-ViisonStripePaymentAccount & {
+		.is--ctl-StripePaymentAccount & {
 			.categories--headline,
 			.categories--navigation,
 			.shop-sites--container {

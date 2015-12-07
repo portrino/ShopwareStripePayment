@@ -1,11 +1,11 @@
 <?php
 
-namespace Shopware\Plugins\ViisonStripePayment\Subscriber;
+namespace Shopware\Plugins\StripePayment\Subscriber;
 
 use Enlight\Event\SubscriberInterface;
 
 /**
- * The subscriber for adding the custom ViisonStripePaymentMethod path.
+ * The subscriber for adding the custom StripePaymentMethod path.
  *
  * @copyright Copyright (c) 2015, VIISON GmbH
  */
@@ -30,7 +30,7 @@ class Payment implements SubscriberInterface
 	public function onAddPaymentClass(Enlight_Event_EventArgs $args) {
 		if (Shopware()->Shop()->getTemplate()->getVersion() >= 3) {
 			$dirs = $args->getReturn();
-			$dirs['ViisonStripePaymentMethod'] = 'Shopware\Plugins\ViisonStripePayment\Components\ViisonStripePaymentMethod';
+			$dirs['StripePaymentMethod'] = 'Shopware\Plugins\StripePayment\Components\StripePaymentMethod';
 			$args->setReturn($dirs);
 		}
 	}

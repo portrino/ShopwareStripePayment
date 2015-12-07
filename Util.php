@@ -1,6 +1,6 @@
 <?php
 
-namespace Shopware\Plugins\ViisonStripePayment;
+namespace Shopware\Plugins\StripePayment;
 
 use Stripe;
 
@@ -37,14 +37,14 @@ class Util
 	 * @return The Stripe public key set in the plugin configuration.
 	 */
 	public static function stripePublicKey() {
-		return Shopware()->Plugins()->Frontend()->ViisonStripePayment()->Config()->get('stripePublicKey');
+		return Shopware()->Plugins()->Frontend()->StripePayment()->Config()->get('stripePublicKey');
 	}
 
 	/**
 	 * @return The Stripe secret key set in the plugin configuration.
 	 */
 	public static function stripeSecretKey() {
-		return Shopware()->Plugins()->Frontend()->ViisonStripePayment()->Config()->get('stripeSecretKey');
+		return Shopware()->Plugins()->Frontend()->StripePayment()->Config()->get('stripeSecretKey');
 	}
 
 	/**
@@ -117,13 +117,13 @@ class Util
 
 		// Get the current logged in customer
 		$customer = self::getCustomer();
-		if ($customer === null || $customer->getAccountMode() === 1 || $customer->getAttribute() === null || $customer->getAttribute()->getViisonStripeCustomerId() === null) {
+		if ($customer === null || $customer->getAccountMode() === 1 || $customer->getAttribute() === null || $customer->getAttribute()->getStripeCustomerId() === null) {
 			// Customer not found, without permanent user account or has no stripe customer associated with it
 			return null;
 		}
 
 		// Load, save and return the customer
-		$stripeCustomerId = $customer->getAttribute()->getViisonStripeCustomerId();
+		$stripeCustomerId = $customer->getAttribute()->getStripeCustomerId();
 		self::$stripeCustomer = Stripe\Customer::retrieve($stripeCustomerId);
 
 		return self::$stripeCustomer;
@@ -204,7 +204,7 @@ class Util
 			$newCard = $stripeCustomer->sources->data[0];
 
 			// Save the Stripe customer id
-			$customer->getAttribute()->setViisonStripeCustomerId($stripeCustomer->id);
+			$customer->getAttribute()->setStripeCustomerId($stripeCustomer->id);
 			Shopware()->Models()->flush($customer->getAttribute());
 		}
 

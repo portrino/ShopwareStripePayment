@@ -8,9 +8,9 @@ if (file_exists($interface)) {
 	interface ViisonPickwareConnector_API_PaymentProvider {}
 }
 
-include_once(__DIR__ . '/../Controllers/Frontend/ViisonStripePayment.php');
+include_once(__DIR__ . '/../Controllers/Frontend/StripePayment.php');
 
-use Shopware\Plugins\ViisonStripePayment\Util;
+use Shopware\Plugins\StripePayment\Util;
 
 
 /**
@@ -19,7 +19,7 @@ use Shopware\Plugins\ViisonStripePayment\Util;
  *
  * @copyright Copyright (c) 2015, VIISON GmbH
  */
-class ViisonStripePayment_Classes_PaymentProvider implements ViisonPickwareConnector_API_PaymentProvider
+class StripePayment_Classes_PaymentProvider implements ViisonPickwareConnector_API_PaymentProvider
 {
 
 	const STRIPE_TOKEN_KEY = 'stripeToken';
@@ -37,7 +37,7 @@ class ViisonStripePayment_Classes_PaymentProvider implements ViisonPickwareConne
 			FROM s_core_paymentmeans payment
 			LEFT OUTER JOIN s_core_paymentmeans_subshops shop
 				ON shop.paymentID = payment.id
-			WHERE payment.action = \'viison_stripe_payment\'
+			WHERE payment.action = \'stripe_payment\'
 			AND (
 				shop.subshopID IS NULL
 				OR shop.subshopID = ?
@@ -80,7 +80,7 @@ class ViisonStripePayment_Classes_PaymentProvider implements ViisonPickwareConne
 		$stripePaymentId = Shopware()->Db()->fetchOne(
 		   'SELECT id
 			FROM s_core_paymentmeans
-			WHERE action = \'viison_stripe_payment\''
+			WHERE action = \'stripe_payment\''
 		);
 
 		return $stripePaymentId == $paymentMethodId;
@@ -96,7 +96,7 @@ class ViisonStripePayment_Classes_PaymentProvider implements ViisonPickwareConne
 
 		try {
 			// Create a new Stripe payment controller passing an empty request and response to its constructor
-			$stripePaymentController = Shopware_Controllers_Frontend_ViisonStripePayment::Instance(null, array(
+			$stripePaymentController = Shopware_Controllers_Frontend_StripePayment::Instance(null, array(
 					new Enlight_Controller_Request_RequestHttp(),
 					new Enlight_Controller_Response_ResponseHttp()
 			));

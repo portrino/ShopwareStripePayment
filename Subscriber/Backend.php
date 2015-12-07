@@ -1,9 +1,9 @@
 <?php
 
-namespace Shopware\Plugins\ViisonStripePayment\Subscriber;
+namespace Shopware\Plugins\StripePayment\Subscriber;
 
 use Enlight\Event\SubscriberInterface,
-	\Shopware_Plugins_Frontend_ViisonStripePayment_Bootstrap as Bootstrap;
+	\Shopware_Plugins_Frontend_StripePayment_Bootstrap as Bootstrap;
 
 /**
  * The subscriber for backend controllers.
@@ -32,7 +32,7 @@ class Backend implements SubscriberInterface
 		return array(
 			'Enlight_Controller_Action_PostDispatchSecure_Backend_Index' => 'onPostDispatchIndex',
 			'Enlight_Controller_Action_PostDispatchSecure_Backend_Order' => array('onPostDispatchOrder', -100),
-			'Enlight_Controller_Dispatcher_ControllerPath_Backend_ViisonStripePayment' => 'onGetControllerPathViisonStripePayment'
+			'Enlight_Controller_Dispatcher_ControllerPath_Backend_StripePayment' => 'onGetControllerPathStripePayment'
 		);
 	}
 
@@ -43,7 +43,7 @@ class Backend implements SubscriberInterface
 	 * @param $args The event parameters.
 	 */
 	public function onPostDispatchIndex(Enlight_Event_EventArgs $args) {
-		$args->getSubject()->View()->extendsTemplate('backend/viison_stripe_payment/index/header.tpl');
+		$args->getSubject()->View()->extendsTemplate('backend/stripe_payment/index/header.tpl');
 	}
 
 	/**
@@ -53,19 +53,19 @@ class Backend implements SubscriberInterface
 	 */
 	public function onPostDispatchOrder(Enlight_Event_EventArgs $args) {
 		if ($args->getRequest()->getActionName() === 'load') {
-			$args->getSubject()->View()->extendsTemplate('backend/viison_stripe_payment/order_detail_position_refund.js');
-			$args->getSubject()->View()->extendsTemplate('backend/viison_stripe_payment/order_detail_stripe_dashboard_button.js');
+			$args->getSubject()->View()->extendsTemplate('backend/stripe_payment/order_detail_position_refund.js');
+			$args->getSubject()->View()->extendsTemplate('backend/stripe_payment/order_detail_stripe_dashboard_button.js');
 		}
 	}
 
 	/**
-	 * Returns the path to the Backend/ViisonStripePayment controller used for making payments.
+	 * Returns the path to the Backend/StripePayment controller used for making payments.
 	 *
 	 * @param args The arguments passed by the method triggering the event.
-	 * @return The path to the Backend/ViisonStripePayment controller.
+	 * @return The path to the Backend/StripePayment controller.
 	 */
-	public function onGetControllerPathViisonStripePayment(Enlight_Event_EventArgs $args) {
-		return $this->path . 'Controllers/Backend/ViisonStripePayment.php';
+	public function onGetControllerPathStripePayment(Enlight_Event_EventArgs $args) {
+		return $this->path . 'Controllers/Backend/StripePayment.php';
 	}
 
 }
