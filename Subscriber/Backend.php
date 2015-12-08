@@ -42,7 +42,7 @@ class Backend implements SubscriberInterface
 	 *
 	 * @param $args The event parameters.
 	 */
-	public function onPostDispatchIndex(Enlight_Event_EventArgs $args) {
+	public function onPostDispatchIndex(\Enlight_Event_EventArgs $args) {
 		$args->getSubject()->View()->extendsTemplate('backend/stripe_payment/index/header.tpl');
 	}
 
@@ -51,7 +51,7 @@ class Backend implements SubscriberInterface
 	 *
 	 * @param $args The event parameters.
 	 */
-	public function onPostDispatchOrder(Enlight_Event_EventArgs $args) {
+	public function onPostDispatchOrder(\Enlight_Event_EventArgs $args) {
 		if ($args->getRequest()->getActionName() === 'load') {
 			$args->getSubject()->View()->extendsTemplate('backend/stripe_payment/order_detail_position_refund.js');
 			$args->getSubject()->View()->extendsTemplate('backend/stripe_payment/order_detail_stripe_dashboard_button.js');
@@ -64,7 +64,7 @@ class Backend implements SubscriberInterface
 	 * @param args The arguments passed by the method triggering the event.
 	 * @return The path to the Backend/StripePayment controller.
 	 */
-	public function onGetControllerPathStripePayment(Enlight_Event_EventArgs $args) {
+	public function onGetControllerPathStripePayment(\Enlight_Event_EventArgs $args) {
 		return $this->path . 'Controllers/Backend/StripePayment.php';
 	}
 

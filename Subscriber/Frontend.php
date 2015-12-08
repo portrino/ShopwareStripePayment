@@ -50,7 +50,7 @@ class Frontend implements SubscriberInterface
 	 *
 	 * @param args The arguments passed by the method triggering the event.
 	 */
-	public function onPostDispatchCheckout(Enlight_Event_EventArgs $args) {
+	public function onPostDispatchCheckout(\Enlight_Event_EventArgs $args) {
 		// Check request, response and view
 		$request = $args->getRequest();
 		$response = $args->getSubject()->Response();
@@ -159,7 +159,7 @@ class Frontend implements SubscriberInterface
 	 *
 	 * @param args The arguments passed by the method triggering the event.
 	 */
-	public function onPostDispatchAccount(Enlight_Event_EventArgs $args) {
+	public function onPostDispatchAccount(\Enlight_Event_EventArgs $args) {
 		if (Shopware()->Shop()->getTemplate()->getVersion() < 3) {
 			// Shopware 4
 			$args->getSubject()->View()->extendsTemplate('frontend/stripe_payment/account/content_right.tpl');
@@ -172,7 +172,7 @@ class Frontend implements SubscriberInterface
 	 * @param args The arguments passed by the method triggering the event.
 	 * @return The path to the frontend controller.
 	 */
-	public function onCustomFrontendControllerPath(Enlight_Event_EventArgs $args) {
+	public function onCustomFrontendControllerPath(\Enlight_Event_EventArgs $args) {
 		$controllerName = $args->getRequest()->getControllerName();
 		if ($controllerName === 'stripe_payment') {
 			$controllerName = 'StripePayment';

@@ -53,7 +53,7 @@ class Theme implements SubscriberInterface
 	 *
 	 * @param args The arguments passed by the method triggering the event.
 	 */
-	public function onPostDispatchSecure(Enlight_Event_EventArgs $args) {
+	public function onPostDispatchSecure(\Enlight_Event_EventArgs $args) {
 		// Determine template type (responsive/emotion)
 		$module = $args->getRequest()->getParam('module');
 		$templateType = (!in_array($module, array('backend', 'api')) && Shopware()->Shop()->getTemplate()->getVersion() >= 3) ? 'responsive' : 'emotion';
@@ -80,7 +80,7 @@ class Theme implements SubscriberInterface
 	 * @param args The arguments passed by the method triggering the event.
 	 * @return An array collection containing the paths to custom Javascript libraries of this plugin.
 	 */
-	public function onCollectPluginJavascriptFiles(Enlight_Event_EventArgs $args) {
+	public function onCollectPluginJavascriptFiles(\Enlight_Event_EventArgs $args) {
 		return new ArrayCollection(array(
 			$this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/jquery.payment.min.js',
 			$this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/stripe_payment.js'
@@ -93,7 +93,7 @@ class Theme implements SubscriberInterface
 	 * @param args The arguments passed by the method triggering the event.
 	 * @return An array collection containing the paths to custom LESS files.
 	 */
-	public function onCollectPluginLESSFiles(Enlight_Event_EventArgs $args) {
+	public function onCollectPluginLESSFiles(\Enlight_Event_EventArgs $args) {
 		return new ArrayCollection(array(
 			new LessDefinition(
 				array(),

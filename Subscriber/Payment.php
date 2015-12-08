@@ -27,7 +27,7 @@ class Payment implements SubscriberInterface
 	 *
 	 * @param args The arguments passed by the method triggering the event.
 	 */
-	public function onAddPaymentClass(Enlight_Event_EventArgs $args) {
+	public function onAddPaymentClass(\Enlight_Event_EventArgs $args) {
 		if (Shopware()->Shop()->getTemplate()->getVersion() >= 3) {
 			$dirs = $args->getReturn();
 			$dirs['StripePaymentMethod'] = 'Shopware\Plugins\StripePayment\Components\StripePaymentMethod';
