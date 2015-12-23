@@ -1,7 +1,7 @@
 // Inject the ID of the Stripe payment method, which must be defined before including this file,
 // and check whether the payment form shall be initialised
 StripePayment.paymentMeansId = stripePaymentId;
-if (StripePayment.isStripePaymentSelected()) {
+if (StripePayment.paymentMeansId && StripePayment.isStripePaymentSelected()) {
 	// Try to get Stripe related data passed to the template
 	var stripeFormSetupData = {
 		stripePublicKey: '{$stripePublicKey}',

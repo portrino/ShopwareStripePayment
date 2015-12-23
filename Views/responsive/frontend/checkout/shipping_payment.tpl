@@ -1,5 +1,12 @@
 {extends file="parent:frontend/checkout/shipping_payment.tpl"}
 
+{block name="frontend_index_content" prepend}
+	<script type="text/javascript">
+		// Define the Stripe payment ID to avoid errors in case the respective payment method is not available
+		var stripePaymentId = null;
+	</script>
+{/block}
+
 {block name="frontend_index_header_javascript_jquery" append}
 	<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
 	<script type="text/javascript">
