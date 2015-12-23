@@ -50,7 +50,8 @@ class Shopware_Controllers_Frontend_StripePayment extends Shopware_Controllers_F
 		// the field 'temporaryID', to which the paymentUniqueId is written. Additionally the
 		// balance_transaction is displayed in the shop owner's Stripe account, so it can
 		// be used to easily identify an order.
-		$this->saveOrder($charge->id, $charge->balance_transaction, 12); // transactionId, paymentUniqueId, [paymentStatusId, [sendStatusMail]]
+		$paymentUniqueId = $charge->balance_transaction;
+		$this->saveOrder($charge->id, $paymentUniqueId, 12); // transactionId, paymentUniqueId, [paymentStatusId, [sendStatusMail]]
 
 		try {
 			// Save the order number in the description of the charge
@@ -79,10 +80,19 @@ class Shopware_Controllers_Frontend_StripePayment extends Shopware_Controllers_F
 		unset(Shopware()->Session()->allStripeCards);
 
 		// Finish the checkout process
+		// By passing the 'paymentUniqueId' (aka 'temporaryID') to 'sUniqueID', we allow an early return of
+		// the 'Checkout' controller's 'finishAction()'. The order is created by calling 'saveOrder()' on
+		// this controller earlier, so it definitely exists after the redirect. However, 'finishAction()'
+		// can only find the order, if we pass the 'sUniqueID' here. If we don't pass the 'paymentUniqueId',
+		// there are apparently some shops that fail to display the order summary, although a vanilla
+		// Shopware 5 or 5.1 installation works correctly. That is, because the basket is empty after creating
+		// the order, the session's sOrderVariables are assigned to the view and NO redirect to the confirm action
+		// is performed (see https://github.com/shopware/shopware/blob/6e8b58477c1a9aa873328c258139fa6085238b4b/engine/Shopware/Controllers/Frontend/Checkout.php#L272-L275).
+		// Anyway, setting 'sUniqueID' seems to be the safe way to display the order summary.
 		$this->redirect(array(
 			'controller' => 'checkout',
-			'action' => 'finish'
-			// 'sUniqueID' => 'SOME_ID' // This id will be displayed in the order summary with some additional text
+			'action' => 'finish',
+			'sUniqueID' => $paymentUniqueId
 		));
 	}
 
