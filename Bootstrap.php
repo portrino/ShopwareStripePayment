@@ -20,7 +20,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
 	 * @return The current version of this plugin.
 	 */
 	public function getVersion() {
-		return '1.0.2';
+		return '1.0.3';
 	}
 
 	/**
@@ -123,6 +123,8 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
 			case '1.0.1':
 				// Nothing to do
 			case '1.0.2':
+				// Nothing to do
+			case '1.0.3':
 				// Next release
 				break;
 			default:
