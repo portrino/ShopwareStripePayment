@@ -28,7 +28,7 @@
 			<div class="panel--tr saved-cards">
 				<label for="stripe-saved-cards" class="panel--td">{s namespace="frontend/plugins/payment/stripe_payment" name="form/card_selection"}{/s}</label>
 				<select id="stripe-saved-cards" class="panel--td">
-					<option value="new"{if $allStripeCards|count == 0} selected{/if}>Neue Karte</option>
+					<option value="new"{if $allStripeCards|count == 0} selected{/if}>{s namespace="frontend/plugins/payment/stripe_payment" name="form/card_selection/new_card"}{/s}</option>
 					{foreach from=$allStripeCards item=stripeCard}
 						<option value="{$stripeCard.id}" {if $stripeCard.id == $stripeCard.id}selected{/if}>
 							{$stripeCard.name} | {$stripeCard.brand} | &bull;&bull;&bull;&bull;{$stripeCard.last4} | {$stripeCard.exp_month}/{$stripeCard.exp_year}

@@ -126,7 +126,7 @@
 			<label class="control-label" for="stripe-saved-cards">Gespeicherte Karten</label>
 			<div class="form-input adjust-margin">
 				<select id="stripe-saved-cards" style="width: 365px;">
-					<option value="new"{if $allStripeCards|count == 0} selected{/if}>Neue Karte</option>
+					<option value="new"{if $allStripeCards|count == 0} selected{/if}>{s namespace="frontend/plugins/payment/stripe_payment" name="form/card_selection/new_card"}{/s}</option>
 					{foreach from=$allStripeCards item=stripeCard}
 						<option value="{$stripeCard.id}"{if $stripeCard.id == $stripeCard.id} selected{/if}>{$stripeCard.name} | {$stripeCard.brand} | &bull;&bull;&bull;&bull;{$stripeCard.last4} | {$stripeCard.exp_month}/{$stripeCard.exp_year}</option>
 					{/foreach}
