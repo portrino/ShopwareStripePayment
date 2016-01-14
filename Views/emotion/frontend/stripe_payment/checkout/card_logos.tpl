@@ -16,8 +16,6 @@
 			</div>
 		</div>
 	{else}
-		<div class="grid_10 last">
-			{include file="string:{$payment_mean.additionaldescription}"}
-		</div>
+		{$smarty.block.parent}
 	{/if}
 {/block}
