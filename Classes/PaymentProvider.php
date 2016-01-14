@@ -108,6 +108,10 @@ class StripePayment_Classes_PaymentProvider implements ViisonPickwareConnector_A
 			// Init the stripe payment
 			Util::initStripeAPI();
 			$charge = Stripe\Charge::create($chargeData);
+		} catch(Stripe\Error\Card $e) {
+			$message = ($e->getStripeCode() === 'card_declined') ? 'Die Kreditkarte wurde abgelehnt' : 'Die Kreditkarte ist ungültig';
+			$message .= ' (' . $e->getMessage() . ')';
+			throw new Exception($message);
 		} catch (Exception $e) {
 			throw new Exception('The payment could not be processed, because an error occurred: \"' . $e->getMessage() . '\"');
 		}
