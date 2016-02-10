@@ -12,7 +12,7 @@ use ShopwarePlugin\PaymentMethods\Components\GenericPaymentMethod,
  *
  * @copyright Copyright (c) 2015, VIISON GmbH
  */
-class StripePaymentMethod extends GenericPaymentMethod
+abstract class BaseStripePaymentMethod extends GenericPaymentMethod
 {
 
 	/**
@@ -21,7 +21,7 @@ class StripePaymentMethod extends GenericPaymentMethod
 	 * @param array $paymentData
 	 * @return array List of fields containing errors
 	 */
-	public function validate($paymentData) {
+	protected function doValidate(array $paymentData) {
 		// Check the payment data for a Stripe transaction token or a selected card ID
 		if (empty($paymentData['stripeTransactionToken']) && empty($paymentData['stripeCardId'])) {
 			return array(
@@ -56,4 +56,41 @@ class StripePaymentMethod extends GenericPaymentMethod
 		);
 	}
 
+}
+
+/**
+ * Returns true, if the signature of GenericPaymentMethod#validate appears consistent with Shopware before version
+ * 5.0.4-RC1.
+ *
+ * Since version 5.0.4-RC1, the parameter must be an array (with no type hint).
+ * Before, it was an \Enlight_Controller_Request_Request.
+ *
+ * The commit that changed the signature of #validate is
+ * <https://github.com/shopware/shopware/commit/0608b1a7b05e071c93334b29ab6bd588105462d7>.
+ */
+function needs_legacy_validate_signature() {
+	$parentClass = new \ReflectionClass('ShopwarePlugin\PaymentMethods\Components\GenericPaymentMethod');
+	/* @var $parameters \ReflectionParameter[] */
+	$parameters = $parentClass->getMethod('validate')->getParameters();
+	foreach ($parameters as $parameter) {
+		// Newer Shopware versions use an array parameter named paymentData.
+		if ($parameter->getName() === 'request') {
+			return true;
+		}
+	}
+	return false;
+}
+
+if (needs_legacy_validate_signature()) {
+	class StripePaymentMethod extends BaseStripePaymentMethod {
+		public function validate(\Enlight_Controller_Request_Request $request) {
+			return parent::doValidate($request->getParams());
+		}
+	}
+} else {
+	class StripePaymentMethod extends BaseStripePaymentMethod {
+		public function validate($paymentData) {
+			return parent::doValidate($paymentData);
+		}
+	}
 }
