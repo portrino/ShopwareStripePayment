@@ -2,7 +2,8 @@
 
 namespace Shopware\Plugins\StripePayment;
 
-use Stripe;
+use Stripe,
+	Shopware\Models\Attribute\Customer as CustomerAttribute;
 
 /**
  * Utility functions used across this plugin.
@@ -202,6 +203,16 @@ class Util
 				'source' => $transactionToken
 			));
 			$newCard = $stripeCustomer->sources->data[0];
+
+			// Make sure the customer has attributes
+			if ($customer->getAttribute() === null) {
+				$customerAttribute = new CustomerAttribute();
+				$customerAttribute->setCustomer($customer);
+				$customer->setAttribute($customerAttribute);
+				Shopware()->Models()->persist($customerAttribute);
+				Shopware()->Models()->flush($customerAttribute);
+				Shopware()->Models()->flush($customer);
+			}
 
 			// Save the Stripe customer id
 			$customer->getAttribute()->setStripeCustomerId($stripeCustomer->id);
