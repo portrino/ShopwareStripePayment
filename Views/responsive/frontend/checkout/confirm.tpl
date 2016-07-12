@@ -8,8 +8,12 @@
 	{if $sUserData.additional.payment.action == "stripe_payment" && $stripeCard}
 		<script type="text/javascript">
 			$(document).ready(function() {
-				// Add special class to body to trigger custom CSS rules
-				$('body').addClass('is--stripe-payment-selected');
+				// Add special class to body to trigger custom CSS rules in Shopware versions >= 5.0 and < 5.2.
+				// Starting from Shopware 5.2, the enclosing container uses content based autoresizing, which
+				// would break, if we enabled the custom CSS rule.
+				if ($('#confirm--form .information--panel-wrapper').attr('data-panel-auto-resizer') !== 'true') {
+					$('body').addClass('is--stripe-payment-selected');
+				}
 
 				// Insert a new element right below the general payment information showing details of the selected credit card
 				var element = $('<p class="stripe-payment-details is--bold">{$stripeCard.name} | {$stripeCard.brand} | &bull;&bull;&bull;&bull;{$stripeCard.last4} | {$stripeCard.exp_month}/{$stripeCard.exp_year}</p>');
