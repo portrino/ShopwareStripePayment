@@ -113,7 +113,11 @@ class Shopware_Controllers_Frontend_StripePayment extends Shopware_Controllers_F
 		// Get the necessary user info
 		$user = $this->getUser();
 		$userEmail = $user['additional']['user']['email'];
-		$customerNumber = $user['billingaddress']['customernumber'];
+		if (Shopware()->Plugins()->Frontend()->StripePayment()->assertMinimumVersion('5.2.0')) {
+			$customerNumber = $user['additional']['user']['customernumber'];
+		} else {
+			$customerNumber = $user['billingaddress']['customernumber'];
+		}
 
 		// Prepare the charge data
 		$chargeData = array(

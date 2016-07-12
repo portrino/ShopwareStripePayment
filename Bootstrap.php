@@ -197,4 +197,11 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
 		$this->get('events')->addSubscriber(new Subscriber\Theme($this));
 	}
 
+	/**
+	 * @inheritdoc
+	 */
+	public function assertMinimumVersion($requiredVersion) {
+		return parent::assertMinimumVersion($requiredVersion);
+	}
+
 }
