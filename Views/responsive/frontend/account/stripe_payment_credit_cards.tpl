@@ -25,45 +25,43 @@
 
 		{if $creditCards|@count > 0}
 			{* Credit card table *}
-			<div class="account--stripe-payment-credit-cards panel is--rounded">
-				<div class="panel--table">
-					{* Header *}
-					<div class="stripe-payment--table-header panel--tr">
-						<div class="panel--th column--owner">{s name="credit_cards/table/owner"}{/s}</div>
-						<div class="panel--th column--type">{s name="credit_cards/table/type"}{/s}</div>
-						<div class="panel--th column--number">{s name="credit_cards/table/number"}{/s}</div>
-						<div class="panel--th column--expiry-date">{s name="credit_cards/table/expiry_date"}{/s}</div>
-						<div class="panel--th column--actions is--align-center">{s name="credit_cards/table/actions"}{/s}</div>
-					</div>
-
-					{* Rows *}
-					{foreach name=stripeCreditCards from=$creditCards item=creditCard}
-						<div class="stripe-payment--item panel--tr {if $smarty.foreach.stripeCreditCards.last}is--last-row{/if}">
-							<div class="panel--td column--owner is--bold">
-								<div class="column--label">{s name="credit_cards/table/owner"}{/s}</div>
-								<div class="column--value">{$creditCard.name}</div>
-							</div>
-							<div class="panel--td column--type">
-								<div class="column--label">{s name="credit_cards/table/type"}{/s}</div>
-								<div class="column--value">{$creditCard.brand}</div>
-							</div>
-							<div class="panel--td column--number">
-								<div class="column--label">{s name="credit_cards/table/number"}{/s}</div>
-								<div class="column--value">XXXXXXXXXXXX {$creditCard.last4}</div>
-							</div>
-							<div class="panel--td column--expiry-date">
-								<div class="column--label">{s name="credit_cards/table/expiry_date"}{/s}</div>
-								<div class="column--value">{$creditCard.exp_month|string_format:"%02d"}/{$creditCard.exp_year}</div>
-							</div>
-							<div class="panel--td column--actions">
-								<form name="stripeCreditCard-{$creditCard.id}" method="POST" action="{url controller='StripePaymentAccount' action='deleteCreditCard'}">
-									<input type="hidden" name="cardId" value="{$creditCard.id}" />
-									<button type="submit" class="btn is--primary is--small">{s name="credit_cards/table/actions/delete"}{/s}</button>
-								</form>
-							</div>
-						</div>
-					{/foreach}
+			<div class="account--stripe-payment-credit-cards panel--table is--rounded">
+				{* Header *}
+				<div class="stripe-payment--table-header panel--tr">
+					<div class="panel--th column--owner">{s name="credit_cards/table/owner"}{/s}</div>
+					<div class="panel--th column--type">{s name="credit_cards/table/type"}{/s}</div>
+					<div class="panel--th column--number">{s name="credit_cards/table/number"}{/s}</div>
+					<div class="panel--th column--expiry-date">{s name="credit_cards/table/expiry_date"}{/s}</div>
+					<div class="panel--th column--actions is--align-center">{s name="credit_cards/table/actions"}{/s}</div>
 				</div>
+
+				{* Rows *}
+				{foreach name=stripeCreditCards from=$creditCards item=creditCard}
+					<div class="stripe-payment--item panel--tr {if $smarty.foreach.stripeCreditCards.last}is--last-row{/if}">
+						<div class="panel--td column--owner is--bold">
+							<div class="column--label">{s name="credit_cards/table/owner"}{/s}</div>
+							<div class="column--value">{$creditCard.name}</div>
+						</div>
+						<div class="panel--td column--type">
+							<div class="column--label">{s name="credit_cards/table/type"}{/s}</div>
+							<div class="column--value">{$creditCard.brand}</div>
+						</div>
+						<div class="panel--td column--number">
+							<div class="column--label">{s name="credit_cards/table/number"}{/s}</div>
+							<div class="column--value">XXXXXXXXXXXX {$creditCard.last4}</div>
+						</div>
+						<div class="panel--td column--expiry-date">
+							<div class="column--label">{s name="credit_cards/table/expiry_date"}{/s}</div>
+							<div class="column--value">{$creditCard.exp_month|string_format:"%02d"}/{$creditCard.exp_year}</div>
+						</div>
+						<div class="panel--td column--actions">
+							<form name="stripeCreditCard-{$creditCard.id}" method="POST" action="{url controller='StripePaymentAccount' action='deleteCreditCard'}">
+								<input type="hidden" name="cardId" value="{$creditCard.id}" />
+								<button type="submit" class="btn is--primary is--small">{s name="credit_cards/table/actions/delete"}{/s}</button>
+							</form>
+						</div>
+					</div>
+				{/foreach}
 			</div>
 		{else}
 			{* No saved credit cards *}

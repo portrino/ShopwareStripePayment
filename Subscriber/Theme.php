@@ -99,7 +99,8 @@ class Theme implements SubscriberInterface
 				array(),
 				array(
 					$this->path . 'Views/responsive/frontend/_public/src/less/checkout.less',
-					$this->path . 'Views/responsive/frontend/_public/src/less/account.less'
+					$this->path . 'Views/responsive/frontend/_public/src/less/account.less',
+					$this->path . 'Views/responsive/frontend/_public/src/less/sidebar.less'
 				),
 				$this->path . 'Views/responsive/'
 			)
