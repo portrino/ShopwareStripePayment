@@ -125,7 +125,15 @@ class Util
 
 		// Load, save and return the customer
 		$stripeCustomerId = $customer->getAttribute()->getStripeCustomerId();
-		self::$stripeCustomer = Stripe\Customer::retrieve($stripeCustomerId);
+		try {
+			self::$stripeCustomer = Stripe\Customer::retrieve($stripeCustomerId);
+		} catch (\Exception $e) {
+			// Customer cannot be found, hence remove the saved customer ID from the databse
+			$customer->getAttribute()->setStripeCustomerId(null);
+			Shopware()->Models()->flush($customer->getAttribute());
+
+			return null;
+		}
 
 		return self::$stripeCustomer;
 	}
