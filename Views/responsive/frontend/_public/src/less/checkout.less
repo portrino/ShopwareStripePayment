@@ -1,96 +1,96 @@
 #stripe-payment-form {
 
-	.panel--tr {
-		border-width: 0;
-	}
+    .panel--tr {
+        border-width: 0;
+    }
 
-	label {
-		cursor: pointer;
+    label {
+        cursor: pointer;
 
-		&.panel--td {
-			float: none;
-			padding-left: 0;
-			width: 100%;
-		}
+        &.panel--td {
+            float: none;
+            padding-left: 0;
+            width: 100%;
+        }
 
-		&[for="stripe-save-card"] {
-			.unitize(padding-left, 5);
-		}
-	}
+        &[for="stripe-save-card"] {
+            .unitize(padding-left, 5);
+        }
+    }
 
-	input, .saved-cards .js--fancy-select {
-		float: none;
-		width: 100%;
-	}
+    input, .saved-cards .js--fancy-select {
+        float: none;
+        width: 100%;
+    }
 
-	.expiry-date {
+    .expiry-date {
 
-		.js--fancy-select {
-			float: left;
-			width: 49.5%;
+        .js--fancy-select {
+            float: left;
+            width: 49.5%;
 
-			& + .js--fancy-select {
-				margin-left: 1%;
-			}
-		}
-	}
+            & + .js--fancy-select {
+                margin-left: 1%;
+            }
+        }
+    }
 
-	.help {
-		cursor: pointer;
-		width: 22px;
-		height: 22px;
-		box-sizing: content-box;
-		background-size: 22px;
-		background-repeat: no-repeat;
-		background-position: center;
-		background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAsCAYAAAAehFoBAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyNpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDE0IDc5LjE1MTQ4MSwgMjAxMy8wMy8xMy0xMjowOToxNSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChNYWNpbnRvc2gpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkJBN0MwQTc5REQ4RjExRTM5MzczRDk3QzQxRTkxOTIwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkJBN0MwQTdBREQ4RjExRTM5MzczRDk3QzQxRTkxOTIwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QkE3QzBBNzdERDhGMTFFMzkzNzNEOTdDNDFFOTE5MjAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QkE3QzBBNzhERDhGMTFFMzkzNzNEOTdDNDFFOTE5MjAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5xa1/RAAADy0lEQVR42tRZTUhUURS+M8xCMUMjGVAQYTAppF9EEGkW4kRoTjjRDwXmJokIF26shqKoaCtDim7SRU0gNlTI9OdCa+MmmRhbZG0ExTRQnLLZTeeb7lzfDPP37ntvZvzgg/fezDv347xzzz33XIvD4WAaUEJsJtqJB4j7iFbiLv77b+JP4jfiV+IM8SPxj+yAFol3TMQTxG7iKWJxmv/u4dxPdBJvEP8SXxOfEN8SI2oGN6sU20mcI/qJZzOITYVi/q6f2zpthGAb8R1xgniI6QfY8nHbNr0EnyN+JrYy49DKxzivRTBi9T7xOXE3Mx4Yw8vHNKkVjBc8xFss98CYQ6lEpxL8kHiN5Q89XENWghFH/Sz/gIYLmQRjpg6zwsFwYvZIXDiGZCdYS0sLq6mpYXa7Pe758vIyCwQCzO/3s42NDbVmS7kmsRybFEtzJ8+zqlBWVsZ6e3uZzZY5jY6NjbGpqSkZf7iIL5Qexoy8LRVo/f2ssrJSeNPn87HZ2dnofXV1NXM6nayhoSF639XVxVZWVtj8/LzaYe7wBSYSi2GHzArW0dERJxbiY2KBxcVF5vF42PT0tHjW1tYm45eDvH4Rk65bxkpTU5O4HhwcTPm/iYntSKuvr5edgJdjgkt4JaU6dpXehTdTAZNtfX1d3CNUJACNJWZezxapfbuqqkpcLy0t5SLFQWOzhRffqhEKhaKpClhdXc1cUxZvV6Kbm5uyou0QLBVUCIF0YZA4OYuK/n/EYDAok4/FFEBI1Br5HRGv7e3t4n5yclKLuVoIrjBSbF9fn/AuQkgiBytRYeHLnyFi3W53nFiv16vVbKnZCLFIeYme1UGsqNZCegt2uVysvLxcTDK9xEIrBK/p7d3GxsbodTgcZiMjI3qaX4PgBT0t1tXViVBAXaEhhSXDAgQH9bRotVrF9dbWlt7RFjTz9tFOwQwKeBQ/v2TqiRwjTNwLD6Mx93IHePcVtMZ2HKO8w6MZAwMDIqWhpMT2SSeMKgt4dBG/FLB3oe2NUjBanncLWPA9rjGuL4Fd6fsCFPtBuZs3JXTgsVefM6ogklmKiUeJ31N1fn4QrxSQd3uUYpMJBtBefVQAYqHBm6xaS4abxMd5FDvMNbBsBWNGXic+yINYjHmVpTisSVfA4wU38SI2ujkQijEu8TEj6Qr4THhGPMbTi5GpC2M8zWbHkQ0wU3FwckbnFTHAbbYmZgOtgmNAAj9MPEkc5xWUTNU1zm0cYSpbvDInoRG+roM4okWr6zhvyKDHkXh0i7YQjm6xv0cb8xN/LoV/AgwAANj+CFLxbboAAAAASUVORK5CYII=);
-	}
+    .help {
+        cursor: pointer;
+        width: 22px;
+        height: 22px;
+        box-sizing: content-box;
+        background-size: 22px;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAsCAYAAAAehFoBAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyNpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDE0IDc5LjE1MTQ4MSwgMjAxMy8wMy8xMy0xMjowOToxNSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChNYWNpbnRvc2gpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkJBN0MwQTc5REQ4RjExRTM5MzczRDk3QzQxRTkxOTIwIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkJBN0MwQTdBREQ4RjExRTM5MzczRDk3QzQxRTkxOTIwIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QkE3QzBBNzdERDhGMTFFMzkzNzNEOTdDNDFFOTE5MjAiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QkE3QzBBNzhERDhGMTFFMzkzNzNEOTdDNDFFOTE5MjAiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5xa1/RAAADy0lEQVR42tRZTUhUURS+M8xCMUMjGVAQYTAppF9EEGkW4kRoTjjRDwXmJokIF26shqKoaCtDim7SRU0gNlTI9OdCa+MmmRhbZG0ExTRQnLLZTeeb7lzfDPP37ntvZvzgg/fezDv347xzzz33XIvD4WAaUEJsJtqJB4j7iFbiLv77b+JP4jfiV+IM8SPxj+yAFol3TMQTxG7iKWJxmv/u4dxPdBJvEP8SXxOfEN8SI2oGN6sU20mcI/qJZzOITYVi/q6f2zpthGAb8R1xgniI6QfY8nHbNr0EnyN+JrYy49DKxzivRTBi9T7xOXE3Mx4Yw8vHNKkVjBc8xFss98CYQ6lEpxL8kHiN5Q89XENWghFH/Sz/gIYLmQRjpg6zwsFwYvZIXDiGZCdYS0sLq6mpYXa7Pe758vIyCwQCzO/3s42NDbVmS7kmsRybFEtzJ8+zqlBWVsZ6e3uZzZY5jY6NjbGpqSkZf7iIL5Qexoy8LRVo/f2ssrJSeNPn87HZ2dnofXV1NXM6nayhoSF639XVxVZWVtj8/LzaYe7wBSYSi2GHzArW0dERJxbiY2KBxcVF5vF42PT0tHjW1tYm45eDvH4Rk65bxkpTU5O4HhwcTPm/iYntSKuvr5edgJdjgkt4JaU6dpXehTdTAZNtfX1d3CNUJACNJWZezxapfbuqqkpcLy0t5SLFQWOzhRffqhEKhaKpClhdXc1cUxZvV6Kbm5uyou0QLBVUCIF0YZA4OYuK/n/EYDAok4/FFEBI1Br5HRGv7e3t4n5yclKLuVoIrjBSbF9fn/AuQkgiBytRYeHLnyFi3W53nFiv16vVbKnZCLFIeYme1UGsqNZCegt2uVysvLxcTDK9xEIrBK/p7d3GxsbodTgcZiMjI3qaX4PgBT0t1tXViVBAXaEhhSXDAgQH9bRotVrF9dbWlt7RFjTz9tFOwQwKeBQ/v2TqiRwjTNwLD6Mx93IHePcVtMZ2HKO8w6MZAwMDIqWhpMT2SSeMKgt4dBG/FLB3oe2NUjBanncLWPA9rjGuL4Fd6fsCFPtBuZs3JXTgsVefM6ogklmKiUeJ31N1fn4QrxSQd3uUYpMJBtBefVQAYqHBm6xaS4abxMd5FDvMNbBsBWNGXic+yINYjHmVpTisSVfA4wU38SI2ujkQijEu8TEj6Qr4THhGPMbTi5GpC2M8zWbHkQ0wU3FwckbnFTHAbbYmZgOtgmNAAj9MPEkc5xWUTNU1zm0cYSpbvDInoRG+roM4okWr6zhvyKDHkXh0i7YQjm6xv0cb8xN/LoV/AgwAANj+CFLxbboAAAAASUVORK5CYII=);
+    }
 
-	.saved-cards {
-		.unitize(margin-top, 10);
-	}
+    .saved-cards {
+        .unitize(margin-top, 10);
+    }
 
-	.expiry-date {
-		.unitize(margin-bottom, 20);
-	}
+    .expiry-date {
+        .unitize(margin-bottom, 20);
+    }
 
-	.description {
-		.unitize(margin-top, 20);
-	}
+    .description {
+        .unitize(margin-top, 20);
+    }
 
-	#stripe-card-cvc {
-		float: left;
-		width: 40%;
-	}
+    #stripe-card-cvc {
+        float: left;
+        width: 40%;
+    }
 }
 
 #stripe-payment-error-box {
-	.unitize(margin-top, 20);
+    .unitize(margin-top, 20);
 }
 
 .shipping-payment--information {
 
-	.alert {
-		.unitize(margin-bottom, 20);
-	}
+    .alert {
+        .unitize(margin-bottom, 20);
+    }
 }
 
 .stripe-payment-cvc-info-wrapper {
-	.unitize(padding-top, 40);
-	text-align: center;
+    .unitize(padding-top, 40);
+    text-align: center;
 }
 
 .stripe-payment-cvc-info-popup-cardtype {
-	display: inline-block;
-	.unitize-padding(10, 10);
-	.unitize(max-width, 280);
-	vertical-align: top;
+    display: inline-block;
+    .unitize-padding(10, 10);
+    .unitize(max-width, 280);
+    vertical-align: top;
 }
 
 .stripe-payment-cvc-infotext {
-	.unitize(padding-top, 15);
-	.unitize(padding-bottom, 20);
-	text-align: left;
+    .unitize(padding-top, 15);
+    .unitize(padding-bottom, 20);
+    text-align: left;
 }
 
 // Phone Landscape styling
@@ -100,129 +100,129 @@
 // Tablet styling
 @media screen and (min-width: @tabletViewportWidth) {
 
-	#stripe-payment-form {
+    #stripe-payment-form {
 
-		.panel--tr {
-			.unitize(margin-top, 10);
-		}
+        .panel--tr {
+            .unitize(margin-top, 10);
+        }
 
-		label {
+        label {
 
-			&.panel--td {
-				float: left;
-				width: 35%;
-			}
-		}
+            &.panel--td {
+                float: left;
+                width: 35%;
+            }
+        }
 
-		input,
-		.saved-cards .js--fancy-select,
-		#stripe-card-cvc {
-			width: 45%;
-		}
+        input,
+        .saved-cards .js--fancy-select,
+        #stripe-card-cvc {
+            width: 45%;
+        }
 
-		.expiry-date {
+        .expiry-date {
 
-			.js--fancy-select {
-				width: 22%;
+            .js--fancy-select {
+                width: 22%;
 
-				& + .js--fancy-select {
-					margin-left: 1%;
-				}
-			}
-		}
+                & + .js--fancy-select {
+                    margin-left: 1%;
+                }
+            }
+        }
 
-		.description {
-			.unitize(margin-top, 30);
-		}
+        .description {
+            .unitize(margin-top, 30);
+        }
 
-		.expiry-date {
-			.unitize(margin-bottom, 30);
-		}
+        .expiry-date {
+            .unitize(margin-bottom, 30);
+        }
 
-		.saved-cards {
-			.unitize(margin-top, 30);
-		}
-	}
+        .saved-cards {
+            .unitize(margin-top, 30);
+        }
+    }
 
-	.stripe-payment-cvc-info-wrapper {
-		padding-top: 0;
-	}
+    .stripe-payment-cvc-info-wrapper {
+        padding-top: 0;
+    }
 
-	.stripe-payment-cvc-info-popup-cardtype {
-		.unitize-padding(30, 30);
-		max-width: none;
-		width: 310px;
-	}
+    .stripe-payment-cvc-info-popup-cardtype {
+        .unitize-padding(30, 30);
+        max-width: none;
+        width: 310px;
+    }
 
-	// Increase height of address and payment boxes in checkout to make room for credit card info
-	// Remark: This rule only comes into effect in Shopware versions >= 5.0 and < 5.2
-	.is--stripe-payment-selected {
-		.confirm--content {
-			.information--panel {
-				.unitize-height(350);
-			}
-		}
-	}
+    // Increase height of address and payment boxes in checkout to make room for credit card info
+    // Remark: This rule only comes into effect in Shopware versions >= 5.0 and < 5.2
+    .is--stripe-payment-selected {
+        .confirm--content {
+            .information--panel {
+                .unitize-height(350);
+            }
+        }
+    }
 }
 
 // Tablet Landscape styling
 @media screen and (min-width: @tabletLandscapeViewportWidth) {
 
-	#stripe-payment-form {
+    #stripe-payment-form {
 
-		label {
+        label {
 
-			&.panel--td {
-				width: 35%;
-			}
-		}
+            &.panel--td {
+                width: 35%;
+            }
+        }
 
-		input,
-		.saved-cards .js--fancy-select,
-		#stripe-card-cvc {
-			width: 39%;
-		}
+        input,
+        .saved-cards .js--fancy-select,
+        #stripe-card-cvc {
+            width: 39%;
+        }
 
-		.expiry-date {
+        .expiry-date {
 
-			.js--fancy-select {
-				width: 19%;
+            .js--fancy-select {
+                width: 19%;
 
-				& + .js--fancy-select {
-					margin-left: 1%;
-				}
-			}
-		}
-	}
+                & + .js--fancy-select {
+                    margin-left: 1%;
+                }
+            }
+        }
+    }
 }
 
 // Desktop styling
 @media screen and (min-width: @desktopViewportWidth) {
 
-	#stripe-payment-form {
+    #stripe-payment-form {
 
-		label {
+        label {
 
-			&.panel--td {
-				width: 20%;
-			}
-		}
+            &.panel--td {
+                width: 20%;
+            }
+        }
 
-		input,
-		.saved-cards .js--fancy-select,
-		#stripe-card-cvc {
-			width: 26%;
-		}
+        input,
+        .saved-cards .js--fancy-select,
+        #stripe-card-cvc {
+            width: 26%;
+        }
 
-		.expiry-date {
+        .expiry-date {
 
-			.js--fancy-select {
-				width: 12.5%;
+            .js--fancy-select {
+                width: 12.5%;
 
-				& + .js--fancy-select {
-					margin-left: 1%;
-				}
-			}
-		}
-	}
+                & + .js--fancy-select {
+                    margin-left: 1%;
+                }
+            }
+        }
+    }
 }

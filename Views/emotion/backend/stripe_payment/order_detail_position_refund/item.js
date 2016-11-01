@@ -6,15 +6,15 @@
  */
 Ext.define('Shopware.apps.StripePayment.Order.model.detail.position.refund.Item', {
 
-	extend : 'Ext.data.Model',
+    extend : 'Ext.data.Model',
 
-	fields : [
-		{ name: 'id', type: 'int' },
-		{ name: 'articleNumber', type: 'string' },
-		{ name: 'articleName', type: 'string' },
-		{ name: 'quantity', type: 'int' },
-		{ name: 'price', type: 'decimal' },
-		{ name: 'total', type: 'decimal' }
-	]
+    fields : [
+        { name: 'id', type: 'int' },
+        { name: 'articleNumber', type: 'string' },
+        { name: 'articleName', type: 'string' },
+        { name: 'quantity', type: 'int' },
+        { name: 'price', type: 'decimal' },
+        { name: 'total', type: 'decimal' }
+    ]
 
 });
