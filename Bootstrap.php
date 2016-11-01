@@ -163,21 +163,17 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
      */
     public function uninstall()
     {
-        try {
-            // Remove database columns
-            $this->get('models')->removeAttribute(
-                's_user_attributes',
-                'stripe',
-                'customer_id'
-            );
+        // Remove database columns
+        $this->get('models')->removeAttribute(
+            's_user_attributes',
+            'stripe',
+            'customer_id'
+        );
 
-            // Rebuild the user attributes model
-            $this->get('models')->generateAttributeModels(array(
-                's_user_attributes'
-            ));
-        } catch (Exception $e) {
-            return false;
-        }
+        // Rebuild the user attributes model
+        $this->get('models')->generateAttributeModels(array(
+            's_user_attributes'
+        ));
 
         return true;
     }
