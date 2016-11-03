@@ -3,6 +3,6 @@
     "type": "shopware-frontend-plugin",
     "require": {
         "composer/installers": "~1.0",
-        "stripe/stripe-php": "3.*"
+        "stripe/stripe-php": "4.*"
     }
 }
