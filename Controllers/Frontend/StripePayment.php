@@ -28,14 +28,11 @@ class Shopware_Controllers_Frontend_StripePayment extends Shopware_Controllers_F
             // Init the stripe payment
             Util::initStripeAPI();
             $charge = Stripe\Charge::create($chargeData);
-            if ($charge->cvc_check === 'fail') {
-                // The CVC check failed. This is not tolerated, although the shop's Stripe account might be
-                // configured to not decline charges, whose CVC check failed.
-                throw new Exception('The provided security code (CVC) is invalid.');
-            }
         } catch (Exception $e) {
+            // Determine error message
+            $message = ($e instanceof Stripe\Error\Card && $e->stripeCode === 'incorrect_cvc') ? 'The provided security code (CVC) is invalid.' : $e->getMessage();
             // Save the exception message in the session and redirect to the checkout confirm/index view
-            Shopware()->Session()->stripePaymentError = 'Die Zahlung konnte nicht durchgeführt werden, da folgender Fehler aufgetreten ist: ' . $e->getMessage();
+            Shopware()->Session()->stripePaymentError = 'Die Zahlung konnte nicht durchgeführt werden, da folgender Fehler aufgetreten ist: ' . $message;
             $this->redirect(array(
                 'controller' => 'checkout',
                 'action' => (Shopware()->Shop()->getTemplate()->getVersion() < 3) ? 'confirm' : 'index'
