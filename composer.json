@@ -1,8 +1,8 @@
 {
-	"name": "Stripe/Payment",
-	"type": "shopware-frontend-plugin",
-	"require": {
-		"composer/installers": "~1.0",
-		"stripe/stripe-php": "3.*"
-	}
+    "name": "Stripe/Payment",
+    "type": "shopware-frontend-plugin",
+    "require": {
+        "composer/installers": "~1.0",
+        "stripe/stripe-php": "3.*"
+    }
 }
