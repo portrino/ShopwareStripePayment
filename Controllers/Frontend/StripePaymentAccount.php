@@ -46,7 +46,7 @@ class Shopware_Controllers_Frontend_StripePaymentAccount extends Shopware_Contro
                 return strcmp($cardA['id'], $cardB['id']);
             });
         } catch (Exception $e) {
-            $error = 'Beim Laden der Kreditkarten ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.';
+            $error = ($this->get('snippets')->getNamespace('frontend/plugins/stripe_payment/account')->get('credit_cards/error/list_cards')) ?: 'Failed to load credit cards.';
             if (Shopware()->Session()->stripeErrorMessage === null) {
                 Shopware()->Session()->stripeErrorMessage = $error;
             } else {
@@ -75,7 +75,7 @@ class Shopware_Controllers_Frontend_StripePaymentAccount extends Shopware_Contro
             }
             Util::deleteStripeCard($cardId);
         } catch (Exception $e) {
-            Shopware()->Session()->stripeErrorMessage = 'Beim Löschen der Kreditkarte ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.';
+            Shopware()->Session()->stripeErrorMessage = ($this->get('snippets')->getNamespace('frontend/plugins/stripe_payment/account')->get('credit_cards/error/delete_card')) ?: 'Failed to delete credit card.';
         }
 
         // Clear all checkout related fields from the session to avoid caching deleted credit cards

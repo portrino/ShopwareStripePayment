@@ -30,9 +30,11 @@ class Shopware_Controllers_Frontend_StripePayment extends Shopware_Controllers_F
             $charge = Stripe\Charge::create($chargeData);
         } catch (Exception $e) {
             // Determine error message
-            $message = ($e instanceof Stripe\Error\Card && $e->stripeCode === 'incorrect_cvc') ? 'The provided security code (CVC) is invalid.' : $e->getMessage();
+            $namespace = $this->get('snippets')->getNamespace('frontend/plugins/payment/stripe_payment');
+            $message = ($e instanceof Stripe\Error\Card && $e->stripeCode === 'incorrect_cvc') ? $namespace->get('payment_error/message/charge_failed/incorrect_cvc') : $e->getMessage();
+            $message = ($message) ?: $e->getMessage();
             // Save the exception message in the session and redirect to the checkout confirm/index view
-            Shopware()->Session()->stripePaymentError = 'Die Zahlung konnte nicht durchgeführt werden, da folgender Fehler aufgetreten ist: ' . $message;
+            Shopware()->Session()->stripePaymentError = (($namespace->get('payment_error/message/charge_failed')) ?: 'Payment process failed, because an error occurred: ') . ' ' . $message;
             $this->redirect(array(
                 'controller' => 'checkout',
                 'action' => (Shopware()->Shop()->getTemplate()->getVersion() < 3) ? 'confirm' : 'index'
@@ -145,11 +147,13 @@ class Shopware_Controllers_Frontend_StripePayment extends Shopware_Controllers_F
                 $chargeData['customer'] = $stripeCustomer->id;
             } catch (Exception $e) {
                 // The Stripe customer couldn't be loaded
-                throw new Exception('Die ausgewählte Kreditkarte wurde nicht gefunden.');
+                $message = ($this->get('snippets')->getNamespace('frontend/plugins/payment/stripe_payment')->get('payment_error/message/card_not_found')) ?: 'Card not found.';
+                throw new Exception($message);
             }
         } else {
             // No payment information provided
-            throw new Exception('Die Stripe-Transaktion wurde nicht gefunden.');
+            $message = ($this->get('snippets')->getNamespace('frontend/plugins/payment/stripe_payment')->get('payment_error/message/transaction_not_found')) ?: 'Transaction not found.';
+            throw new Exception($message);
         }
 
         return $chargeData;
