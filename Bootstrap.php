@@ -35,10 +35,10 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
             'label' => 'Stripe Payment',
             'description' => file_get_contents(__DIR__ . '/description.html'),
             'autor' => 'Stripe',
-            'copyright' => 'Copyright © 2015, VIISON GmbH',
+            'copyright' => 'Copyright © 2016, VIISON GmbH',
             'license' => 'All rights reserved.',
             'support' => 'info@stripe.com',
-            'link' => 'http://www.stripe.com/',
+            'link' => 'https://www.stripe.com/',
             'version' => $this->getVersion()
         );
     }
