@@ -1,3 +1,22 @@
+## 1.1.0
+
+### en
+
+* From now on it is possible to configure different stripe accounts for different subshops
+* It is now possible to hide the 'save credit card' checkbox
+* The cleared date is now set correctly upon checkout
+* Error messages shown during the payment process are now available as text snippets
+* Improves the layout of the credit card management in the account settings on small displays
+
+### de
+
+* Ab sofort ist es möglich, verschiedene stripe-Accounts für verschiedene Subshops zu konfigurieren
+* Es ist nun möglich, die Checkbox zum Speichern von Kreditkarten auszublenden
+* Bei Bestellabschluss wird nun das Zahlungsdatum korrekt gesetzt
+* Fehlermeldungen beim Bezahlvorgang sind ab sofort als Text-Schnipsel hinterlegt
+* Verbessert die Darstellung der Kreditkartenverwaltung in den Benutzereinstellungen auf kleinen Displays
+
+
 ## 1.0.9
 
 ### en
