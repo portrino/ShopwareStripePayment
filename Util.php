@@ -131,12 +131,14 @@ class Util
         $stripeCustomerId = $customer->getAttribute()->getStripeCustomerId();
         try {
             self::$stripeCustomer = Stripe\Customer::retrieve($stripeCustomerId);
+            if (self::$stripeCustomer && isset(self::$stripeCustomer->deleted)) {
+                throw new \Exception('Customer deleted');
+            }
         } catch (\Exception $e) {
             // Customer cannot be found, hence remove the saved customer ID from the databse
+            self::$stripeCustomer = null;
             $customer->getAttribute()->setStripeCustomerId(null);
             Shopware()->Models()->flush($customer->getAttribute());
-
-            return null;
         }
 
         return self::$stripeCustomer;
