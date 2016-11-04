@@ -145,6 +145,17 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                 foreach ($this->Form()->getElements() as $element) {
                     $element->setScope(Element::SCOPE_SHOP);
                 }
+                // Add a config element for the stripe secret key
+                $this->Form()->setElement(
+                    'checkbox',
+                    'allowSavingCreditCard',
+                    array(
+                        'label' => '"Kreditkarte speichern" anzeigen',
+                        'description' => 'Aktivieren Sie diese Feld, um beim Bezahlvorgang das Speichern der Kreditkarte zu erlauben',
+                        'value' => true,
+                        'scope' => Element::SCOPE_SHOP
+                    )
+                );
                 break;
             default:
                 return false;

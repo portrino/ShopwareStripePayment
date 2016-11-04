@@ -24,18 +24,20 @@
 
         {* The mail form field table *}
         <div class="panel--table">
-            {* Credit card selection *}
-            <div class="panel--tr saved-cards">
-                <label for="stripe-saved-cards" class="panel--td">{s namespace="frontend/plugins/payment/stripe_payment" name="form/card_selection"}{/s}</label>
-                <select id="stripe-saved-cards" class="panel--td">
-                    <option value="new"{if $allStripeCards|count == 0} selected{/if}>{s namespace="frontend/plugins/payment/stripe_payment" name="form/card_selection/new_card"}{/s}</option>
-                    {foreach from=$allStripeCards item=stripeCard}
-                        <option value="{$stripeCard.id}" {if $stripeCard.id == $stripeCard.id}selected{/if}>
-                            {$stripeCard.name} | {$stripeCard.brand} | &bull;&bull;&bull;&bull;{$stripeCard.last4} | {$stripeCard.exp_month}/{$stripeCard.exp_year}
-                        </option>
-                    {/foreach}
-                </select>
-            </div>
+            {if $stripeAllowSavingCreditCard or $allStripeCards|count > 0}
+                {* Credit card selection *}
+                <div class="panel--tr saved-cards">
+                    <label for="stripe-saved-cards" class="panel--td">{s namespace="frontend/plugins/payment/stripe_payment" name="form/card_selection"}{/s}</label>
+                    <select id="stripe-saved-cards" class="panel--td">
+                        <option value="new"{if $allStripeCards|count == 0} selected{/if}>{s namespace="frontend/plugins/payment/stripe_payment" name="form/card_selection/new_card"}{/s}</option>
+                        {foreach from=$allStripeCards item=stripeCard}
+                            <option value="{$stripeCard.id}" {if $stripeCard.id == $stripeCard.id}selected{/if}>
+                                {$stripeCard.name} | {$stripeCard.brand} | &bull;&bull;&bull;&bull;{$stripeCard.last4} | {$stripeCard.exp_month}/{$stripeCard.exp_year}
+                            </option>
+                        {/foreach}
+                    </select>
+                </div>
+            {/if}
             {* Card holder *}
             <div class="panel--tr">
                 <label for="stripe-card-holder" class="panel--td">{s namespace="frontend/plugins/payment/stripe_payment" name="form/card/holder"}{/s} *</label>
@@ -70,7 +72,7 @@
             {/strip}
         </div>
 
-        {if $customerAccountMode == 0}
+        {if $customerAccountMode == 0 and $stripeAllowSavingCreditCard}
             {* Save data *}
             <span class="outer-checkbox">
                 <div class="checkbox">

@@ -121,18 +121,20 @@
             <div class="error-content">
             </div>
         </div >
-        {* Credit card selection *}
-        <div class="form-group">
-            <label class="control-label" for="stripe-saved-cards">Gespeicherte Karten</label>
-            <div class="form-input adjust-margin">
-                <select id="stripe-saved-cards" style="width: 365px;">
-                    <option value="new"{if $allStripeCards|count == 0} selected{/if}>{s namespace="frontend/plugins/payment/stripe_payment" name="form/card_selection/new_card"}{/s}</option>
-                    {foreach from=$allStripeCards item=stripeCard}
-                        <option value="{$stripeCard.id}"{if $stripeCard.id == $stripeCard.id} selected{/if}>{$stripeCard.name} | {$stripeCard.brand} | &bull;&bull;&bull;&bull;{$stripeCard.last4} | {$stripeCard.exp_month}/{$stripeCard.exp_year}</option>
-                    {/foreach}
-                </select>
+        {if $stripeAllowSavingCreditCard or $allStripeCards|count > 0}
+            {* Credit card selection *}
+            <div class="form-group">
+                <label class="control-label" for="stripe-saved-cards">Gespeicherte Karten</label>
+                <div class="form-input adjust-margin">
+                    <select id="stripe-saved-cards" style="width: 365px;">
+                        <option value="new"{if $allStripeCards|count == 0} selected{/if}>{s namespace="frontend/plugins/payment/stripe_payment" name="form/card_selection/new_card"}{/s}</option>
+                        {foreach from=$allStripeCards item=stripeCard}
+                            <option value="{$stripeCard.id}"{if $stripeCard.id == $stripeCard.id} selected{/if}>{$stripeCard.name} | {$stripeCard.brand} | &bull;&bull;&bull;&bull;{$stripeCard.last4} | {$stripeCard.exp_month}/{$stripeCard.exp_year}</option>
+                        {/foreach}
+                    </select>
+                </div>
             </div>
-        </div>
+        {/if}
         {* Card holder *}
         <div class="form-group">
             <label class="control-label" for="stripe-card-holder">{s namespace="frontend/plugins/payment/stripe_payment" name="form/card/holder"}{/s} *</label>
@@ -168,7 +170,7 @@
                 <select id="stripe-card-expiry-year"></select>
             </div>
         </div>
-        {if $customerAccountMode == 0}
+        {if $customerAccountMode == 0 and $stripeAllowSavingCreditCard}
             {* Save data *}
             <div class="form-group adjust-margin">
                 <div class="form-input">

@@ -64,8 +64,9 @@ class Frontend implements SubscriberInterface
                 $view->extendsTemplate('frontend/stripe_payment/checkout/card_logos.tpl');
             }
 
-            // Set the stripe public key
+            // Set the stripe public key and some plugin configuration
             $view->stripePublicKey = Util::stripePublicKey();
+            $view->stripeAllowSavingCreditCard = Shopware()->Plugins()->Frontend()->StripePayment()->Config()->get('allowSavingCreditCard', true);
 
             // Check for an error
             if (!empty(Shopware()->Session()->stripePaymentError)) {
