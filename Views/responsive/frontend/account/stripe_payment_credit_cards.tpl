@@ -48,7 +48,7 @@
                         </div>
                         <div class="panel--td column--number">
                             <div class="column--label">{s name="credit_cards/table/number"}{/s}</div>
-                            <div class="column--value">XXXXXXXXXXXX {$creditCard.last4}</div>
+                            <div class="column--value">&bull;&bull;&bull;&bull;{$creditCard.last4}</div>
                         </div>
                         <div class="panel--td column--expiry-date">
                             <div class="column--label">{s name="credit_cards/table/expiry_date"}{/s}</div>
