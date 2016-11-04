@@ -30,7 +30,7 @@ class Util
 
         // Set API version manually to make all plugin versions working, no matter which
         // version is selected in the Stripe app settings
-        Stripe\Stripe::setApiVersion('2015-10-01');
+        Stripe\Stripe::setApiVersion('2016-07-06');
     }
 
     /**
