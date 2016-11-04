@@ -47,15 +47,23 @@ class Shopware_Controllers_Frontend_StripePayment extends Shopware_Controllers_F
         // balance_transaction is displayed in the shop owner's Stripe account, so it can
         // be used to easily identify an order.
         $paymentUniqueId = $charge->balance_transaction;
-        $this->saveOrder($charge->id, $paymentUniqueId, 12); // transactionId, paymentUniqueId, [paymentStatusId, [sendStatusMail]]
+        $orderNumber = $this->saveOrder($charge->id, $paymentUniqueId, 12); // transactionId, paymentUniqueId, [paymentStatusId, [sendStatusMail]]
+        if ($orderNumber) {
+            try {
+                // Save the order number in the description of the charge
+                $charge->description .= ' / Bestell-Nr.: ' . $this->getOrderNumber();
+                $charge->save();
+            } catch (Exception $e) {
+                // Ignore exceptions in this case, because the order has already been created
+                // and adding the order number is not essential to identify the payment
+            }
 
-        try {
-            // Save the order number in the description of the charge
-            $charge->description .= ' / Bestell-Nr.: ' . $this->getOrderNumber();
-            $charge->save();
-        } catch (Exception $e) {
-            // Ignore exceptions in this case, because the order has already been created
-            // and adding the order number is not essential to identify the payment
+            // Try to update the cleared date
+            $order = $this->get('models')->getRepository('Shopware\Models\Order\Order')->findOneBy(array(
+                'number' => $orderNumber
+            ));
+            $order->setClearedDate(new \DateTime());
+            $this->get('models')->flush($order);
         }
 
         if (Shopware()->Session()->stripeDeleteCardAfterPayment === true) {
