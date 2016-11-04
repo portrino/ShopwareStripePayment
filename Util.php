@@ -34,7 +34,7 @@ class Util
     }
 
     /**
-     * @return The Stripe public key set in the plugin configuration.
+     * @return The Stripe public key set in the plugin configuration for the currently active shop.
      */
     public static function stripePublicKey()
     {
@@ -42,7 +42,7 @@ class Util
     }
 
     /**
-     * @return The Stripe secret key set in the plugin configuration.
+     * @return The Stripe secret key set in the plugin configuration for the currently active shop.
      */
     public static function stripeSecretKey()
     {

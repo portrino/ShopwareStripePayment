@@ -3,6 +3,7 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require_once(__DIR__ . '/vendor/autoload.php');
 }
 
+use Shopware\Models\Config\Element;
 use Shopware\Plugins\StripePayment\Subscriber;
 
 /**
@@ -139,7 +140,11 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
             case '1.0.8':
                 // Nothing to do
             case '1.0.9':
-                // Next release
+                $this->get('models')->persist($this->Form());
+                // Set the scope of all config elements to 'shop'
+                foreach ($this->Form()->getElements() as $element) {
+                    $element->setScope(Element::SCOPE_SHOP);
+                }
                 break;
             default:
                 return false;
