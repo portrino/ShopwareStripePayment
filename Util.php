@@ -60,7 +60,7 @@ class Util
     {
         // Get the Stripe customer
         $customer = self::getStripeCustomer();
-        if ($customer === null || $customer->deleted) {
+        if ($customer === null || isset($customer->deleted)) {
             return array();
         }
 
@@ -89,7 +89,7 @@ class Util
     {
         // Get the Stripe customer
         $customer = self::getStripeCustomer();
-        if ($customer === null || $customer->deleted) {
+        if ($customer === null || isset($customer->deleted)) {
             return null;
         }
 
@@ -198,7 +198,7 @@ class Util
         self::initStripeAPI();
         // Get the Stripe customer
         $stripeCustomer = self::getStripeCustomer();
-        if ($stripeCustomer !== null && !$stripeCustomer->deleted) {
+        if ($stripeCustomer !== null && !isset($stripeCustomer->deleted)) {
             // Add the card to the existing customer
             $newCard = $stripeCustomer->sources->create(array(
                 'source' => $transactionToken
