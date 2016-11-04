@@ -14,33 +14,28 @@ use Shopware\Plugins\StripePayment\Subscriber;
 class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Components_Plugin_Bootstrap
 {
     /**
-     * Returns the current version of this plugin.
-     *
-     * @return The current version of this plugin.
+     * @inheritdoc
      */
     public function getVersion()
     {
-        return '1.0.9';
+        $pluginJSON = $this->getPluginJSON();
+
+        return $pluginJSON['currentVersion'];
     }
 
     /**
-     * Gathers all information about this plugin and returns it wrapped in an array. This information
-     * will be displayed e.g. in the backend plugin manager.
-     *
-     * @return An array containing meta information about this plugin.
+     * @inheritdoc
      */
     public function getInfo()
     {
-        return array(
-            'label' => 'Stripe Payment',
-            'description' => file_get_contents(__DIR__ . '/description.html'),
-            'autor' => 'Stripe',
-            'copyright' => 'Copyright © 2016, VIISON GmbH',
-            'license' => 'All rights reserved.',
-            'support' => 'info@stripe.com',
-            'link' => 'https://www.stripe.com/',
-            'version' => $this->getVersion()
-        );
+        $info = $this->getPluginJSON();
+        $info['version'] = $info['currentVersion'];
+        $info['label'] = 'Stripe Payment';
+        $info['description'] = file_get_contents(__DIR__ . '/description.html');
+        unset($info['currentVersion']);
+        unset($info['compatibility']);
+
+        return $info;
     }
 
     /**
@@ -224,5 +219,16 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
     public function assertMinimumVersion($requiredVersion)
     {
         return parent::assertMinimumVersion($requiredVersion);
+    }
+
+    /**
+     * @return array
+     */
+    private function getPluginJSON()
+    {
+        $pluginJSON = file_get_contents(__DIR__ . '/plugin.json');
+        $pluginJSON = json_decode($pluginJSON, true);
+
+        return $pluginJSON;
     }
 }
