@@ -1,0 +1,15 @@
+{
+    "currentVersion": "1.0.9",
+    "author": "Stripe",
+    "copyright": "Copyright © 2016 VIISON GmbH",
+    "license": "All rights reserved.",
+    "support": "info@stripe.com",
+    "link": "https://www.stripe.com/",
+    "label": {
+        "de": "Stripe Payment",
+        "en": "Stripe Payment"
+    },
+    "compatibility": {
+        "minimumVersion": "4.3.0"
+    }
+}
