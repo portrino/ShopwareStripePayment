@@ -63,10 +63,6 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                     'Enlight_Controller_Front_DispatchLoopStartup',
                     'onDispatchLoopStartup'
                 );
-                $this->subscribeEvent(
-                    'Shopware_Console_Add_Command',
-                    'onAddConsoleCommand'
-                );
 
                 // Check whether the payment method already exists
                 $stripePaymentMethod = $this->get('models')->getRepository('Shopware\Models\Payment\Payment')->findOneBy(array(
@@ -156,7 +152,11 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                     )
                 );
             case '1.1.0':
-                // Next release
+                // Add static event subscriber to make sure the plugin is loaded upon running console commands
+                $this->subscribeEvent(
+                    'Shopware_Console_Add_Command',
+                    'onAddConsoleCommand'
+                );
                 break;
             default:
                 return false;
