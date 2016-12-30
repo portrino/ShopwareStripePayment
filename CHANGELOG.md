@@ -1,3 +1,14 @@
+## 1.1.1
+
+### en
+
+* From now on the theme files of this plugin are included when compiling them using the console command
+
+### de
+
+* Ab sofort werden die Theme-Dateien des Plugins auch beim Kompilieren über die Konsole berücksichtigt
+
+
 ## 1.1.0
 
 ### en

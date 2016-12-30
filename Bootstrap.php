@@ -157,6 +157,8 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                     'Shopware_Console_Add_Command',
                     'onAddConsoleCommand'
                 );
+            case '1.1.1':
+                // Next release
                 break;
             default:
                 return false;
