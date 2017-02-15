@@ -304,11 +304,19 @@ var StripePayment = {
 
             // Send the credit card information to Stripe
             me.requestPending = true;
+            if (me.isShopware5Template()) {
+                $.loadingIndicator.open();
+            }
             me.stripeService.createToken(me.cardNumberElement, {
                 name: $('#stripe-card-holder').val()
             }).then(function(result) {
                 me.requestPending = false;
                 if (result.error) {
+                    // Only close the loading indicator if an error occurred
+                    if (me.isShopware5Template()) {
+                        $.loadingIndicator.close();
+                    }
+
                     // Display the error
                     var message = me.snippets.error[result.error.code || ''] || result.error.message || 'Unknown error';
                     me.handleStripeError(me.snippets.error.title + ': ' + message);
