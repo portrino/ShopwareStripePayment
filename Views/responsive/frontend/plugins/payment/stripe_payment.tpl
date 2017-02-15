@@ -14,7 +14,7 @@
             </div>
         </div>
 
-        {* An error box *}
+        {* A box for displaying general errors *}
         <div id="stripe-payment-error-box" class="alert is--error is--rounded" style="display: none;">
             <div class="alert--icon">
                 <i class="icon--element icon--cross"></i>
@@ -22,7 +22,7 @@
             <div class="alert--content error-content"></div>
         </div>
 
-        {* The mail form field table *}
+        {* The main form field table *}
         <div class="panel--table">
             {if $stripeAllowSavingCreditCard or $allStripeCards|count > 0}
                 {* Credit card selection *}
@@ -39,49 +39,53 @@
                 </div>
             {/if}
             {* Card holder *}
-            <div class="panel--tr">
+            <div class="panel--tr stripe-card-field">
                 <label for="stripe-card-holder" class="panel--td">{s namespace="frontend/plugins/payment/stripe_payment" name="form/card/holder"}{/s} *</label>
-                <input id="stripe-card-holder" type="text" size="20" class="panel--td" value="{if $stripeCard}{$stripeCard.name}{else}{$sUserData.billingaddress.firstname} {$sUserData.billingaddress.lastname}{/if}">
+                <input id="stripe-card-holder" type="text" size="20" class="panel--td" value="{$sUserData.billingaddress.firstname} {$sUserData.billingaddress.lastname}">
             </div>
             {* Card number *}
-            <div class="panel--tr">
-                <label for="stripe-card-number" class="panel--td">{s namespace="frontend/plugins/payment/stripe_payment" name="form/card/number"}{/s} *</label>
-                {* Try to use the last 4 digits of a previously created Stripe card *}
-                <input id="stripe-card-number" type="text" size="20" class="panel--td" value="{if $stripeCard}XXXXXXXXXXXX{$stripeCard.last4}{/if}">
+            <div class="panel--tr stripe-card-field">
+                <label for="stripe-element-card-number" class="panel--td">{s namespace="frontend/plugins/payment/stripe_payment" name="form/card/number"}{/s} *</label>
+                <div id="stripe-element-card-number" class="panel--td"><!-- Stripe element is inserted here --></div>
+            </div>
+            {* Expiry date *}
+            <div class="panel--tr stripe-card-field">
+                <label for="stripe-element-card-expiry" class="panel--td">{s namespace="frontend/plugins/payment/stripe_payment" name="form/card/expiry"}{/s} *</label>
+                <div id="stripe-element-card-expiry" class="panel--td"><!-- Stripe element is inserted here --></div>
             </div>
             {* CVC *}
-            <div class="panel--tr">
-                <label for="stripe-card-cvc" class="panel--td">{s namespace="frontend/plugins/payment/stripe_payment" name="form/card/cvc"}{/s} *</label>
-                {* Set a placeholder, if a previously created card is set *}
-                <input id="stripe-card-cvc" type="text" size="5" class="panel--td" value="{if $stripeCard}***{/if}">
+            <div class="panel--tr stripe-card-field">
+                <label for="stripe-element-card-cvc" class="panel--td">{s namespace="frontend/plugins/payment/stripe_payment" name="form/card/cvc"}{/s} *</label>
+                <div id="stripe-element-card-cvc" class="panel--td"><!-- Stripe element is inserted here --></div>
                 <div class="stripe-card-cvc--help help panel--td"
                     data-modalbox="true"
-                    data-content="{url controller="StripePayment" action="cvcInfo" forceSecure}"
+                    data-content="{url controller=StripePayment action=cvcInfo forceSecure}"
                     data-mode="ajax"
                     data-height="430"
                     data-width="650">
                 </div>
             </div>
-            {* Expiry date *}
-            {strip}
-            <div class="panel--tr expiry-date">
-                <label for="stripe-card-expiry-month" class="panel--td">{s namespace="frontend/plugins/payment/stripe_payment" name="form/card/expiry"}{/s} *</label>
-                <select id="stripe-card-expiry-month" class="panel--td"></select>
-                <select id="stripe-card-expiry-year" class="panel--td"></select>
-            </div>
-            {/strip}
+            {if $customerAccountMode == 0 and $stripeAllowSavingCreditCard}
+                {* Save data *}
+                <div class="panel--tr stripe-card-field">
+                    <span class="outer-checkbox">
+                        <div class="checkbox">
+                            <input id="stripe-save-card" type="checkbox" checked="checked">
+                            <span class="checkbox--state"></span>
+                        </div>
+                    </span>
+                    <label for="stripe-save-card">{s namespace="frontend/plugins/payment/stripe_payment" name="form/save_card"}{/s}</label>
+                </div>
+            {/if}
         </div>
 
-        {if $customerAccountMode == 0 and $stripeAllowSavingCreditCard}
-            {* Save data *}
-            <span class="outer-checkbox">
-                <div class="checkbox">
-                    <input id="stripe-save-card" type="checkbox" checked="checked">
-                    <span class="checkbox--state"></span>
-                </div>
-            </span>
-            <label for="stripe-save-card">{s namespace="frontend/plugins/payment/stripe_payment" name="form/save_card"}{/s}</label>
-        {/if}
+        {* A box for displaying validation errors *}
+        <div id="stripe-payment-validation-error-box" class="alert is--error is--rounded" style="display: none;">
+            <div class="alert--icon">
+                <i class="icon--element icon--cross"></i>
+            </div>
+            <div class="alert--content error-content"></div>
+        </div>
 
         {* Info *}
         <div class="description">

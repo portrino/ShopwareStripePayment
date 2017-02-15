@@ -8,7 +8,7 @@
 {/block}
 
 {block name="frontend_index_header_javascript_jquery" append}
-    <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+    <script type="text/javascript" src="https://js.stripe.com/v3/"></script>
     <script type="text/javascript">
         {**
          * Uncomment the following line the speed up development by including the custom

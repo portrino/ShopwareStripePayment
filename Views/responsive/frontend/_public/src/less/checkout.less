@@ -1,5 +1,4 @@
 #stripe-payment-form {
-
     .panel--tr {
         border-width: 0;
     }
@@ -18,21 +17,16 @@
         }
     }
 
-    input, .saved-cards .js--fancy-select {
+    input,
+    .StripeElement,
+    .saved-cards .js--fancy-select {
         float: none;
         width: 100%;
     }
 
-    .expiry-date {
-
-        .js--fancy-select {
-            float: left;
-            width: 49.5%;
-
-            & + .js--fancy-select {
-                margin-left: 1%;
-            }
-        }
+    #stripe-element-card-cvc {
+        // Use 'float: left;' to make sure the CVC info icon is positioned on the right of the field
+        float: left;
     }
 
     .help {
@@ -50,26 +44,33 @@
         .unitize(margin-top, 10);
     }
 
-    .expiry-date {
-        .unitize(margin-bottom, 20);
-    }
-
     .description {
         .unitize(margin-top, 20);
     }
 
-    #stripe-card-cvc {
-        float: left;
-        width: 40%;
+    // Use the styles of default input fields for Stripe elements
+    .StripeElement {
+        &:extend(input);
+        &:extend(input[type="text"]);
+
+        &.StripeElement--focus {
+            &:extend(input:focus);
+            &:extend(input[type="text"]:focus);
+        }
+
+        &.StripeElement--invalid {
+            &:extend(input:has--error);
+            &:extend(input[type="text"].has--error);
+        }
     }
 }
 
-#stripe-payment-error-box {
+#stripe-payment-error-box,
+#stripe-payment-validation-error-box {
     .unitize(margin-top, 20);
 }
 
 .shipping-payment--information {
-
     .alert {
         .unitize(margin-bottom, 20);
     }
@@ -99,44 +100,24 @@
 
 // Tablet styling
 @media screen and (min-width: @tabletViewportWidth) {
-
     #stripe-payment-form {
-
         .panel--tr {
             .unitize(margin-top, 10);
         }
 
-        label {
-
-            &.panel--td {
-                float: left;
-                width: 35%;
-            }
+        label.panel--td {
+            float: left;
+            width: 35%;
         }
 
         input,
-        .saved-cards .js--fancy-select,
-        #stripe-card-cvc {
+        .StripeElement,
+        .saved-cards .js--fancy-select {
             width: 45%;
-        }
-
-        .expiry-date {
-
-            .js--fancy-select {
-                width: 22%;
-
-                & + .js--fancy-select {
-                    margin-left: 1%;
-                }
-            }
         }
 
         .description {
             .unitize(margin-top, 30);
-        }
-
-        .expiry-date {
-            .unitize(margin-bottom, 30);
         }
 
         .saved-cards {
@@ -167,62 +148,30 @@
 
 // Tablet Landscape styling
 @media screen and (min-width: @tabletLandscapeViewportWidth) {
-
     #stripe-payment-form {
-
-        label {
-
-            &.panel--td {
-                width: 35%;
-            }
+        label.panel--td {
+            width: 35%;
         }
 
         input,
-        .saved-cards .js--fancy-select,
-        #stripe-card-cvc {
+        .StripeElement,
+        .saved-cards .js--fancy-select {
             width: 39%;
-        }
-
-        .expiry-date {
-
-            .js--fancy-select {
-                width: 19%;
-
-                & + .js--fancy-select {
-                    margin-left: 1%;
-                }
-            }
         }
     }
 }
 
 // Desktop styling
 @media screen and (min-width: @desktopViewportWidth) {
-
     #stripe-payment-form {
-
-        label {
-
-            &.panel--td {
-                width: 20%;
-            }
+        label.panel--td {
+            width: 20%;
         }
 
         input,
-        .saved-cards .js--fancy-select,
-        #stripe-card-cvc {
+        .StripeElement,
+        .saved-cards .js--fancy-select {
             width: 26%;
-        }
-
-        .expiry-date {
-
-            .js--fancy-select {
-                width: 12.5%;
-
-                & + .js--fancy-select {
-                    margin-left: 1%;
-                }
-            }
         }
     }
 }
