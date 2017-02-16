@@ -30,7 +30,7 @@ class Payment implements SubscriberInterface
     {
         if (Shopware()->Shop()->getTemplate()->getVersion() >= 3) {
             $dirs = $args->getReturn();
-            $dirs['StripePaymentMethod'] = 'Shopware\Plugins\StripePayment\Components\StripePaymentMethod';
+            $dirs['StripePaymentMethod'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Card';
             $args->setReturn($dirs);
         }
     }
