@@ -9,11 +9,6 @@ use Shopware\Plugins\StripePayment\Util;
 class Shopware_Controllers_Frontend_StripePayment extends Shopware_Controllers_Frontend_Payment
 {
     /**
-     * The platform name used as meta data when creating a new charg.e
-     */
-    const STRIPE_PLATFORM_NAME = 'UMXJ4nBknsWR3LN_shopware_v50';
-
-    /**
      * Retrieves the generated stripe transaction token and uses it to
      * charge the customer via the stripe API. After a successful payment,
      * the stripe transaction id is safed in the order and its status is updated to
@@ -132,7 +127,7 @@ class Shopware_Controllers_Frontend_StripePayment extends Shopware_Controllers_F
             'currency' => $this->getCurrencyShortName(),
             'description' => ($userEmail . ' / Kunden-Nr.: ' . $customerNumber),
             'metadata' => array(
-                'platform_name' => self::STRIPE_PLATFORM_NAME
+                'platform_name' => Util::STRIPE_PLATFORM_NAME
             )
         );
 

@@ -12,6 +12,11 @@ use Shopware\Models\Attribute\Customer as CustomerAttribute;
 class Util
 {
     /**
+     * The platform name used as meta data e.g. when creating a new charge.
+     */
+    const STRIPE_PLATFORM_NAME = 'UMXJ4nBknsWR3LN_shopware_v50';
+
+    /**
      * This field is used as a cache for the Stripe customer object of the
      * currently logged in user.
      *
@@ -31,6 +36,14 @@ class Util
         // Set API version manually to make all plugin versions working, no matter which
         // version is selected in the Stripe app settings
         Stripe\Stripe::setApiVersion('2016-07-06');
+
+        // Set some plugin info that will be added to every Stripe request
+        $defaultShop = Shopware()->Models()->getRepository('Shopware\Models\Shop\Shop')->getActiveDefault();
+        Stripe\Stripe::setAppInfo(
+            self::STRIPE_PLATFORM_NAME,
+            Shopware()->Plugins()->Frontend()->StripePayment()->getVersion(),
+            ($defaultShop) ? $defaultShop->getHost() : null
+        );
     }
 
     /**
