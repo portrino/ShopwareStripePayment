@@ -216,9 +216,11 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
     public function onDispatchLoopStartup(\Enlight_Event_EventArgs $args)
     {
         $this->get('events')->addSubscriber(new Subscriber\Payment());
-        $this->get('events')->addSubscriber(new Subscriber\Backend($this));
+        $this->get('events')->addSubscriber(new Subscriber\Backend\Index($this));
+        $this->get('events')->addSubscriber(new Subscriber\Backend\Order($this));
         $this->get('events')->addSubscriber(new Subscriber\Controllers($this));
-        $this->get('events')->addSubscriber(new Subscriber\Frontend($this));
+        $this->get('events')->addSubscriber(new Subscriber\Frontend\Account($this));
+        $this->get('events')->addSubscriber(new Subscriber\Frontend\Checkout($this));
         $this->get('events')->addSubscriber(new Subscriber\Theme($this));
     }
 

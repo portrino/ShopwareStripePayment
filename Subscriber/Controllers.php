@@ -30,9 +30,9 @@ class Controllers implements SubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            'Enlight_Controller_Dispatcher_ControllerPath_Backend_StripePayment' => 'onGetControllerPathBackend',
-            'Enlight_Controller_Dispatcher_ControllerPath_Frontend_StripePayment' => 'onGetControllerPathFrontend',
-            'Enlight_Controller_Dispatcher_ControllerPath_Frontend_StripePaymentAccount' => 'onGetControllerPathFrontend'
+            'Enlight_Controller_Dispatcher_ControllerPath_Backend_StripePayment' => 'onGetControllerPath',
+            'Enlight_Controller_Dispatcher_ControllerPath_Frontend_StripePayment' => 'onGetControllerPath',
+            'Enlight_Controller_Dispatcher_ControllerPath_Frontend_StripePaymentAccount' => 'onGetControllerPath'
         );
     }
 
@@ -40,30 +40,13 @@ class Controllers implements SubscriberInterface
      * @param \Enlight_Event_EventArgs $args
      * @return string
      */
-    public function onGetControllerPathBackend(\Enlight_Event_EventArgs $args)
+    public function onGetControllerPath(\Enlight_Event_EventArgs $args)
     {
-        return $this->getControllerPath($args, 'Backend');
-    }
-
-    /**
-     * @param \Enlight_Event_EventArgs $args
-     * @return string
-     */
-    public function onGetControllerPathFrontend(\Enlight_Event_EventArgs $args)
-    {
-        return $this->getControllerPath($args, 'Frontend');
-    }
-
-    /**
-     * @param \Enlight_Event_EventArgs $args
-     * @param string $module
-     * @return string
-     */
-    protected function getControllerPath(\Enlight_Event_EventArgs $args, $module)
-    {
+        $moduleName = $args->getRequest()->getModuleName();
+        $moduleName = ucfirst($moduleName);
         $controllerName = $args->getRequest()->getControllerName();
         $controllerName = str_replace('_', '', ucwords($controllerName, '_'));
 
-        return $this->path . 'Controllers/' . ucfirst($module) . '/' . $controllerName .'.php';
+        return $this->path . 'Controllers/' . $moduleName . '/' . $controllerName . '.php';
     }
 }

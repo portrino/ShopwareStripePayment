@@ -1,5 +1,5 @@
 <?php
-namespace Shopware\Plugins\StripePayment\Subscriber;
+namespace Shopware\Plugins\StripePayment\Subscriber\Frontend;
 
 use Enlight\Event\SubscriberInterface;
 use Shopware\Plugins\StripePayment\Util;
@@ -8,9 +8,9 @@ use \Shopware_Plugins_Frontend_StripePayment_Bootstrap as Bootstrap;
 /**
  * The subscriber for frontend controllers.
  *
- * @copyright Copyright (c) 2015, VIISON GmbH
+ * @copyright Copyright (c) 2017, VIISON GmbH
  */
-class Frontend implements SubscriberInterface
+class Checkout implements SubscriberInterface
 {
     /**
      * @param Bootstrap $bootstrap
@@ -25,8 +25,7 @@ class Frontend implements SubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            'Enlight_Controller_Action_PostDispatchSecure_Frontend_Checkout' => 'onPostDispatchCheckout',
-            'Enlight_Controller_Action_PostDispatchSecure_Frontend_Account' => 'onPostDispatchAccount'
+            'Enlight_Controller_Action_PostDispatchSecure_Frontend_Checkout' => 'onPostDispatchSecure'
         );
     }
 
@@ -42,7 +41,7 @@ class Frontend implements SubscriberInterface
      *
      * @param \Enlight_Event_EventArgs $args
      */
-    public function onPostDispatchCheckout(\Enlight_Event_EventArgs $args)
+    public function onPostDispatchSecure(\Enlight_Event_EventArgs $args)
     {
         // Check request, response and view
         $request = $args->getRequest();
@@ -145,19 +144,6 @@ class Frontend implements SubscriberInterface
         if ($customer !== null) {
             // Add the account mode to the view
             $view->customerAccountMode = $customer->getAccountMode();
-        }
-    }
-
-    /**
-     * Adds views of this plugin to the account template.
-     *
-     * @param \Enlight_Event_EventArgs $args
-     */
-    public function onPostDispatchAccount(\Enlight_Event_EventArgs $args)
-    {
-        if (Shopware()->Shop()->getTemplate()->getVersion() < 3) {
-            // Shopware 4
-            $args->getSubject()->View()->extendsTemplate('frontend/stripe_payment/account/content_right.tpl');
         }
     }
 }
