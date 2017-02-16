@@ -27,9 +27,9 @@
             {if $stripeAllowSavingCreditCard or $allStripeCards|count > 0}
                 {* Credit card selection *}
                 <div class="panel--tr saved-cards">
-                    <label for="stripe-saved-cards" class="panel--td">{s namespace="frontend/plugins/payment/stripe_payment" name="form/card_selection"}{/s}</label>
+                    <label for="stripe-saved-cards" class="panel--td">{s namespace=frontend/plugins/payment/stripe_payment/card name=form/card_selection}{/s}</label>
                     <select id="stripe-saved-cards" class="panel--td">
-                        <option value="new"{if $allStripeCards|count == 0} selected{/if}>{s namespace="frontend/plugins/payment/stripe_payment" name="form/card_selection/new_card"}{/s}</option>
+                        <option value="new"{if $allStripeCards|count == 0} selected{/if}>{s namespace=frontend/plugins/payment/stripe_payment/card name=form/card_selection/new_card}{/s}</option>
                         {foreach from=$allStripeCards item=stripeCard}
                             <option value="{$stripeCard.id}" {if $stripeCard.id == $stripeCard.id}selected{/if}>
                                 {$stripeCard.name} | {$stripeCard.brand} | &bull;&bull;&bull;&bull;{$stripeCard.last4} | {$stripeCard.exp_month}/{$stripeCard.exp_year}
@@ -40,22 +40,22 @@
             {/if}
             {* Card holder *}
             <div class="panel--tr stripe-card-field">
-                <label for="stripe-card-holder" class="panel--td">{s namespace="frontend/plugins/payment/stripe_payment" name="form/card/holder"}{/s} *</label>
+                <label for="stripe-card-holder" class="panel--td">{s namespace=frontend/plugins/payment/stripe_payment/card name=form/card/holder}{/s} *</label>
                 <input id="stripe-card-holder" type="text" size="20" class="panel--td" value="{$sUserData.billingaddress.firstname} {$sUserData.billingaddress.lastname}">
             </div>
             {* Card number *}
             <div class="panel--tr stripe-card-field">
-                <label for="stripe-element-card-number" class="panel--td">{s namespace="frontend/plugins/payment/stripe_payment" name="form/card/number"}{/s} *</label>
+                <label for="stripe-element-card-number" class="panel--td">{s namespace=frontend/plugins/payment/stripe_payment/card name=form/card/number}{/s} *</label>
                 <div id="stripe-element-card-number" class="panel--td"><!-- Stripe element is inserted here --></div>
             </div>
             {* Expiry date *}
             <div class="panel--tr stripe-card-field">
-                <label for="stripe-element-card-expiry" class="panel--td">{s namespace="frontend/plugins/payment/stripe_payment" name="form/card/expiry"}{/s} *</label>
+                <label for="stripe-element-card-expiry" class="panel--td">{s namespace=frontend/plugins/payment/stripe_payment/card name=form/card/expiry}{/s} *</label>
                 <div id="stripe-element-card-expiry" class="panel--td"><!-- Stripe element is inserted here --></div>
             </div>
             {* CVC *}
             <div class="panel--tr stripe-card-field">
-                <label for="stripe-element-card-cvc" class="panel--td">{s namespace="frontend/plugins/payment/stripe_payment" name="form/card/cvc"}{/s} *</label>
+                <label for="stripe-element-card-cvc" class="panel--td">{s namespace=frontend/plugins/payment/stripe_payment/card name=form/card/cvc}{/s} *</label>
                 <div id="stripe-element-card-cvc" class="panel--td"><!-- Stripe element is inserted here --></div>
                 <div class="stripe-card-cvc--help help panel--td"
                     data-modalbox="true"
@@ -74,7 +74,7 @@
                             <span class="checkbox--state"></span>
                         </div>
                     </span>
-                    <label for="stripe-save-card">{s namespace="frontend/plugins/payment/stripe_payment" name="form/save_card"}{/s}</label>
+                    <label for="stripe-save-card">{s namespace=frontend/plugins/payment/stripe_payment/card name=form/save_card}{/s}</label>
                 </div>
             {/if}
         </div>
@@ -89,7 +89,7 @@
 
         {* Info *}
         <div class="description">
-            {s namespace="frontend/plugins/payment/stripe_payment" name="form/description"}{/s}
+            {s namespace=frontend/plugins/payment/stripe_payment/card name=form/description}{/s}
         </div>
     </div>
     <script type="text/javascript">

@@ -141,9 +141,9 @@
         {if $stripeAllowSavingCreditCard or $allStripeCards|count > 0}
             {* Credit card selection *}
             <div class="form-group">
-                <label for="stripe-saved-cards" class="control-label">{s namespace="frontend/plugins/payment/stripe_payment" name="form/card_selection"}{/s}</label>
+                <label for="stripe-saved-cards" class="control-label">{s namespace=frontend/plugins/payment/stripe_payment/card name=form/card_selection}{/s}</label>
                 <select id="stripe-saved-cards" class="form-input adjust-margin" style="width: 365px;">
-                    <option value="new"{if $allStripeCards|count == 0} selected{/if}>{s namespace="frontend/plugins/payment/stripe_payment" name="form/card_selection/new_card"}{/s}</option>
+                    <option value="new"{if $allStripeCards|count == 0} selected{/if}>{s namespace=frontend/plugins/payment/stripe_payment/card name=form/card_selection/new_card}{/s}</option>
                     {foreach from=$allStripeCards item=stripeCard}
                         <option value="{$stripeCard.id}"{if $stripeCard.id == $stripeCard.id} selected{/if}>{$stripeCard.name} | {$stripeCard.brand} | &bull;&bull;&bull;&bull;{$stripeCard.last4} | {$stripeCard.exp_month}/{$stripeCard.exp_year}</option>
                     {/foreach}
@@ -152,22 +152,22 @@
         {/if}
         {* Card holder *}
         <div class="form-group stripe-card-field">
-            <label for="stripe-card-holder" class="control-label">{s namespace="frontend/plugins/payment/stripe_payment" name="form/card/holder"}{/s} *</label>
+            <label for="stripe-card-holder" class="control-label">{s namespace=frontend/plugins/payment/stripe_payment/card name=form/card/holder}{/s} *</label>
             <input id="stripe-card-holder" class="form-input text" type="text" size="20" value="{$sUserData.billingaddress.firstname} {$sUserData.billingaddress.lastname}">
         </div>
         {* Card number *}
         <div class="form-group stripe-card-field">
-            <label for="stripe-element-card-number" class="control-label">{s namespace="frontend/plugins/payment/stripe_payment" name="form/card/number"}{/s} *</label>
+            <label for="stripe-element-card-number" class="control-label">{s namespace=frontend/plugins/payment/stripe_payment/card name=form/card/number}{/s} *</label>
             <div id="stripe-element-card-number" class="form-input"><!-- Stripe element is inserted here --></div>
         </div>
         {* Expiry date *}
         <div class="form-group stripe-card-field">
-            <label for="stripe-element-card-expiry" class="control-label">{s namespace="frontend/plugins/payment/stripe_payment" name="form/card/expiry"}{/s} *</label>
+            <label for="stripe-element-card-expiry" class="control-label">{s namespace=frontend/plugins/payment/stripe_payment/card name=form/card/expiry}{/s} *</label>
             <div id="stripe-element-card-expiry" class="form-input"><!-- Stripe element is inserted here --></div>
         </div>
         {* CVC *}
         <div class="form-group stripe-card-field">
-            <label for="stripe-element-card-cvc" class="control-label">{s namespace="frontend/plugins/payment/stripe_payment" name="form/card/cvc"}{/s} *</label>
+            <label for="stripe-element-card-cvc" class="control-label">{s namespace=frontend/plugins/payment/stripe_payment/card name=form/card/cvc}{/s} *</label>
             <div id="stripe-element-card-cvc" class="form-input"><!-- Stripe element is inserted here --></div>
             <div id="stripe-payment-cvc-info-button" class="help"></div>
         </div>
@@ -175,7 +175,7 @@
             {* Save data *}
             <div class="form-group stripe-card-field adjust-margin">
                 <input id="stripe-save-card" class="form-input" type="checkbox" checked="checked">
-                <label for="stripe-save-card" class="control-label checkbox">{s namespace="frontend/plugins/payment/stripe_payment" name="form/save_card"}{/s}</label>
+                <label for="stripe-save-card" class="control-label checkbox">{s namespace=frontend/plugins/payment/stripe_payment/card name=form/save_card}{/s}</label>
             </div>
         {/if}
 
@@ -186,7 +186,7 @@
 
         {* Info *}
         <div class="form-group adjust-margin">
-            <p>{s namespace="frontend/plugins/payment/stripe_payment" name="form/description"}{/s}</p>
+            <p>{s namespace=frontend/plugins/payment/stripe_payment/card name=form/description}{/s}</p>
         </div>
 
         {* An initially hidden CVC info popup window *}

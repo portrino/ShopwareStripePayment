@@ -25,8 +25,9 @@ class Shopware_Controllers_Frontend_StripePaymentCard extends Shopware_Controlle
             $charge = Stripe\Charge::create($chargeData);
         } catch (Exception $e) {
             // Determine error message
-            $namespace = $this->get('snippets')->getNamespace('frontend/plugins/payment/stripe_payment');
-            $message = ($e instanceof Stripe\Error\Card && $e->stripeCode === 'incorrect_cvc') ? $namespace->get('payment_error/message/charge_failed/incorrect_cvc') : $e->getMessage();
+            $cardNamespace = $this->get('snippets')->getNamespace('frontend/plugins/payment/stripe_payment/card');
+            $namespace = $this->get('snippets')->getNamespace('frontend/plugins/payment/stripe_payment/base');
+            $message = ($e instanceof Stripe\Error\Card && $e->stripeCode === 'incorrect_cvc') ? $cardNamespace->get('payment_error/message/charge_failed/incorrect_cvc') : $e->getMessage();
             $message = ($message) ?: $e->getMessage();
             // Save the exception message in the session and redirect to the checkout confirm/index view
             Shopware()->Session()->stripePaymentError = (($namespace->get('payment_error/message/charge_failed')) ?: 'Payment process failed, because an error occurred: ') . ' ' . $message;
@@ -142,12 +143,12 @@ class Shopware_Controllers_Frontend_StripePaymentCard extends Shopware_Controlle
                 $chargeData['customer'] = $stripeCustomer->id;
             } catch (Exception $e) {
                 // The Stripe customer couldn't be loaded
-                $message = ($this->get('snippets')->getNamespace('frontend/plugins/payment/stripe_payment')->get('payment_error/message/card_not_found')) ?: 'Card not found.';
+                $message = ($this->get('snippets')->getNamespace('frontend/plugins/payment/stripe_payment/card')->get('payment_error/message/card_not_found')) ?: 'Card not found.';
                 throw new Exception($message);
             }
         } else {
             // No payment information provided
-            $message = ($this->get('snippets')->getNamespace('frontend/plugins/payment/stripe_payment')->get('payment_error/message/transaction_not_found')) ?: 'Transaction not found.';
+            $message = ($this->get('snippets')->getNamespace('frontend/plugins/payment/stripe_payment/base')->get('payment_error/message/transaction_not_found')) ?: 'Transaction not found.';
             throw new Exception($message);
         }
 
