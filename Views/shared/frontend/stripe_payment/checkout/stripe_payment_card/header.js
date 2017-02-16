@@ -1,9 +1,9 @@
 // Inject the ID of the Stripe payment method, which must be defined before including this file,
 // and check whether the payment form shall be initialised
-StripePayment.paymentMeansId = stripePaymentId;
-if (StripePayment.paymentMeansId && StripePayment.isStripePaymentSelected()) {
+StripePaymentCard.paymentMeansId = stripeCardPaymentId;
+if (StripePaymentCard.paymentMeansId && StripePaymentCard.isStripePaymentCardSelected()) {
     // Try to get Stripe related data passed to the template
-    var stripeFormSetupData = {
+    var stripeCardFormSetupData = {
         stripePublicKey: '{$stripePublicKey}',
         snippets: {
             error: {
@@ -32,18 +32,18 @@ if (StripePayment.paymentMeansId && StripePayment.isStripePaymentSelected()) {
     };
     // Pre-selected card
     if ('{$stripeCardRaw}') {
-        stripeFormSetupData.card = JSON.parse('{$stripeCardRaw}');
+        stripeCardFormSetupData.card = JSON.parse('{$stripeCardRaw}');
     }
     // Available cards
     if ('{$allStripeCardsRaw}') {
-        stripeFormSetupData.allCards = JSON.parse('{$allStripeCardsRaw}');
+        stripeCardFormSetupData.allCards = JSON.parse('{$allStripeCardsRaw}');
     }
     // Pre-selected expiry date
     if ('{$stripeCard}') {
-        stripeFormSetupData.selectedMonth = parseInt('{$stripeCard.exp_month}');
-        stripeFormSetupData.selectedYear = parseInt('{$stripeCard.exp_year}');
+        stripeCardFormSetupData.selectedMonth = parseInt('{$stripeCard.exp_month}');
+        stripeCardFormSetupData.selectedYear = parseInt('{$stripeCard.exp_year}');
     }
 
     // Stripe form setup
-    StripePayment.init(stripeFormSetupData);
+    StripePaymentCard.init(stripeCardFormSetupData);
 }

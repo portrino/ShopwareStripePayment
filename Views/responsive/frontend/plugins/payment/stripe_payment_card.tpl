@@ -94,7 +94,7 @@
     </div>
     <script type="text/javascript">
         // Save the payment ID to make it accessible
-        var stripePaymentId = {$payment_mean.id};
+        var stripeCardPaymentId = {$payment_mean.id};
 
         // Check whether jQuery is already available to account for both ways this template is loaded:
         //   a) Calling the 'shippingPayment' action when initially loading the payment page.

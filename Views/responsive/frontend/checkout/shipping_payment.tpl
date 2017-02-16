@@ -2,8 +2,8 @@
 
 {block name="frontend_index_content" prepend}
     <script type="text/javascript">
-        // Define the Stripe payment ID to avoid errors in case the respective payment method is not available
-        var stripePaymentId = null;
+        // Define the Stripe card payment ID to avoid errors in case the respective payment method is not available
+        var stripeCardPaymentId = null;
     </script>
 {/block}
 

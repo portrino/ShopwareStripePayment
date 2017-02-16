@@ -1,7 +1,7 @@
 /**
- * A common utility object for handling payments using Stripe.js in the StripePayment plugin.
+ * A common utility object for handling card payments using Stripe.js in the StripePayment plugin.
  */
-var StripePayment = {
+var StripePaymentCard = {
 
     /**
      * The Stripe.js instance used e.g. for creating form fields and generating tokens.
@@ -238,10 +238,10 @@ var StripePayment = {
      * popup's close button for opening/closing the popup.
      */
     setupCVCPopupControl: function() {
-        var cvcInfoPopup = $('#stripe-payment-cvc-info-popup');
+        var cvcInfoPopup = $('#stripe-payment-card-cvc-info-popup');
         if (this.isShopware5Template()) {
             // Shopware 5
-            $('#stripe-payment-cvc-info-button').click(function(event) {
+            $('#stripe-payment-card-cvc-info-button').click(function(event) {
                 // Add the CVC explanation popup to the overlay and open it
                 $.overlay.getElement().append(cvcInfoPopup);
                 cvcInfoPopup.show();
@@ -249,7 +249,7 @@ var StripePayment = {
                     closeOnClick: false
                 });
             });
-            $('#stripe-payment-cvc-info-popup-close').click(function(event) {
+            $('#stripe-payment-card-cvc-info-popup-close').click(function(event) {
                 // Close the overlay and remove the CVC explanation popup from it
                 $.overlay.close();
                 cvcInfoPopup.hide();
@@ -257,11 +257,11 @@ var StripePayment = {
             });
         } else {
             // Shopware 4
-            $('#stripe-payment-cvc-info-button').click(function(event) {
+            $('#stripe-payment-card-cvc-info-button').click(function(event) {
                 cvcInfoPopup.show();
                 cvcInfoPopup.parent().show();
             });
-            $('#stripe-payment-cvc-info-popup-close').click(function(event) {
+            $('#stripe-payment-card-cvc-info-popup-close').click(function(event) {
                 cvcInfoPopup.parent().hide();
                 cvcInfoPopup.hide();
             });
@@ -278,7 +278,7 @@ var StripePayment = {
         me.findForm().on('submit', function(event) {
             var form = $(this);
             // Check that the Stripe payment method is selected (Shopware 4 only)
-            if (!me.isStripePaymentSelected()) {
+            if (!me.isStripePaymentCardSelected()) {
                 return;
             }
 
@@ -445,7 +445,7 @@ var StripePayment = {
     /**
      * @return Boolean True, if the Stripe payment method is selected. Otherwise false.
      */
-    isStripePaymentSelected: function() {
+    isStripePaymentCardSelected: function() {
         return $('#payment_mean' + this.paymentMeansId).is(':checked');
     },
 
