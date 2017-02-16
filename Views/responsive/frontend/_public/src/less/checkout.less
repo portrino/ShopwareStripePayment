@@ -94,6 +94,13 @@
     text-align: left;
 }
 
+#shippingPaymentForm button[type="submit"],
+.confirm--actions button[form="shippingPaymentForm"] {
+    div.js--loading {
+        &:extend(.confirm--content .js--loading);
+    }
+}
+
 // Phone Landscape styling
 @media screen and (min-width: @phoneLandscapeViewportWidth) {
 }

@@ -304,18 +304,15 @@ var StripePayment = {
 
             // Send the credit card information to Stripe
             me.requestPending = true;
-            if (me.isShopware5Template()) {
-                $.loadingIndicator.open();
-            }
+            me.setSubmitButtonsLoading();
             me.stripeService.createToken(me.cardNumberElement, {
                 name: $('#stripe-card-holder').val()
             }).then(function(result) {
                 me.requestPending = false;
                 if (result.error) {
-                    // Only close the loading indicator if an error occurred
-                    if (me.isShopware5Template()) {
-                        $.loadingIndicator.close();
-                    }
+                    // Only reset the submit buttons in case of an error, because otherwise the form is submitted again
+                    // right aways and hence we want the buttons to stay disabled
+                    me.resetSubmitButtons();
 
                     // Display the error
                     var message = me.snippets.error[result.error.code || ''] || result.error.message || 'Unknown error';
@@ -375,6 +372,40 @@ var StripePayment = {
 
                 break;
             }
+        });
+    },
+
+    /**
+     * Finds both submit buttons on the page and adds the 'disabled' attribute as well as the loading indicator
+     * to each of the,.
+     *
+     * Note: If called in a shopware environment < v5, this method does nothing.
+     */
+    setSubmitButtonsLoading: function() {
+        if (!this.isShopware5Template()) {
+            return;
+        }
+
+        // Reset the button first to prevent it from being added multiple loading indicators
+        this.resetSubmitButtons();
+        $('#shippingPaymentForm button[type="submit"], .confirm--actions button[form="shippingPaymentForm"]').each(function () {
+            $(this).html($(this).text() + '<div class="js--loading"></div>').attr('disabled', 'disabled');
+        });
+    },
+
+    /**
+     * Finds both submit buttons on the page and resets them by removing the 'disabled' attribute
+     * as well as the loading indicator.
+     *
+     * Note: If called in a shopware environment < v5, this method does nothing.
+     */
+    resetSubmitButtons: function() {
+        if (!this.isShopware5Template()) {
+            return;
+        }
+
+        $('#shippingPaymentForm button[type="submit"], .confirm--actions button[form="shippingPaymentForm"]').each(function () {
+            $(this).removeAttr('disabled').find('.js--loading').remove();
         });
     },
 
