@@ -38,11 +38,6 @@ if (StripePaymentCard.paymentMeansId && StripePaymentCard.isStripePaymentCardSel
     if ('{$allStripeCardsRaw}') {
         stripeCardFormSetupData.allCards = JSON.parse('{$allStripeCardsRaw}');
     }
-    // Pre-selected expiry date
-    if ('{$stripeCard}') {
-        stripeCardFormSetupData.selectedMonth = parseInt('{$stripeCard.exp_month}');
-        stripeCardFormSetupData.selectedYear = parseInt('{$stripeCard.exp_year}');
-    }
 
     // Stripe form setup
     StripePaymentCard.init(stripeCardFormSetupData);
