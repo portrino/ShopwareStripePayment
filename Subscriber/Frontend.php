@@ -32,9 +32,7 @@ class Frontend implements SubscriberInterface
     {
         return array(
             'Enlight_Controller_Action_PostDispatchSecure_Frontend_Checkout' => 'onPostDispatchCheckout',
-            'Enlight_Controller_Action_PostDispatchSecure_Frontend_Account' => 'onPostDispatchAccount',
-            'Enlight_Controller_Dispatcher_ControllerPath_Frontend_StripePayment' => 'onCustomFrontendControllerPath',
-            'Enlight_Controller_Dispatcher_ControllerPath_Frontend_StripePaymentAccount' => 'onCustomFrontendControllerPath'
+            'Enlight_Controller_Action_PostDispatchSecure_Frontend_Account' => 'onPostDispatchAccount'
         );
     }
 
@@ -167,21 +165,5 @@ class Frontend implements SubscriberInterface
             // Shopware 4
             $args->getSubject()->View()->extendsTemplate('frontend/stripe_payment/account/content_right.tpl');
         }
-    }
-
-    /**
-     * Returns the path to the requested custom frontend controller.
-     *
-     * @param \Enlight_Event_EventArgs $args
-     * @return string
-     */
-    public function onCustomFrontendControllerPath(\Enlight_Event_EventArgs $args)
-    {
-        $controllerName = $args->getRequest()->getControllerName();
-        if ($controllerName === 'stripe_payment') {
-            $controllerName = 'StripePayment';
-        }
-
-        return $this->path . 'Controllers/Frontend/' . $controllerName .'.php';
     }
 }

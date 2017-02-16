@@ -31,8 +31,7 @@ class Backend implements SubscriberInterface
     {
         return array(
             'Enlight_Controller_Action_PostDispatchSecure_Backend_Index' => 'onPostDispatchIndex',
-            'Enlight_Controller_Action_PostDispatchSecure_Backend_Order' => array('onPostDispatchOrder', -100),
-            'Enlight_Controller_Dispatcher_ControllerPath_Backend_StripePayment' => 'onGetControllerPathStripePayment'
+            'Enlight_Controller_Action_PostDispatchSecure_Backend_Order' => array('onPostDispatchOrder', -100)
         );
     }
 
@@ -58,16 +57,5 @@ class Backend implements SubscriberInterface
             $args->getSubject()->View()->extendsTemplate('backend/stripe_payment/order_detail_position_refund.js');
             $args->getSubject()->View()->extendsTemplate('backend/stripe_payment/order_detail_stripe_dashboard_button.js');
         }
-    }
-
-    /**
-     * Returns the path to the Backend/StripePayment controller used for making payments.
-     *
-     * @param \Enlight_Event_EventArgs $args
-     * @return string
-     */
-    public function onGetControllerPathStripePayment(\Enlight_Event_EventArgs $args)
-    {
-        return $this->path . 'Controllers/Backend/StripePayment.php';
     }
 }

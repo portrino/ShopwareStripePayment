@@ -24,7 +24,7 @@ class Payment implements SubscriberInterface
      * Adds the path to the Stripe payment method class to the return value,
      * if a Shopware 5 theme is used in the active shop.
      *
-     * @param args The arguments passed by the method triggering the event.
+     * @param \Enlight_Event_EventArgs $args
      */
     public function onAddPaymentClass(\Enlight_Event_EventArgs $args)
     {
