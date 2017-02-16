@@ -1,10 +1,13 @@
-#stripe-payment-form {
+.stripe-payment-card-form {
     .panel--tr {
         border-width: 0;
     }
 
-    label {
-        cursor: pointer;
+    label span {
+        &.panel--td,
+        &.checkox-label {
+            cursor: pointer;
+        }
 
         &.panel--td {
             float: none;
@@ -12,7 +15,7 @@
             width: 100%;
         }
 
-        &[for="stripe-save-card"] {
+        &.checkox-label {
             .unitize(padding-left, 5);
         }
     }
@@ -24,7 +27,7 @@
         width: 100%;
     }
 
-    #stripe-element-card-cvc {
+    .stripe-element-card-cvc {
         // Use 'float: left;' to make sure the CVC info icon is positioned on the right of the field
         float: left;
     }
@@ -65,8 +68,8 @@
     }
 }
 
-#stripe-payment-error-box,
-#stripe-payment-validation-error-box {
+.stripe-payment-error-box,
+.stripe-payment-validation-error-box {
     .unitize(margin-top, 20);
 }
 
@@ -107,12 +110,12 @@
 
 // Tablet styling
 @media screen and (min-width: @tabletViewportWidth) {
-    #stripe-payment-form {
+    .stripe-payment-card-form {
         .panel--tr {
             .unitize(margin-top, 10);
         }
 
-        label.panel--td {
+        label span.panel--td {
             float: left;
             width: 35%;
         }
@@ -155,8 +158,8 @@
 
 // Tablet Landscape styling
 @media screen and (min-width: @tabletLandscapeViewportWidth) {
-    #stripe-payment-form {
-        label.panel--td {
+    .stripe-payment-card-form {
+        label span.panel--td {
             width: 35%;
         }
 
@@ -170,8 +173,8 @@
 
 // Desktop styling
 @media screen and (min-width: @desktopViewportWidth) {
-    #stripe-payment-form {
-        label.panel--td {
+    .stripe-payment-card-form {
+        label span.panel--td {
             width: 20%;
         }
 

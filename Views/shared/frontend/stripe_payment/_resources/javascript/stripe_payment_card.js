@@ -9,9 +9,9 @@ var StripePaymentCard = {
     stripeService: null,
 
     /**
-     * The Stripe element containing the credit card number field.
+     * An array of all available Stripe elements.
      */
-    cardNumberElement: null,
+    stripeElements: [],
 
     /**
      * The currently selected or created Stripe card. You should not set this property
@@ -25,19 +25,9 @@ var StripePaymentCard = {
     allCards: [],
 
     /**
-     * A flag indicating whether a Stripe request is pending to prevent re-submission.
-     */
-    requestPending: false,
-
-    /**
      * An object containing the names of all fields that are currently invalid and their resepctive error messages.
      */
     invalidFields: {},
-
-    /**
-     * The ID of the Stripe payment method.
-     */
-    paymentMeansId: -1,
 
     /**
      * The locale used to configure Stripe error messsages and placeholders.
@@ -49,45 +39,70 @@ var StripePaymentCard = {
      */
     snippets: {
         error: {
-            invalid_card_holder: 'Please enter the card holder\'s name.',
             title: 'Error'
         }
     },
 
     /**
-     * Initialises the util using the given config.
+     * Saves the values of the given config in this object and triggers the initial setup of the
+     * payment form. Finally, a listener on the event for changing the payment method is added,
+     * which will trigger the form setup again.
      *
-     * @param config A configuration object used to pre-fill the form and setup Stripe.js.
+     * @param Object config
      */
     init: function(config) {
-        this.setSelectedCard((typeof config.card !== 'undefined') ? config.card : null);
-        this.allCards = (typeof config.allCards !== 'undefined') ? config.allCards : [];
-        this.snippets = (typeof config.snippets !== 'undefined') ? config.snippets : this.snippets;
+        var me = this;
+        // Save config
+        me.setSelectedCard((typeof config.card !== 'undefined') ? config.card : null);
+        me.allCards = (typeof config.allCards !== 'undefined') ? config.allCards : [];
+        me.snippets = (typeof config.snippets !== 'undefined') ? config.snippets : me.snippets;
+        me.stripeService = Stripe(config.stripePublicKey);
 
-        // Configure Stripe.js
-        this.stripeService = Stripe(config.stripePublicKey);
+        // Setup form and CVC popup
+        me.setupCVCPopupControls();
+        me.setupForm();
 
-        // Prepare form fields
-        this.mountStripeElements();
-        this.observeCardHolderFieldChanges();
-
-        // Add DOM listeners
-        this.setupCVCPopupControl();
-        this.observeFormSubmission();
-        this.observeCardSelection();
-
-        if (this.selectedCard) {
-            $('#stripe-saved-cards').trigger('change');
+        if (me.isShopware5Template()) {
+            // Add listener on changes of the selected payment method to setup the form again
+            $.subscribe('plugin/swShippingPayment/onInputChanged', function() {
+                me.setupForm();
+            });
         }
     },
 
     /**
-     * Generates and mounts the card form fields using Stripe Elements. The styles used for shopware
-     * input fields are applied to the mounted elements.
+     * Sets up the payment form by first unounting all Stripe elements that might be already
+     * mounted to the DOM and clearing all validation errors. Then, if a stripe card payment
+     * method is selected, mounts new Stripe Elements fields to the form and adds some observers
+     * to other fields as well as the form.
+     */
+    setupForm: function() {
+        // Reset form
+        this.unmountStripeElements();
+        this.invalidFields = [];
+        this.updateValidationErrors();
+
+        if (this.getActiveStripeCardForm()) {
+            // Mount Stripe form fields again to the now active form and add other observers
+            this.mountStripeElements();
+            this.observeForm();
+
+            // Make sure the card selection matches the internal state
+            if (this.selectedCard) {
+                this.formEl('.stripe-saved-cards').val(this.selectedCard.id);
+            }
+            this.formEl('.stripe-saved-cards').trigger('change');
+        }
+    },
+
+    /**
+     * Creates the Stripe Elements fields for card number, expiry and CVC and mounts them
+     * to their resepctive nodes in the active Stripe card payment form.
      */
     mountStripeElements: function() {
-        // Define options to apply to all fields
-        var cardHolderFieldEl = $('#stripe-card-holder');
+        var me = this;
+        // Define options to apply to all fields when creating them
+        var cardHolderFieldEl = me.formEl('.stripe-card-holder');
         var defaultOptions = {
             style: {
                 base: {
@@ -100,73 +115,70 @@ var StripePaymentCard = {
             }
         };
 
-        // Create and mount fields
-        this.cardNumberElement = this.mountStripeElement('#stripe-element-card-number', 'cardNumber', defaultOptions);
-        this.mountStripeElement('#stripe-element-card-expiry', 'cardExpiry', defaultOptions);
-        this.mountStripeElement('#stripe-element-card-cvc', 'cardCvc', defaultOptions);
-    },
-
-    /**
-     * Creates a new Stripe element of the given type and mounts it to the DOM element
-     * matching the given selector. Finally a subscriber on its 'change' event is added
-     * to udpate the validation error box while typing.
-     *
-     * @param String selector
-     * @param String type
-     * @param Object options
-     * @return Object The created and mounted element.
-     */
-    mountStripeElement: function(selector, type, options) {
-        var me = this,
-            element = me.getStripeElements().create(type, options);
-        element.mount(selector);
-        element.addEventListener('change', function(event) {
-            if (event.error && event.error.type === 'validation_error') {
-                me.markFieldInvalid(selector, event.error.code, event.error.message);
-            } else {
-                me.markFieldValid(selector);
-            }
+        // Define a closure to create all elements using the same 'Elements' instance
+        var elements = me.stripeService.elements({
+            locale: me.locale
         });
+        var createAndMountStripeElement = function(type, mountSelector) {
+            // Create the element and add the change listener
+            var element = elements.create(type);
+            element.on('change', function(event) {
+                if (event.error && event.error.type === 'validation_error') {
+                    me.markFieldInvalid(type, event.error.code, event.error.message);
+                } else {
+                    me.markFieldValid(type);
+                }
+            });
 
-        return element;
+            // Mount it to the DOM
+            var mountElement = me.formEl(mountSelector).get(0);
+            element.mount(mountElement);
+
+            return element;
+        };
+
+        // Create all elements
+        me.stripeElements = [
+            createAndMountStripeElement('cardNumber', '.stripe-element-card-number'),
+            createAndMountStripeElement('cardExpiry', '.stripe-element-card-expiry'),
+            createAndMountStripeElement('cardCvc', '.stripe-element-card-cvc')
+        ];
     },
 
     /**
-     * Adds a subscriber to the card holder form field that is fired when its value is changed
-     * to validate the entered value.
+     * Unmounts all existing Stripe elements from the Stripe card payment form they
+     * are currently mounted to.
      */
-    observeCardHolderFieldChanges: function() {
-        var me = this,
-            selector = '#stripe-card-holder',
-            elem = $(selector);
-        // Save the current value and observe changes
-        elem.data('oldVal', elem.val());
-        elem.bind('propertychange keyup input paste', function(event) {
-            // Check if value has changed
-            if (elem.data('oldVal') == elem.val()) {
-                return;
-            }
-            elem.data('oldVal', elem.val());
-
-            // Validate the field
-            if (elem.val().trim().length === 0) {
-                elem.addClass('instyle_error has--error');
-                me.markFieldInvalid(selector, 'invalid_card_holder');
-            } else {
-                elem.removeClass('instyle_error has--error');
-                me.markFieldValid(selector);
-            }
+    unmountStripeElements: function() {
+        this.stripeElements.forEach(function(element) {
+            element.unmount();
         });
+        this.stripeElements = [];
     },
 
     /**
-     * Removes all validation errors for the field with the given 'fieldSelector' and triggers
+     * Adds change listeners to the card selection and card holder field as well as
+     * a submission listener on the main payment form.
+     */
+    observeForm: function() {
+        // Add listeners
+        this.findForm().on('submit', { scope: this }, this.onFormSubmission);
+        this.formEl('.stripe-saved-cards').on('change', { scope: this }, this.onCardSelectionChange);
+
+        // Save the current value and add listener
+        var cardHolderElem = this.formEl('.stripe-card-holder');
+        cardHolderElem.data('oldVal', cardHolderElem.val());
+        cardHolderElem.on('propertychange keyup input paste', { scope: this }, this.onCardHolderChange);
+    },
+
+    /**
+     * Removes all validation errors for the field with the given 'fieldId' and triggers
      * an update of the displayed validation errors.
      *
-     * @param String fieldSelector
+     * @param String fieldId
      */
-    markFieldValid: function(fieldSelector) {
-        delete this.invalidFields[fieldSelector];
+    markFieldValid: function(fieldId) {
+        delete this.invalidFields[fieldId];
         this.updateValidationErrors();
     },
 
@@ -174,12 +186,12 @@ var StripePaymentCard = {
      * Determines the error message based on the given 'errorCode' and 'message' and triggers
      * an update of the displayed validation errors.
      *
-     * @param String fieldSelector
+     * @param String fieldId
      * @param String errorCode (optional) The code used to find a localised error message.
      * @param String message (optioanl) The fallback error message used in case no 'errorCode' is provided or no respective, localised description exists.
      */
-    markFieldInvalid: function(fieldSelector, errorCode, message) {
-        this.invalidFields[fieldSelector] = this.snippets.error[errorCode || ''] || message || 'Unknown error';
+    markFieldInvalid: function(fieldId, errorCode, message) {
+        this.invalidFields[fieldId] = this.snippets.error[errorCode || ''] || message || 'Unknown error';
         this.updateValidationErrors();
     },
 
@@ -189,24 +201,24 @@ var StripePaymentCard = {
      * are found, the error box is hidden.
      */
     updateValidationErrors: function() {
-        var me = this;
-        var boxEl = $('#stripe-payment-validation-error-box .error-content')
-            .first()
-            .empty();
+        var me = this,
+            errorBox = me.formEl('.stripe-payment-validation-error-box'),
+            boxContent = errorBox.find('.error-content');
+        boxContent.empty();
         if (Object.keys(me.invalidFields).length > 0) {
             // Update the error box message and make it visible
             var listEl = $('<ul></ul>')
                 .addClass('alert--list')
-                .appendTo(boxEl);
+                .appendTo(boxContent);
             Object.keys(me.invalidFields).forEach(function(key) {
                 var row = $('<li></li>')
                     .addClass('list--entry')
                     .text(me.invalidFields[key])
                     .appendTo(listEl);
             });
-            $('#stripe-payment-validation-error-box').show();
+            errorBox.show();
         } else {
-            $('#stripe-payment-validation-error-box').hide();
+            errorBox.hide();
         }
     },
 
@@ -219,7 +231,7 @@ var StripePaymentCard = {
      */
     setSelectedCard: function(card) {
         this.selectedCard = card;
-        // Remove all hidden Stripe fields from the form
+        // Remove all hidden Stripe fields from the main form
         $('input[name="stripeTransactionToken"]').remove();
         $('input[name="stripeCardId"]').remove();
         $('input[name="stripeCard"]').remove();
@@ -234,145 +246,147 @@ var StripePaymentCard = {
     },
 
     /**
-     * Adds to 'click' listeners to the CVC info button as well as the info
-     * popup's close button for opening/closing the popup.
+     * Adds 'click' listeners to the CVC info button as well as the info popup's close button
+     * for opening/closing the popup.
+     *
+     * Note: If called in a shopware environment > v5, this method does nothing.
      */
-    setupCVCPopupControl: function() {
-        var cvcInfoPopup = $('#stripe-payment-card-cvc-info-popup');
+    setupCVCPopupControls: function() {
         if (this.isShopware5Template()) {
-            // Shopware 5
-            $('#stripe-payment-card-cvc-info-button').click(function(event) {
-                // Add the CVC explanation popup to the overlay and open it
-                $.overlay.getElement().append(cvcInfoPopup);
-                cvcInfoPopup.show();
-                $.overlay.open({
-                    closeOnClick: false
-                });
-            });
-            $('#stripe-payment-card-cvc-info-popup-close').click(function(event) {
-                // Close the overlay and remove the CVC explanation popup from it
-                $.overlay.close();
-                cvcInfoPopup.hide();
-                $('#stripe-payment-form').append(cvcInfoPopup);
-            });
-        } else {
-            // Shopware 4
-            $('#stripe-payment-card-cvc-info-button').click(function(event) {
-                cvcInfoPopup.show();
-                cvcInfoPopup.parent().show();
-            });
-            $('#stripe-payment-card-cvc-info-popup-close').click(function(event) {
-                cvcInfoPopup.parent().hide();
-                cvcInfoPopup.hide();
-            });
+            return;
         }
+
+        var cvcInfoPopup = $('.stripe-payment-card-cvc-info-popup');
+        $('.stripe-payment-card-cvc-info-button').click(function(event) {
+            cvcInfoPopup.show();
+            cvcInfoPopup.parent().show();
+        });
+        $('.stripe-payment-card-cvc-info-popup-close').click(function(event) {
+            cvcInfoPopup.parent().hide();
+            cvcInfoPopup.hide();
+        });
     },
 
     /**
      * First validates the form and payment state and, if the main form can be submitted, does nothing further.
      * If however the main from cannot be submitted, because neither a token was created nor a saved card is
      * selected, a new Stripe token is created and saved in the form, before the submission is triggered again.
+     *
+     * @param Object event
      */
-    observeFormSubmission: function() {
-        var me = this;
-        me.findForm().on('submit', function(event) {
-            var form = $(this);
-            // Check that the Stripe payment method is selected (Shopware 4 only)
-            if (!me.isStripePaymentCardSelected()) {
-                return;
-            }
+    onFormSubmission: function(event) {
+        var me = event.data.scope,
+            form = $(this);
 
-            // Check if a token/card was generated and hence the form can be submitted
-            if (me.selectedCard !== null) {
-                // Append the value of the checkbox, indicating whether the credit card info shall be saved
-                form.append('<input type="hidden" name="stripeSaveCard" value="' + ($('#stripe-save-card').is(':checked') ? 'on' : 'off') + '" />');
-                return;
+        // Check if a token/card was generated and hence the form can be submitted
+        if (me.selectedCard !== null) {
+            // Append the value of the checkbox, indicating whether the credit card info shall be saved
+            var saveCard = me.formEl('.stripe-save-card').is(':checked') ? 'on' : 'off';
+            form.append('<input type="hidden" name="stripeSaveCard" value="' + saveCard + '" />');
+            return;
+        } else {
+            // Prevent the form from being submitted until a new Stripe token is generated and received
+            event.preventDefault();
+        }
+
+        // Check for invalid fields
+        if (Object.keys(me.invalidFields).length > 0) {
+            return;
+        }
+
+        // Send the credit card information to Stripe
+        me.setSubmitButtonsLoading();
+        me.stripeService.createToken(me.stripeElements[0], {
+            name: me.formEl('.stripe-card-holder').val()
+        }).then(function(result) {
+            if (result.error) {
+                // Only reset the submit buttons in case of an error, because otherwise the form is submitted again
+                // right aways and hence we want the buttons to stay disabled
+                me.resetSubmitButtons();
+
+                // Display the error
+                var message = me.snippets.error[result.error.code || ''] || result.error.message || 'Unknown error';
+                me.handleStripeError(me.snippets.error.title + ': ' + message);
             } else {
-                // Prevent the form from being submitted until a new Stripe token is generated and received
-                event.preventDefault();
+                // Save the card information
+                me.setSelectedCard(result.token.card);
+
+                // Remove the card ID from the form (added by 'setSelectedCard') and add the new Stripe token instead
+                $('input[name="stripeCardId"]').remove();
+                form.append('<input type="hidden" name="stripeTransactionToken" value="' + result.token.id + '" />');
+                form.submit();
             }
-
-            // Check if a pending Stripe request
-            if (me.requestPending) {
-                return;
-            }
-
-            // Check for invalid fields
-            if (Object.keys(me.invalidFields).length > 0) {
-                return;
-            }
-
-            // Send the credit card information to Stripe
-            me.requestPending = true;
-            me.setSubmitButtonsLoading();
-            me.stripeService.createToken(me.cardNumberElement, {
-                name: $('#stripe-card-holder').val()
-            }).then(function(result) {
-                me.requestPending = false;
-                if (result.error) {
-                    // Only reset the submit buttons in case of an error, because otherwise the form is submitted again
-                    // right aways and hence we want the buttons to stay disabled
-                    me.resetSubmitButtons();
-
-                    // Display the error
-                    var message = me.snippets.error[result.error.code || ''] || result.error.message || 'Unknown error';
-                    me.handleStripeError(me.snippets.error.title + ': ' + message);
-                } else {
-                    // Save the card information
-                    me.setSelectedCard(result.token.card);
-
-                    // Remove the card ID from the form (added by 'setSelectedCard') and add the new Stripe token instead
-                    $('input[name="stripeCardId"]').remove();
-                    form.append('<input type="hidden" name="stripeTransactionToken" value="' + result.token.id + '" />');
-                    form.submit();
-                }
-            });
         });
+    },
+
+    /**
+     * Adds a subscriber to the card holder form field that is fired when its value is changed
+     * to validate the entered value.
+     *
+     * @param Object event
+     */
+    onCardHolderChange: function(event) {
+        var me = event.data.scope,
+            elem = $(this);
+        // Check if value has changed
+        if (elem.data('oldVal') == elem.val()) {
+            return;
+        }
+        elem.data('oldVal', elem.val());
+
+        // Validate the field
+        if (elem.val().trim().length === 0) {
+            elem.addClass('instyle_error has--error');
+            me.markFieldInvalid('cardHolder', 'invalid_card_holder');
+        } else {
+            elem.removeClass('instyle_error has--error');
+            me.markFieldValid('cardHolder');
+        }
     },
 
     /**
      * Adds a change observer to the card selection field. If an existing card is selected, all form fields
      * are hidden and the card's Stripe information is added to the form. If the 'new' option is selected,
      * all fields made visible and the Stripe card info is removed from the form.
+     *
+     * @param Object event
      */
-    observeCardSelection: function() {
-        var me = this;
-        $('#stripe-saved-cards').change(function(event) {
-            var elem = $(this);
-            if (elem.val() === 'new') {
-                // A new, empty card was selected
-                me.setSelectedCard(null);
+    onCardSelectionChange: function(event) {
+        var me = event.data.scope,
+            elem = $(this);
+        if (elem.val() === 'new') {
+            // A new, empty card was selected
+            me.setSelectedCard(null);
 
-                // Make validation errors visible
-                me.updateValidationErrors();
+            // Make validation errors visible
+            me.updateValidationErrors();
 
-                // Show the save check box
-                $('#stripe-payment-form .stripe-card-field').show();
-                $('#stripe-save-card').show().prop('checked', true);
+            // Show the save check box
+            me.formEl('.stripe-card-field').show();
+            me.formEl('.stripe-save-card').show().prop('checked', true);
 
-                return;
+            return;
+        }
+
+        // Find the selected card
+        for (var i = 0; i < me.allCards.length; i++) {
+            var selectedCard = me.allCards[i];
+            if (selectedCard.id !== elem.val()) {
+                continue;
             }
 
-            // Find the selected card
-            for (var i = 0; i < me.allCards.length; i++) {
-                var selectedCard = me.allCards[i];
-                if (selectedCard.id !== elem.val()) {
-                    continue;
-                }
+            // Save the card
+            me.setSelectedCard(selectedCard);
 
-                // Save the card
-                me.setSelectedCard(selectedCard);
+            // Hide validation errors
+            me.formEl('.stripe-payment-validation-error-box').hide();
 
-                // Hide validation errors
-                $('#stripe-payment-validation-error-box').hide();
+            // Hide all card fields
+            me.formEl('.stripe-card-field').hide();
+            me.formEl('.stripe-save-card').hide();
 
-                // Hide all card fields
-                $('#stripe-payment-form .stripe-card-field').hide();
-                $('#stripe-save-card').hide();
-
-                break;
-            }
-        });
+            break;
+        }
     },
 
     /**
@@ -388,7 +402,7 @@ var StripePaymentCard = {
 
         // Reset the button first to prevent it from being added multiple loading indicators
         this.resetSubmitButtons();
-        $('#shippingPaymentForm button[type="submit"], .confirm--actions button[form="shippingPaymentForm"]').each(function () {
+        $('#shippingPaymentForm button[type="submit"], .confirm--actions button[form="shippingPaymentForm"]').each(function() {
             $(this).html($(this).text() + '<div class="js--loading"></div>').attr('disabled', 'disabled');
         });
     },
@@ -404,7 +418,7 @@ var StripePaymentCard = {
             return;
         }
 
-        $('#shippingPaymentForm button[type="submit"], .confirm--actions button[form="shippingPaymentForm"]').each(function () {
+        $('#shippingPaymentForm button[type="submit"], .confirm--actions button[form="shippingPaymentForm"]').each(function() {
             $(this).removeAttr('disabled').find('.js--loading').remove();
         });
     },
@@ -416,37 +430,44 @@ var StripePaymentCard = {
      */
     handleStripeError: function(message) {
         // Display the error information above the credit card form and scroll to its position
-        $('#stripe-payment-error-box').show().children('.error-content').html(message);
+        this.formEl('.stripe-payment-error-box').show().children('.error-content').html(message);
         $('body').animate({
-            scrollTop: ($('#stripe-payment-form').offset().top - 100)
+            scrollTop: (this.getActiveStripeCardForm().offset().top - 100)
         }, 500);
     },
 
     /**
-     * @return Object An Stripe.js Elements instance.
+     * Tries to find a stripe card form for the currently active payment method. That is, if a stripe card
+     * payment method is selected, its form is returned, otherwise returns null.
+     *
+     * @return jQuery|null
      */
-    getStripeElements: function() {
-        if (!this.stripeElements) {
-            this.stripeElements = this.stripeService.elements({
-                locale: this.locale
-            });
-        }
+    getActiveStripeCardForm: function() {
+        var paymentMethodSelector = (this.isShopware5Template()) ? '.payment--method' : '.method';
+        var form = $('input[id^="payment_mean"]:checked').closest(paymentMethodSelector).find('.stripe-payment-card-form');
 
-        return this.stripeElements;
+        return (form.length > 0) ? form.first() : null;
     },
 
     /**
-     * @return Object The main payment selection form element.
+     * Applies a jQuery query on the DOM tree under the active stripe card form using
+     * the given selector. This method should be used when selecting any fields that
+     * are part of a Stripe card payment form. If no Stripe card form is active, an
+     * empty query result is returned.
+     *
+     * @param String selector
+     * @return jQuery
+     */
+    formEl: function(selector) {
+        var form = this.getActiveStripeCardForm();
+        return (form) ? form.find(selector) : $('stripe_payment_card_not_found');
+    },
+
+    /**
+     * @return jQuery The main payment selection form element.
      */
     findForm: function() {
         return (this.isShopware5Template()) ? $('#shippingPaymentForm') : $('#basketButton').closest('form');
-    },
-
-    /**
-     * @return Boolean True, if the Stripe payment method is selected. Otherwise false.
-     */
-    isStripePaymentCardSelected: function() {
-        return $('#payment_mean' + this.paymentMeansId).is(':checked');
     },
 
     /**
