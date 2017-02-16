@@ -12,16 +12,10 @@ use \Shopware_Plugins_Frontend_StripePayment_Bootstrap as Bootstrap;
 class Backend implements SubscriberInterface
 {
     /**
-     * @var string $path
-     */
-    private $path;
-
-    /**
      * @param Bootstrap $bootstrap
      */
     public function __construct(Bootstrap $bootstrap)
     {
-        $this->path = $bootstrap->Path();
     }
 
     /**
