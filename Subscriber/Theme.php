@@ -85,7 +85,7 @@ class Theme implements SubscriberInterface
     {
         return new ArrayCollection(array(
             $this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/jquery.payment.min.js',
-            $this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/stripe_payment.js'
+            $this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/stripe_payment_card.js'
         ));
     }
 

@@ -1,4 +1,4 @@
-{if $Controller != "account" && $payment_mean.action == "stripe_payment"}
+{if $Controller != "account" && $payment_mean.action == "stripe_payment_card"}
     {* Additional styling for the stripe payment box *}
     <style type="text/css">
         #stripe-payment-error-box,
@@ -122,12 +122,12 @@
     {* Include and set up the Stripe SDK *}
     <script type="text/javascript" src="https://js.stripe.com/v3/"></script>
     <script type="text/javascript" src="{link file="frontend/stripe_payment/_resources/javascript/jquery.payment.min.js"}"></script>
-    <script type="text/javascript" src="{link file="frontend/stripe_payment/_resources/javascript/stripe_payment.js"}"></script>
+    <script type="text/javascript" src="{link file="frontend/stripe_payment/_resources/javascript/stripe_payment_card.js"}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             // Stripe setup
             var stripePaymentId = {$payment_mean.id};
-            {include file="frontend/stripe_payment/checkout/stripe_payment_header.js"}
+            {include file="frontend/stripe_payment/checkout/stripe_payment_card/header.js"}
         });
     </script>
 
@@ -195,7 +195,7 @@
                 {strip}
                 <div class="stripe-payment-cvc-info-popup-container">
                     <div id="stripe-payment-cvc-info-popup-close"></div>
-                    {include file="frontend/stripe_payment/checkout/stripe_payment_cvc_info.tpl"}
+                    {include file="frontend/stripe_payment/checkout/stripe_payment_card/cvc_info.tpl"}
                 </div>
                 {/strip}
             </div>

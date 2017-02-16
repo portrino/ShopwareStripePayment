@@ -5,7 +5,7 @@
 {/block}
 
 {block name="frontend_index_header_javascript_jquery" append}
-    {if $sUserData.additional.payment.action == "stripe_payment" && $stripeCard}
+    {if $sUserData.additional.payment.action == "stripe_payment_card" && $stripeCard}
         <script type="text/javascript">
             $(document).ready(function() {
                 // Add special class to body to trigger custom CSS rules in Shopware versions >= 5.0 and < 5.2.

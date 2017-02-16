@@ -4,9 +4,9 @@ use Shopware\Plugins\StripePayment\Util;
 /**
  * The controller handling the main payment process using the stripe API.
  *
- * @copyright Copyright (c) 2015, VIISON GmbH
+ * @copyright Copyright (c) 2017, VIISON GmbH
  */
-class Shopware_Controllers_Frontend_StripePayment extends Shopware_Controllers_Frontend_Payment
+class Shopware_Controllers_Frontend_StripePaymentCard extends Shopware_Controllers_Frontend_Payment
 {
     /**
      * Retrieves the generated stripe transaction token and uses it to

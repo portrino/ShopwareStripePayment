@@ -1,4 +1,4 @@
-{if $Controller != "account" && $payment_mean.action == "stripe_payment"}
+{if $Controller != "account" && $payment_mean.action == "stripe_payment_card"}
     {* The main container for filling in the credit card information *}
     <style type="text/css">
         {* Include shared CSS for credit card logo SVGs *}
@@ -59,7 +59,7 @@
                 <div id="stripe-element-card-cvc" class="panel--td"><!-- Stripe element is inserted here --></div>
                 <div class="stripe-card-cvc--help help panel--td"
                     data-modalbox="true"
-                    data-content="{url controller=StripePayment action=cvcInfo forceSecure}"
+                    data-content="{url controller=StripePaymentCard action=cvcInfo forceSecure}"
                     data-mode="ajax"
                     data-height="430"
                     data-width="650">
@@ -106,7 +106,7 @@
         //      right away.
         if (typeof jQuery !== 'undefined') {
             // Stripe setup
-            {include file="frontend/stripe_payment/checkout/stripe_payment_header.js"}
+            {include file="frontend/stripe_payment/checkout/stripe_payment_card/header.js"}
         }
     </script>
 {/if}

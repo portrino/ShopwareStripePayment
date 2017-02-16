@@ -64,12 +64,15 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                     'onDispatchLoopStartup'
                 );
 
-                // Check whether the payment method already exists
-                $stripePaymentMethod = $this->get('models')->getRepository('Shopware\Models\Payment\Payment')->findOneBy(array(
-                    'action' => 'stripe_payment'
-                ));
-                if ($stripePaymentMethod === null) {
-                    // Create the stripe payment method
+                // Check for any Stripe payment methods
+                $builder = $this->get('models')->createQueryBuilder();
+                $builder->select('payment')
+                        ->from('Shopware\Models\Payment\Payment', 'payment')
+                        ->where('payment.name LIKE \'stripe_payment%\'');
+                $stripePaymentMethods = $builder->getQuery()->getResult();
+                if (count($stripePaymentMethods) === 0) {
+                    // No Stripe payment methods exist yet, hence create the (old) stripe payment method,
+                    // which will be migrated in a later step
                     $this->createPayment(
                         array(
                             'active' => 0,
@@ -158,7 +161,18 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                     'onAddConsoleCommand'
                 );
             case '1.1.1':
-                // Next release
+                // Rename the original payment method to 'stripe_payment_card'
+                $stripePaymentMethod = $this->get('models')->getRepository('Shopware\Models\Payment\Payment')->findOneBy(array(
+                    'name' => 'stripe_payment'
+                ));
+                if ($stripePaymentMethod) {
+                    $stripePaymentMethod->setName('stripe_payment_card');
+                    $stripePaymentMethod->setTemplate('stripe_payment_card.tpl');
+                    $stripePaymentMethod->setClass('StripePaymentCard');
+                    $stripePaymentMethod->setAction('stripe_payment_card');
+                    $this->get('models')->flush($stripePaymentMethod);
+                }
+
                 break;
             default:
                 return false;

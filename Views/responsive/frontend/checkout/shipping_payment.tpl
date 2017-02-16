@@ -14,7 +14,7 @@
          * Uncomment the following line the speed up development by including the custom
          * Stripe payment library instead of loading it from the compiled Javascript file
          *}
-        {* {include file="frontend/stripe_payment/_resources/javascript/stripe_payment.js"} *}
+        {* {include file="frontend/stripe_payment/_resources/javascript/stripe_payment_card.js"} *}
 
         // Fix selectbox replacement for dynamically loaded payment forms
         // See also: https://github.com/shopware/shopware/pull/357
@@ -25,7 +25,7 @@
 
         $(document).ready(function() {
             // Stripe setup
-            {include file="frontend/stripe_payment/checkout/stripe_payment_header.js"}
+            {include file="frontend/stripe_payment/checkout/stripe_payment_card/header.js"}
         });
     </script>
 {/block}
