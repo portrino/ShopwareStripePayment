@@ -5,7 +5,7 @@
 {/block}
 
 {block name="frontend_index_header_javascript_jquery" append}
-    {if $sUserData.additional.payment.action == "stripe_payment_card" && $stripeCard}
+    {if $sUserData.additional.payment.action == "stripe_payment_card" && $stripePayment.selectedCard}
         <script type="text/javascript">
             $(document).ready(function() {
                 // Add special class to body to trigger custom CSS rules in Shopware versions >= 5.0 and < 5.2.
@@ -16,7 +16,7 @@
                 }
 
                 // Insert a new element right below the general payment information showing details of the selected credit card
-                var element = $('<p class="stripe-payment-details is--bold">{$stripeCard.name} | {$stripeCard.brand} | &bull;&bull;&bull;&bull;{$stripeCard.last4} | {$stripeCard.exp_month}/{$stripeCard.exp_year}</p>');
+                var element = $('<p class="stripe-payment-details is--bold">{$stripePayment.selectedCard.name} | {$stripePayment.selectedCard.brand} | &bull;&bull;&bull;&bull;{$stripePayment.selectedCard.last4} | {$stripePayment.selectedCard.exp_month|string_format:"%02d"}/{$stripePayment.selectedCard.exp_year}</p>');
                 element.insertAfter('.payment--panel .payment--content .payment--method-info');
             });
         </script>

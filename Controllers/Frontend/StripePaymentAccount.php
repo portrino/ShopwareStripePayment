@@ -10,7 +10,7 @@ use Shopware\Plugins\StripePayment\Util;
 class Shopware_Controllers_Frontend_StripePaymentAccount extends Shopware_Controllers_Frontend_Account
 {
     /**
-     * Override
+     * @inheritdoc
      */
     public function preDispatch()
     {
@@ -29,6 +29,7 @@ class Shopware_Controllers_Frontend_StripePaymentAccount extends Shopware_Contro
      */
     public function manageCreditCardsAction()
     {
+        $stripeSession = Util::getStripeSession();
         // Load the template
         if (Shopware()->Shop()->getTemplate()->getVersion() >= 3) {
             // Shopware 5
@@ -40,24 +41,22 @@ class Shopware_Controllers_Frontend_StripePaymentAccount extends Shopware_Contro
         }
 
         try {
-            // Load all cards of the customer and sort them by id (which correspond to the date, the card was created/added)
+            // Load all cards of the customer
             $cards = Util::getAllStripeCards();
-            usort($cards, function($cardA, $cardB) {
-                return strcmp($cardA['id'], $cardB['id']);
-            });
         } catch (Exception $e) {
             $error = ($this->get('snippets')->getNamespace('frontend/plugins/stripe_payment/account')->get('credit_cards/error/list_cards')) ?: 'Failed to load credit cards.';
-            if (Shopware()->Session()->stripeErrorMessage === null) {
-                Shopware()->Session()->stripeErrorMessage = $error;
-            } else {
-                Shopware()->Session()->stripeErrorMessage .= "\n" . $error;
+            if ($stripeSession->accountError) {
+                $error = $stripeSession->accountError . "\n" . $error;
             }
+            $stripeSession->accountError = $error;
         }
 
         // Set the view data
-        $this->View()->creditCards = $cards;
-        $this->View()->stripePaymentError = Shopware()->Session()->stripeErrorMessage;
-        unset(Shopware()->Session()->stripeErrorMessage);
+        $this->View()->stripePayment = array(
+            'availableCards' => $cards,
+            'error' => $stripeSession->accountError
+        );
+        unset($stripeSession->accountError);
     }
 
     /**
@@ -65,25 +64,29 @@ class Shopware_Controllers_Frontend_StripePaymentAccount extends Shopware_Contro
      * from the Stripe account, which is associated with the currently logged in user.
      * Finally it redirects to the 'manageCreditCards' action.
      */
-    public function deleteCreditCardAction()
+    public function deleteCardAction()
     {
+        $stripeSession = Util::getStripeSession();
         try {
-            // Delete the card with the given id
+            // Determine the ID of the card that shall be deleted
             $cardId = $this->Request()->getParam('cardId');
-            if ($cardId === null) {
+            if (!$cardId) {
                 throw new Exception('Missing field "cardId".');
             }
-            Util::deleteStripeCard($cardId);
+            // Get the Stripe customer
+            $customer = Util::getStripeCustomer();
+            if (!$customer) {
+                throw new Exception('Customer not found.');
+            }
+            // Delete the card with the given id from Stripe
+            $customer->sources->retrieve($cardId)->delete();
         } catch (Exception $e) {
-            Shopware()->Session()->stripeErrorMessage = ($this->get('snippets')->getNamespace('frontend/plugins/stripe_payment/account')->get('credit_cards/error/delete_card')) ?: 'Failed to delete credit card.';
+            $stripeSession->accountError = ($this->get('snippets')->getNamespace('frontend/plugins/stripe_payment/account')->get('credit_cards/error/delete_card')) ?: 'Failed to delete credit card.';
         }
 
-        // Clear all checkout related fields from the session to avoid caching deleted credit cards
-        unset(Shopware()->Session()->stripeDeleteCardAfterPayment);
-        unset(Shopware()->Session()->stripeTransactionToken);
-        unset(Shopware()->Session()->stripeCardId);
-        unset(Shopware()->Session()->stripeCard);
-        unset(Shopware()->Session()->allStripeCards);
+        // Clear all checkout related fields from the stripe session to avoid caching deleted credit cards
+        unset($stripeSession->selectedCard);
+        unset($stripeSession->saveCardForFutureCheckouts);
 
         // Redirect to the manage action
         $this->redirect(array(

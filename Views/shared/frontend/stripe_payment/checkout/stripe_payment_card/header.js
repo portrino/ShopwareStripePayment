@@ -1,6 +1,6 @@
 // Configure StripePaymentCard using available template data
 var stripePaymentCardConfig = {
-    stripePublicKey: '{$stripePublicKey}',
+    stripePublicKey: '{$stripePayment.publicKey}',
     snippets: {
         error: {
             api_connection_error: '{s namespace=frontend/plugins/payment/stripe_payment/card name=error/api_connection_error}{/s}',
@@ -26,11 +26,11 @@ var stripePaymentCardConfig = {
         }
     }
 };
-if ('{$stripeCardRaw}') {
-    stripePaymentCardConfig.card = JSON.parse('{$stripeCardRaw}');
+if ('{$stripePayment.rawSelectedCard}') {
+    stripePaymentCardConfig.card = JSON.parse('{$stripePayment.rawSelectedCard}');
 }
-if ('{$allStripeCardsRaw}') {
-    stripePaymentCardConfig.allCards = JSON.parse('{$allStripeCardsRaw}');
+if ('{$stripePayment.rawAvailableCards}') {
+    stripePaymentCardConfig.allCards = JSON.parse('{$stripePayment.rawAvailableCards}');
 }
 
 // Initialize StripePaymentCard once the DOM is ready

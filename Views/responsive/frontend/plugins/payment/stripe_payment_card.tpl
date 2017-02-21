@@ -24,7 +24,7 @@
 
         {* The main form field table *}
         <div class="panel--table">
-            {if $stripeAllowSavingCreditCard or $allStripeCards|count > 0}
+            {if $stripePayment.allowSavingCreditCard or $stripePayment.availableCards|count > 0}
                 {* Credit card selection *}
                 <div class="panel--tr saved-cards">
                     <label>
@@ -33,9 +33,9 @@
                             <option value="new" selected>
                                 {s namespace=frontend/plugins/payment/stripe_payment/card name=form/card_selection/new_card}{/s}
                             </option>
-                            {foreach from=$allStripeCards item=stripeCard}
-                                <option value="{$stripeCard.id}"}>
-                                    {$stripeCard.name} | {$stripeCard.brand} | &bull;&bull;&bull;&bull;{$stripeCard.last4} | {$stripeCard.exp_month}/{$stripeCard.exp_year}
+                            {foreach from=$stripePayment.availableCards item=card}
+                                <option value="{$card.id}"}>
+                                    {$card.name} | {$card.brand} | &bull;&bull;&bull;&bull;{$card.last4} | {$card.exp_month|string_format:"%02d"}/{$card.exp_year}
                                 </option>
                             {/foreach}
                         </select>
@@ -77,7 +77,7 @@
                     data-width="650">
                 </div>
             </div>
-            {if $customerAccountMode == 0 and $stripeAllowSavingCreditCard}
+            {if $customerAccountMode == 0 and $stripePayment.allowSavingCreditCard}
                 {* Save data *}
                 <div class="panel--tr stripe-card-field">
                     <label>

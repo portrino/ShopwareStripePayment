@@ -77,11 +77,20 @@ class Util
             return array();
         }
 
-        // Get information about all cards
-        $cards = array();
-        foreach ($customer->sources->data as $card) {
-            $cards[] = self::convertStripeCardToArray($card);
-        }
+        // Get information about all card sources
+        $cardSources = array_filter($customer->sources->data, function ($source) {
+            return $source->type === 'card';
+        });
+        $cards = array_map(function ($source) {
+            return array(
+                'id' => $source->id,
+                'name' => $source->owner->name,
+                'brand' => $source->card->brand,
+                'last4' => $source->card->last4,
+                'exp_month' => $source->card->exp_month,
+                'exp_year' => $source->card->exp_year
+            );
+        }, $cardSources);
 
         // Sort the cards by id (which correspond to the date, the card was created/added)
         usort($cards, function($cardA, $cardB) {
@@ -115,7 +124,8 @@ class Util
             }
         }
 
-        return null;
+        // Just return the last card of the list, if possible
+        return array_pop($cards);
     }
 
     /**
@@ -152,6 +162,50 @@ class Util
             self::$stripeCustomer = null;
             $customer->getAttribute()->setStripeCustomerId(null);
             Shopware()->Models()->flush($customer->getAttribute());
+        }
+
+        return self::$stripeCustomer;
+    }
+
+    /**
+     * Creates a new Stripe customer for the currently logged in user/customer and saves
+     * the respective ID in the customer attributes.
+     *
+     * @return Stripe\Customer
+     */
+    public static function createStripeCustomer()
+    {
+        self::initStripeAPI();
+        $em = Shopware()->Container()->get('models');
+        // Get the current logged in customer
+        $customer = self::getCustomer();
+        if ($customer === null || $customer->getAccountMode() === 1) {
+            // Customer not found, without permanent user account
+            return null;
+        }
+        // Make sure the customer has attributes
+        if ($customer->getAttribute() === null) {
+            $customerAttribute = new CustomerAttribute();
+            $customerAttribute->setCustomer($customer);
+            $customer->setAttribute($customerAttribute);
+            $em->persist($customerAttribute);
+            $em->flush($customerAttribute);
+            $em->flush($customer);
+        }
+
+        // Create a new Stripe customer and save it in the user's attributes
+        try {
+            self::$stripeCustomer = Stripe\Customer::create(array(
+                'description' => self::getCustomerName(),
+                'email' => $customer->getEmail(),
+                'metadata' => array(
+                    'platform_name' => self::STRIPE_PLATFORM_NAME
+                )
+            ));
+            $customer->getAttribute()->setStripeCustomerId(self::$stripeCustomer->id);
+            $em->flush($customer->getAttribute());
+        } catch (\Exception $e) {
+            return null;
         }
 
         return self::$stripeCustomer;
@@ -201,93 +255,23 @@ class Util
     }
 
     /**
-     * First tries to get an existing Stripe customer. If it exists, the transaction token is used
-     * to add a new card to that customer. If not, a new Stripe customer is created and added the
-     * card represented by the transaction token.
-     *
-     * @param transactionToken The token, which will be used to add/create a new Stripe card.
-     * @return An array containing the data of the created Stripe card.
+     * @return \ArrayObject
      */
-    public static function saveStripeCard($transactionToken)
+    public static function getStripeSession()
     {
-        self::initStripeAPI();
-        // Get the Stripe customer
-        $stripeCustomer = self::getStripeCustomer();
-        if ($stripeCustomer !== null && !isset($stripeCustomer->deleted)) {
-            // Add the card to the existing customer
-            $newCard = $stripeCustomer->sources->create(array(
-                'source' => $transactionToken
-            ));
-        } else {
-            // Get the currently active user
-            $customer = self::getCustomer();
-            if ($customer === null || $customer->getAccountMode() === 1) {
-                // Customer not found or without permanent user account
-                return null;
-            }
-
-            // Create a new Stripe customer and add the card to them
-            $stripeCustomer = Stripe\Customer::create(array(
-                'description' => self::getCustomerName(),
-                'email' => $customer->getEmail(),
-                'source' => $transactionToken
-            ));
-            $newCard = $stripeCustomer->sources->data[0];
-
-            // Make sure the customer has attributes
-            if ($customer->getAttribute() === null) {
-                $customerAttribute = new CustomerAttribute();
-                $customerAttribute->setCustomer($customer);
-                $customer->setAttribute($customerAttribute);
-                Shopware()->Models()->persist($customerAttribute);
-                Shopware()->Models()->flush($customerAttribute);
-                Shopware()->Models()->flush($customer);
-            }
-
-            // Save the Stripe customer id
-            $customer->getAttribute()->setStripeCustomerId($stripeCustomer->id);
-            Shopware()->Models()->flush($customer->getAttribute());
+        $session = Shopware()->Container()->get('session');
+        if (!$session->stripePayment) {
+            self::resetStripeSession();
         }
 
-        // Return the created Stripe card array
-        return self::convertStripeCardToArray($newCard);
+        return $session->stripePayment;
     }
 
     /**
-     * Tries to delete the Stripe card with the given id from
-     * the Stripe customer, which is associated with the currently
-     * logged in user.
-     *
-     * @param $cardId The Stripe id of the card, which shall be deleted.
+     * Replaces the 'stripePayment' element in the session with an empty ArrayObject.
      */
-    public static function deleteStripeCard($cardId)
+    public static function resetStripeSession()
     {
-        self::initStripeAPI();
-        // Get the Stripe customer
-        $customer = self::getStripeCustomer();
-        if ($customer === null) {
-            return;
-        }
-
-        // Delete the card with the given id from Stripe
-        $customer->sources->retrieve($cardId)->delete();
-    }
-
-    /**
-     * Converts the given Stripe card instance to an array.
-     *
-     * @param Stripe\Card $card
-     * @return array
-     */
-    private static function convertStripeCardToArray($card)
-    {
-        return array(
-            'id' => $card->id,
-            'name' => $card->name,
-            'brand' => $card->brand,
-            'last4' => $card->last4,
-            'exp_month' => $card->exp_month,
-            'exp_year' => $card->exp_year
-        );
+        Shopware()->Container()->get('session')->stripePayment = new \ArrayObject(array(), \ArrayObject::STD_PROP_LIST);
     }
 }

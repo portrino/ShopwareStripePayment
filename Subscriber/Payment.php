@@ -21,17 +21,14 @@ class Payment implements SubscriberInterface
     }
 
     /**
-     * Adds the path to the Stripe payment method class to the return value,
-     * if a Shopware 5 theme is used in the active shop.
+     * Adds the path to the Stripe payment method class to the return value.
      *
      * @param \Enlight_Event_EventArgs $args
      */
     public function onAddPaymentClass(\Enlight_Event_EventArgs $args)
     {
-        if (Shopware()->Shop()->getTemplate()->getVersion() >= 3) {
-            $dirs = $args->getReturn();
-            $dirs['StripePaymentCard'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Card';
-            $args->setReturn($dirs);
-        }
+        $dirs = $args->getReturn();
+        $dirs['StripePaymentCard'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Card';
+        $args->setReturn($dirs);
     }
 }

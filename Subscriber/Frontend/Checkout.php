@@ -25,7 +25,11 @@ class Checkout implements SubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            'Enlight_Controller_Action_PostDispatchSecure_Frontend_Checkout' => 'onPostDispatchSecure'
+            'Enlight_Controller_Action_PostDispatchSecure_Frontend_Checkout' => 'onPostDispatchSecure',
+            // Shopware 4 templates only
+            'Shopware_Controllers_Frontend_Checkout::paymentAction::after' => 'onAfterPaymentAction',
+            // Shopware 5 themes only
+            'Shopware_Controllers_Frontend_Checkout::saveShippingPaymentAction::after' => 'onAfterPaymentAction'
         );
     }
 
@@ -43,107 +47,87 @@ class Checkout implements SubscriberInterface
      */
     public function onPostDispatchSecure(\Enlight_Event_EventArgs $args)
     {
-        // Check request, response and view
-        $request = $args->getRequest();
-        $response = $args->getSubject()->Response();
         $view = $args->getSubject()->View();
-        $actionName = $request->getActionName();
-        if (in_array($actionName, array('confirm', 'shippingPayment', 'saveShippingPayment'))) {
-            if ($actionName === 'confirm' && Shopware()->Shop()->getTemplate()->getVersion() < 3) {
-                // Shopware 4: Inject the error box and credit card logos into the template
-                $view->extendsTemplate('frontend/stripe_payment/checkout/confirm.tpl');
-                $view->extendsTemplate('frontend/stripe_payment/checkout/card_logos.tpl');
-            }
+        $stripeSession = Util::getStripeSession();
 
+        // Prepare the view
+        $actionName = $args->getSubject()->Request()->getActionName();
+        if (in_array($actionName, array('confirm', 'shippingPayment', 'saveShippingPayment'))) {
+            $stripeViewParams = array();
             // Set the stripe public key and some plugin configuration
-            $view->stripePublicKey = Util::stripePublicKey();
-            $view->stripeAllowSavingCreditCard = Shopware()->Plugins()->Frontend()->StripePayment()->Config()->get('allowSavingCreditCard', true);
+            $stripeViewParams['publicKey'] = Util::stripePublicKey();
+            $stripeViewParams['allowSavingCreditCard'] = Shopware()->Container()->get('plugins')->get('Frontend')->get('StripePayment')->Config()->get('allowSavingCreditCard', true);
 
             // Check for an error
-            if (!empty(Shopware()->Session()->stripePaymentError)) {
-                $view->stripePaymentError = Shopware()->Session()->stripePaymentError;
-                unset(Shopware()->Session()->stripePaymentError);
+            if ($stripeSession->paymentError) {
+                $stripeViewParams['error'] = $stripeSession->paymentError;
+                unset($stripeSession->paymentError);
             }
 
-            // Check if the Stripe cards are already loaded
-            if (empty(Shopware()->Session()->allStripeCards)) {
+            if (!$stripeSession->selectedCard) {
+                // Load the default card and safe it in the session
                 try {
-                    // Load all cards and save them in the session
-                    Shopware()->Session()->allStripeCards = Util::getAllStripeCards();
+                    $stripeSession->selectedCard = Util::getDefaultStripeCard();
                 } catch (\Exception $e) {
-                    unset(Shopware()->Session()->allStripeCards);
+                    unset($stripeSession->selectedCard);
                 }
             }
 
-            // Check if the default Stripe card is already loaded
-            if (Shopware()->Session()->stripeCard === null) {
-                try {
-                    // Load the default card and safe it in the session
-                    Shopware()->Session()->stripeCard = Util::getDefaultStripeCard();
-                } catch (\Exception $e) {
-                    unset(Shopware()->Session()->stripeCard);
+            // Update view parameters
+            try {
+                $stripeViewParams['availableCards'] = Util::getAllStripeCards();
+            } catch (\Exception $e) {
+                $stripeViewParams['availableCards'] = array();
+            }
+            if ($stripeSession->selectedCard) {
+                // Write the card info to the template both JSON encoded and in a form usable by smarty
+                $stripeViewParams['rawSelectedCard'] = json_encode($stripeSession->selectedCard);
+                $stripeViewParams['selectedCard'] = $stripeSession->selectedCard;
+
+                // Make sure the selected card is part of the list of available cards
+                foreach ($stripeViewParams['availableCards'] as $card) {
+                    if ($card['id'] === $stripeSession->selectedCard['id']) {
+                        $cardExists = true;
+                        break;
+                    }
+                }
+                if (!$cardExists) {
+                    $stripeViewParams['availableCards'][] = $stripeSession->selectedCard;
                 }
             }
+            $stripeViewParams['rawAvailableCards'] = json_encode($stripeViewParams['availableCards']);
+            $view->stripePayment = $stripeViewParams;
         }
+        if ($actionName === 'confirm' && Shopware()->Container()->get('shop')->getTemplate()->getVersion() < 3) {
+            // Load the required templates (Shopware 4 templates only)
+            $view->extendsTemplate('frontend/stripe_payment/checkout/confirm.tpl');
+            $view->extendsTemplate('frontend/stripe_payment/checkout/card_logos.tpl');
 
-        // Update the form data
-        if ($request->get('stripeTransactionToken') !== null) {
-            // Save the stripe transaction token in the session
-            Shopware()->Session()->stripeTransactionToken = $request->get('stripeTransactionToken');
-            unset(Shopware()->Session()->stripeCard);
-            unset(Shopware()->Session()->stripeCardId);
-        } else {
             // Simulate a new customer to make the payment selection in the checkout process visible
             $view->sRegisterFinished = 'false';
         }
-        if ($request->get('stripeCardId') !== null) {
-            // Save the stripe card id in the session
-            Shopware()->Session()->stripeCardId = $request->get('stripeCardId');
-            unset(Shopware()->Session()->stripeTransactionToken);
-        }
-        if ($request->get('stripeCard') !== null) {
-            // Save the stripe card info in the session
-            Shopware()->Session()->stripeCard = json_decode($request->get('stripeCard'), true);
-        }
 
-        // Check if a new card token is provided and shall be saved for later use
-        if ($request->get('stripeSaveCard') === 'on' && Shopware()->Session()->stripeTransactionToken !== null) {
-            unset(Shopware()->Session()->stripeDeleteCardAfterPayment);
-            try {
-                // Save the card info either in a new or an existing Stripe customer
-                $transactionToken = Shopware()->Session()->stripeTransactionToken;
-                $newCard = Util::saveStripeCard($transactionToken);
-
-                // Save the card and its ID in the session and remove the token from the session
-                Shopware()->Session()->stripeCard = $newCard;
-                Shopware()->Session()->stripeCardId = $newCard['id'];
-                unset(Shopware()->Session()->stripeTransactionToken);
-            } catch (\Exception $e) {
-                // Write the error message to the view
-                $view->stripePaymentError = $e->getMessage();
-            }
-        } else if ($request->get('stripeSaveCard') === 'off') {
-            // Mark the Stripe card to be deleted after the payment
-            Shopware()->Session()->stripeDeleteCardAfterPayment = true;
-        }
-
-        // Update view parameters
-        if (Shopware()->Session()->allStripeCards !== null) {
-            // Write all cards to the template both JSON encoded and in a form usable by smarty
-            $view->allStripeCardsRaw = json_encode(Shopware()->Session()->allStripeCards);
-            $view->allStripeCards = Shopware()->Session()->allStripeCards;
-        }
-        if (Shopware()->Session()->stripeCard !== null) {
-            // Write the card info to the template both JSON encoded and in a form usable by smarty
-            $view->stripeCardRaw = json_encode(Shopware()->Session()->stripeCard);
-            $view->stripeCard = Shopware()->Session()->stripeCard;
-            // Save the pre-selected the card ID in the session to allow quick checkout
-            Shopware()->Session()->stripeCardId = Shopware()->Session()->stripeCard['id'];
-        }
         $customer = Util::getCustomer();
-        if ($customer !== null) {
+        if ($customer) {
             // Add the account mode to the view
             $view->customerAccountMode = $customer->getAccountMode();
+        }
+    }
+
+    /**
+     * Checks the request for stripe parameters and saves them in the session for later use.
+     *
+     * @param \Enlight_Hook_HookArgs $args
+     */
+    public function onAfterPaymentAction(\Enlight_Hook_HookArgs $args)
+    {
+        $request = $args->getSubject()->Request();
+        $stripeSession = Util::getStripeSession();
+        if ($request->getParam('stripeSelectedCard')) {
+            $stripeSession->selectedCard = json_decode($request->getParam('stripeSelectedCard'), true);
+        }
+        if ($request->getParam('stripeSaveCard')) {
+            $stripeSession->saveCardForFutureCheckouts = $request->getParam('stripeSaveCard') === 'on';
         }
     }
 }

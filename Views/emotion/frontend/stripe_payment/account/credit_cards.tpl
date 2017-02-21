@@ -8,16 +8,16 @@
         </h1>
 
         {* Error messages *}
-        {if $stripePaymentError}
+        {if $stripePayment.error}
             <div class="error">
                 <h2>
                     {s name='credit_cards/error/title' namespace='frontend/plugins/stripe_payment/account'}{/s}
                 </h2>
-                {$stripePaymentError}
+                {$stripePayment.error}
             </div>
         {/if}
 
-        {if $creditCards|@count > 0}
+        {if $stripePayment.availableCards|@count > 0}
             {* Credit card table *}
             <div class="table grid_16">
                 {* Header *}
@@ -39,24 +39,24 @@
                     </div>
                 </div>
                 {* Body *}
-                {foreach name=stripeCreditCards from=$creditCards item=creditCard}
-                    <div class="table_row {if $smarty.foreach.stripeCreditCards.last}lastrow{/if}">
+                {foreach name=stripePaymentAccountCreditCards from=$stripePayment.availableCards item=card}
+                    <div class="table_row {if $smarty.foreach.stripePaymentAccountCreditCards.last}lastrow{/if}">
                         <div class="grid_3 bold">
-                            {$creditCard.name}
+                            {$card.name}
                         </div>
                         <div class="grid_3">
-                            {$creditCard.brand}
+                            {$card.brand}
                         </div>
                         <div class="grid_4" style="margin-top: 15px;">
-                            XXXXXXXXXXXX {$creditCard.last4}
+                            &bull;&bull;&bull;&bull;{$card.last4}
                         </div>
                         <div class="grid_2">
-                            {$creditCard.exp_month|string_format:"%02d"}/{$creditCard.exp_year}
+                            {$card.exp_month|string_format:"%02d"}/{$card.exp_year}
                         </div>
                         <div class="grid_3 textright">
                             <strong>
-                                <form name="stripeCreditCard-{$creditCard.id}" method="POST" action="{url controller='StripePaymentAccount' action='deleteCreditCard'}">
-                                    <input type="hidden" name="cardId" value="{$creditCard.id}" />
+                                <form name="stripeCreditCard-{$card.id}" method="POST" action="{url controller='StripePaymentAccount' action='deleteCard'}">
+                                    <input type="hidden" name="cardId" value="{$card.id}" />
                                     <button type="submit" class="button-middle small">{s name='credit_cards/table/actions/delete' namespace='frontend/plugins/stripe_payment/account'}{/s}</button>
                                 </form>
                             </strong>

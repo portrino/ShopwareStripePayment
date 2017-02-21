@@ -1,13 +1,24 @@
 <?php
 namespace Shopware\Plugins\StripePayment\Components\PaymentMethods;
 
+use Shopware\Plugins\StripePayment\Util;
 use ShopwarePlugin\PaymentMethods\Components\GenericPaymentMethod;
 
 /**
  * @copyright Copyright (c) 2017, VIISON GmbH
  */
-abstract class BaseValidator extends GenericPaymentMethod
+abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
 {
+    /**
+     * Returns the source that shall be used to create a Stripe charge during checkout.
+     *
+     * @param int $amountInCents
+     * @param string $currencyCode
+     * @return Stripe\Source
+     * @throws \Exception
+     */
+    abstract public function createStripeSource($amountInCents, $currencyCode);
+
     /**
      * Validates the given payment data. If the data is invalid, an array containing error messages or codes
      * must be returned. Otherwiese an empty array i returned.
@@ -16,6 +27,69 @@ abstract class BaseValidator extends GenericPaymentMethod
      * @return array
      */
     abstract protected function doValidate(array $paymentData);
+
+    /**
+     * @inheritdoc
+     */
+    public function getCurrentPaymentDataAsArray($userId)
+    {
+        return (array)Util::getStripeSession();
+    }
+
+    /**
+     * Returns the localized error message for the given exception.
+     *
+     * @param \Exception $exception
+     * @return string
+     */
+    public function getErrorMessage(\Exception $exception)
+    {
+        $message = 'Payment failed: ' . $exception->getMessage();
+        if ($exception->stripeCode) {
+            $message = ($this->getSnippet('payment_error/message/' . $exception->stripeCode)) ?: $message;
+        }
+
+        return $message;
+    }
+
+    /**
+     * @param string $name
+     * @return string
+     */
+    public function getSnippet($name)
+    {
+        $this->get('snippets')->getNamespace('frontend/plugins/payment/stripe_payment/base')->get($name);
+    }
+
+    /**
+     * Assembles and returns a shopware URL that can be used e.g. for a redirect return.
+     *
+     * @param array $components
+     * @return string
+     */
+    protected function assembleShopwareUrl(array $components)
+    {
+        $front = $this->get('front');
+        $url = $front->Router()->assemble($components);
+        if (!preg_match('#^https?://#', $url)) {
+            if (strpos($url, '/') !== 0) {
+                $url = $front->Request()->getBaseUrl() . '/' . $url;
+            }
+            $uri = $front->Request()->getScheme() . '://' . $front->Request()->getHttpHost();
+            $url = $uri . $url;
+        }
+
+        return $url;
+    }
+
+    /**
+     * @param string $key
+     * @return mixed
+     */
+    protected function get($key)
+    {
+        return Shopware()->Container()->get($key);
+    }
 }
 
 /**
@@ -47,7 +121,7 @@ if (needs_legacy_validate_signature()) {
     /**
      * Shopware < 5.0.4
      */
-    abstract class Base extends BaseValidator
+    abstract class Base extends AbstractStripePaymentMethod
     {
         /**
          * @inheritdoc
@@ -61,7 +135,7 @@ if (needs_legacy_validate_signature()) {
     /**
      * Shopware >= 5.0.4
      */
-    abstract class Base extends BaseValidator
+    abstract class Base extends AbstractStripePaymentMethod
     {
         /**
          * @inheritdoc

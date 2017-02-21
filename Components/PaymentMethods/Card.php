@@ -2,39 +2,64 @@
 namespace Shopware\Plugins\StripePayment\Components\PaymentMethods;
 
 use Shopware\Plugins\StripePayment\Util;
+use Stripe;
 
 /**
- * A simplified payment method instance that is only used to validate the Stripe card payment
- * information like transaction token or card ID primarily to prevent quick checkout in
- * Shopware 5 when neither of those exist.
- *
  * @copyright Copyright (c) 2017, VIISON GmbH
  */
 class Card extends Base
 {
     /**
-     * Fetches the Stripe transaction token from the session as well as the selected Stripe card,
-     * either from the session or as fallback directly from Stripe.
-     *
-     * @param userId The ID of the user.
-     * @return array|null
+     * @inheritdoc
      */
-    public function getCurrentPaymentDataAsArray($userId)
+    public function createStripeSource($amountInCents, $currencyCode)
     {
-        // Try to get the Stripe token and/or the currently selected Stripe card
-        $stripeTransactionToken = Shopware()->Session()->stripeTransactionToken;
-        $allStripeCards = Util::getAllStripeCards();
-        $stripeCardId = Shopware()->Session()->stripeCardId;
-        if (empty($stripeCardId) && Util::getDefaultStripeCard() !== null) {
-            // Use the default card instead
-            $stripeCard = Util::getDefaultStripeCard();
-            $stripeCardId = $stripeCard['id'];
+        // Determine the card source
+        $stripeSession = Util::getStripeSession();
+
+        if (!$stripeSession->selectedCard) {
+            throw new \Exception($this->getSnippet('payment_error/message/no_card_selected'));
+        } elseif ($stripeSession->selectedCard['token_id']) {
+            // Use the token to create a new Stripe card source
+            $source = Stripe\Source::create(array(
+                'type' => 'card',
+                'token' => $stripeSession->selectedCard['token_id']
+            ));
+
+            // Remove the token from the selected card, since it can only be consumed once
+            unset($stripeSession->selectedCard['token_id']);
+
+            if ($stripeSession->saveCardForFutureCheckouts) {
+                // Add the card to the Stripe customer
+                $stripeCustomer = Util::getStripeCustomer();
+                if (!$stripeCustomer) {
+                    $stripeCustomer = Util::createStripeCustomer();
+                }
+                $source = $stripeCustomer->sources->create(array(
+                    'source' => $source->id
+                ));
+                unset($stripeSession->saveCardForFutureCheckouts);
+            }
+
+            // Overwrite the card's id to allow using it again in case of an error
+            $stripeSession->selectedCard['id'] = $source->id;
+        } else {
+            // Try to find the source corresponding to the selected card
+            $source = Stripe\Source::retrieve($stripeSession->selectedCard['id']);
+        }
+        if (!$source) {
+            throw new \Exception($this->getSnippet('payment_error/message/transaction_not_found'));
         }
 
-        return array(
-            'stripeTransactionToken' => $stripeTransactionToken,
-            'stripeCardId' => $stripeCardId
-        );
+        return $source;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSnippet($name)
+    {
+        return ($this->get('snippets')->getNamespace('frontend/plugins/payment/stripe_payment/card')->get($name)) ?: parent::getSnippet($name);
     }
 
     /**
@@ -42,10 +67,10 @@ class Card extends Base
      */
     protected function doValidate(array $paymentData)
     {
-        // Check the payment data for a Stripe transaction token or a selected card ID
-        if (empty($paymentData['stripeTransactionToken']) && empty($paymentData['stripeCardId'])) {
+        // Check the payment data for a selected card
+        if (empty($paymentData['selectedCard'])) {
             return array(
-                'STRIPE_VALIDATION_FAILED'
+                'STRIPE_CARD_VALIDATION_FAILED'
             );
         }
 

@@ -231,17 +231,13 @@ var StripePaymentCard = {
      */
     setSelectedCard: function(card) {
         this.selectedCard = card;
-        // Remove all hidden Stripe fields from the main form
-        $('input[name="stripeTransactionToken"]').remove();
-        $('input[name="stripeCardId"]').remove();
-        $('input[name="stripeCard"]').remove();
-
+        // Remove the hidden card field from the main form
+        $('input[name="stripeSelectedCard"]').remove();
         if (this.selectedCard) {
             // Add the data of the new card to the form
-            var form = this.findForm();
-            form.append('<input type="hidden" name="stripeCardId" value="' + this.selectedCard.id + '" />');
-            form.append('<input type="hidden" name="stripeCard" value="" />');
-            $('input[name="stripeCard"]').val(JSON.stringify(this.selectedCard));
+            $('<input type="hidden" name="stripeSelectedCard" />')
+                .val(JSON.stringify(this.selectedCard))
+                .appendTo(this.findForm());
         }
     },
 
@@ -269,20 +265,18 @@ var StripePaymentCard = {
 
     /**
      * First validates the form and payment state and, if the main form can be submitted, does nothing further.
-     * If however the main from cannot be submitted, because neither a token was created nor a saved card is
-     * selected, a new Stripe token is created and saved in the form, before the submission is triggered again.
+     * If however the main form cannot be submitted, because no card is selected (or no token was created),
+     * a new Stripe card and token are generated using the entered card data and saved in the form, before
+     * the submission is triggered again.
      *
-     * @param Object event
+     * @param Event event
      */
     onFormSubmission: function(event) {
         var me = event.data.scope,
             form = $(this);
 
         // Check if a token/card was generated and hence the form can be submitted
-        if (me.selectedCard !== null) {
-            // Append the value of the checkbox, indicating whether the credit card info shall be saved
-            var saveCard = me.formEl('.stripe-save-card').is(':checked') ? 'on' : 'off';
-            form.append('<input type="hidden" name="stripeSaveCard" value="' + saveCard + '" />');
+        if (me.selectedCard) {
             return;
         } else {
             // Prevent the form from being submitted until a new Stripe token is generated and received
@@ -309,11 +303,17 @@ var StripePaymentCard = {
                 me.handleStripeError(me.snippets.error.title + ': ' + message);
             } else {
                 // Save the card information
-                me.setSelectedCard(result.token.card);
+                var card = result.token.card;
+                card.token_id = result.token.id;
+                me.setSelectedCard(card);
 
-                // Remove the card ID from the form (added by 'setSelectedCard') and add the new Stripe token instead
-                $('input[name="stripeCardId"]').remove();
-                form.append('<input type="hidden" name="stripeTransactionToken" value="' + result.token.id + '" />');
+                // Save whether to save the credit card for future checkouts
+                $('input[name="stripeSaveCard"]').remove();
+                $('<input type="hidden" name="stripeSaveCard" />')
+                    .val(me.formEl('.stripe-save-card').is(':checked') ? 'on' : 'off')
+                    .appendTo(form);
+
+                // Submit the form again to finish the payment process
                 form.submit();
             }
         });

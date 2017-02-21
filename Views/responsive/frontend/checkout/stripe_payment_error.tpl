@@ -1,4 +1,4 @@
-{if $stripePaymentError}
+{if $stripePayment.error}
     {if !$stripeErrorTitle}
         {* Load the payment error title from the snippets *}
         {capture name="stripeErrorTitleCapture"}
@@ -13,6 +13,6 @@
     {/capture}
 
     {* Include error message template with title and passed Stripe error *}
-    {$errorList = [$smarty.capture.stripeErrorTitle, $stripePaymentError]}
+    {$errorList = [$smarty.capture.stripeErrorTitle, $stripePayment.error]}
     {include file="frontend/_includes/messages.tpl" type="error" list=$errorList}
 {/if}
