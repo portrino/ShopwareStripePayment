@@ -12,7 +12,7 @@ class Giropay extends Base
     /**
      * @inheritdoc
      */
-    public function createStripeSource($amountInCents, $currencyCode)
+    public function createStripeSource($amountInCents, $currencyCode, $statementDescriptor)
     {
         Util::initStripeAPI();
         // Create a new Giropay source
@@ -26,6 +26,9 @@ class Giropay extends Base
             'currency' => $currencyCode,
             'owner' => array(
                 'name' => Util::getCustomerName()
+            ),
+            'giropay' => array(
+                'statement_descriptor' => $statementDescriptor
             ),
             'redirect' => array(
                 'return_url' => $returnUrl

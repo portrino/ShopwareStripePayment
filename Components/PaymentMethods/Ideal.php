@@ -12,7 +12,7 @@ class Ideal extends Base
     /**
      * @inheritdoc
      */
-    public function createStripeSource($amountInCents, $currencyCode)
+    public function createStripeSource($amountInCents, $currencyCode, $statementDescriptor)
     {
         Util::initStripeAPI();
         // Create a new iDEAL source
@@ -26,6 +26,9 @@ class Ideal extends Base
             'currency' => $currencyCode,
             'owner' => array(
                 'name' => Util::getCustomerName()
+            ),
+            'ideal' => array(
+                'statement_descriptor' => $statementDescriptor
             ),
             'redirect' => array(
                 'return_url' => $returnUrl

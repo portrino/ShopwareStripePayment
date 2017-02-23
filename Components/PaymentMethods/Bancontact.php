@@ -12,7 +12,7 @@ class Bancontact extends Base
     /**
      * @inheritdoc
      */
-    public function createStripeSource($amountInCents, $currencyCode)
+    public function createStripeSource($amountInCents, $currencyCode, $statementDescriptor)
     {
         Util::initStripeAPI();
         // Create a new Bancontact source
@@ -26,6 +26,9 @@ class Bancontact extends Base
             'currency' => $currencyCode,
             'owner' => array(
                 'name' => Util::getCustomerName()
+            ),
+            'bancontact' => array(
+                'statement_descriptor' => $statementDescriptor
             ),
             'redirect' => array(
                 'return_url' => $returnUrl

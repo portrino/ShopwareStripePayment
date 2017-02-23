@@ -14,10 +14,11 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
      *
      * @param int $amountInCents
      * @param string $currencyCode
+     * @param string $statementDescriptor
      * @return Stripe\Source
      * @throws \Exception
      */
-    abstract public function createStripeSource($amountInCents, $currencyCode);
+    abstract public function createStripeSource($amountInCents, $currencyCode, $statementDescriptor);
 
     /**
      * Validates the given payment data. If the data is invalid, an array containing error messages or codes

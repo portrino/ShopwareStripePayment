@@ -12,7 +12,7 @@ class Sofort extends Base
     /**
      * @inheritdoc
      */
-    public function createStripeSource($amountInCents, $currencyCode)
+    public function createStripeSource($amountInCents, $currencyCode, $statementDescriptor)
     {
         Util::initStripeAPI();
         // Create a new SOFORT source
@@ -28,7 +28,8 @@ class Sofort extends Base
                 'name' => Util::getCustomerName()
             ),
             'sofort' => array(
-                'country' => $this->get('session')->sOrderVariables->sCountry['countryiso']
+                'country' => $this->get('session')->sOrderVariables->sCountry['countryiso'],
+                'statement_descriptor' => $statementDescriptor
             ),
             'redirect' => array(
                 'return_url' => $returnUrl

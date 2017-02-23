@@ -12,7 +12,7 @@ class Card extends Base
     /**
      * @inheritdoc
      */
-    public function createStripeSource($amountInCents, $currencyCode)
+    public function createStripeSource($amountInCents, $currencyCode, $statementDescriptor)
     {
         Util::initStripeAPI();
 

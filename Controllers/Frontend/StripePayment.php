@@ -56,11 +56,18 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
     {
         $stripeSession = Util::getStripeSession();
 
+        // Determine the statement descriptor
+        $shopName = $this->get('shop')->getName();
+        $shopUrl = $this->Request()->getHttpHost() . $this->Request()->getBaseUrl();
+        $orderNumber = $this->getOrderNumber();
+        $statementDescriptor = sprintf('%s (%s), Nr. %s', $shopName, $shopUrl, $orderNumber);
+
         // Create a source using the selected Stripe payment method
         try {
             $source = $this->getStripePaymentMethod()->createStripeSource(
                 ($this->getAmount() * 100), // Amount has to be in cents!
-                $this->getCurrencyShortName()
+                $this->getCurrencyShortName(),
+                $statementDescriptor
             );
         } catch (Exception $e) {
             $this->get('pluginlogger')->error('StripePayment: Failed to create source', array('exception' => $e, 'trace' => $e->getTrace()));
