@@ -226,6 +226,18 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                         'additionalDescription' => ''
                     )
                 );
+                // Add a payment method for Giropay payments
+                $this->createPayment(
+                    array(
+                        'active' => 0,
+                        'name' => 'stripe_payment_giropay',
+                        'description' => 'Stripe Giropay',
+                        'template' => '',
+                        'action' => 'stripe_payment',
+                        'class' => 'StripePaymentGiropay',
+                        'additionalDescription' => ''
+                    )
+                );
 
                 break;
             default:

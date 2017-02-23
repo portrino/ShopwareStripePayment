@@ -31,6 +31,7 @@ class Payment implements SubscriberInterface
         $dirs['StripePaymentBancontact'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Bancontact';
         $dirs['StripePaymentCard'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Card';
         $dirs['StripePaymentIdeal'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Ideal';
+        $dirs['StripePaymentGiropay'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Giropay';
         $dirs['StripePaymentSofort'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Sofort';
         $args->setReturn($dirs);
     }
