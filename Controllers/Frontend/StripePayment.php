@@ -8,7 +8,7 @@ use Shopware\Plugins\StripePayment\Util;
 abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Controllers_Frontend_Payment
 {
     /**
-     * The ID of the order payment status 'completely paid';
+     * The ID of the order payment status 'completely paid'
      */
     const PAYMENT_STATUS_COMPLETELY_PAID = 12;
 
