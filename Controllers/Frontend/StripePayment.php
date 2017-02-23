@@ -1,11 +1,17 @@
 <?php
+// Define the CSRFWhitelistAware interface for Shopware versions < 5.2
+if (!interface_exists('\Shopware\Components\CSRFWhitelistAware')) {
+    interface CSRFWhitelistAware {}
+}
+
+use Shopware\Components\CSRFWhitelistAware;
 use Shopware\Models\Order\Order;
 use Shopware\Plugins\StripePayment\Util;
 
 /**
  * @copyright Copyright (c) 2017, VIISON GmbH
  */
-abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Controllers_Frontend_Payment
+abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Controllers_Frontend_Payment implements CSRFWhitelistAware
 {
     /**
      * The ID of the order payment status 'completely paid'
@@ -17,6 +23,22 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
      */
     const PAYMENT_STATUS_OPEN = 17;
 
+    /**
+     * The ID of the order payment status 'review necessary'
+     */
+    const PAYMENT_STATUS_REVIEW_NECESSARY = 21;
+
+    /**
+     * @inheritdoc
+     */
+    public function getWhitelistedCSRFActions()
+    {
+        return array(
+            'stripeWebhook'
+        );
+    }
+
+    /**
      * Creates a source using the selected Stripe payment method class and completes its payment
      * flow. That is, if the source is already chargeable, the charge is created and the order is
      * saved. If however the source requires a flow like 'redirect', the flow is executed without
@@ -112,6 +134,58 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
         }
 
         $this->finishCheckout($order);
+    }
+
+    /**
+     * Parses the request body and tries to retrieve both the POSTed webhook event as well as the
+     * order that references the source contained in the event for verification. If the webhook
+     * call is valid, the is updated based on the event type:
+     *
+     *  - charge.succeeded: Set the orders payment status to 'completely paid'
+     *  - charge.failed: Set the orders payment status to 'review necessary'
+     */
+    public function stripeWebhookAction()
+    {
+        Util::initStripeAPI();
+        // Disable the default renderer to supress errors caused by the template engine
+        $this->Front()->Plugins()->ViewRenderer()->setNoRender();
+
+        // Try to parse the request payload
+        try {
+            $rawBody = $this->Request()->getRawBody();
+            $eventJson = Zend_Json::decode($rawBody);
+        } catch (\Exception $e) {
+            echo 'Failed to decode request JSON';
+            return;
+        }
+
+        // Verify the event by fetching it from Stripe and finding the corresponding order
+        $event = Stripe\Event::retrieve($eventJson['id']);
+        $order = $this->get('models')->getRepository('Shopware\Models\Order\Order')->findOneBy(array(
+            'temporaryId' => $event->data->object->source->id
+        ));
+        if (!$order) {
+            echo 'Could not find order for event';
+            return;
+        }
+
+        switch ($event->type) {
+            case 'charge.succeeded':
+                // Update the order's payment status to 'completely paid'
+                $paymentStatus = $this->get('models')->find('Shopware\Models\Order\Status', self::PAYMENT_STATUS_COMPLETELY_PAID);
+                $order->setPaymentStatus($paymentStatus);
+                $this->get('models')->flush($order);
+                break;
+            case 'charge.failed':
+                // Update the order's payment status to 'review necessary'
+                $paymentStatus = $this->get('models')->find('Shopware\Models\Order\Status', self::PAYMENT_STATUS_REVIEW_NECESSARY);
+                $order->setPaymentStatus($paymentStatus);
+                $this->get('models')->flush($order);
+                break;
+        }
+
+        // Just respond with 'OK' to make debugging easier
+        echo 'OK';
     }
 
     /**
