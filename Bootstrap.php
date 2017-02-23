@@ -202,6 +202,18 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                         'additionalDescription' => ''
                     )
                 );
+                // Add a payment method for iDEAL payments
+                $this->createPayment(
+                    array(
+                        'active' => 0,
+                        'name' => 'stripe_payment_ideal',
+                        'description' => 'Stripe iDEAL',
+                        'template' => '',
+                        'action' => 'stripe_payment',
+                        'class' => 'StripePaymentIdeal',
+                        'additionalDescription' => ''
+                    )
+                );
 
                 break;
             default:
