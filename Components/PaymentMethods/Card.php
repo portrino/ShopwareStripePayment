@@ -53,7 +53,8 @@ class Card extends Base
         }
 
         // Check the created/retrieved source
-        if ($source->card->three_d_secure === 'required') {
+        $paymentMethod = $this->get('session')->sOrderVariables->sPayment['name'];
+        if ($source->card->three_d_secure === 'required' || ($source->card->three_d_secure !== 'not_supported' && $paymentMethod === 'stripe_payment_card_three_d_secure')) {
             // The card requires the 3D-Secure flow or supports it and the selected payment method requires it,
             // hence create a new 3D-Secure source that is based on the card source
             $returnUrl = $this->assembleShopwareUrl(array(
