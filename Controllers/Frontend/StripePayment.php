@@ -13,6 +13,10 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
     const PAYMENT_STATUS_COMPLETELY_PAID = 12;
 
     /**
+     * The ID of the order payment status 'open'
+     */
+    const PAYMENT_STATUS_OPEN = 17;
+
      * Creates a source using the selected Stripe payment method class and completes its payment
      * flow. That is, if the source is already chargeable, the charge is created and the order is
      * saved. If however the source requires a flow like 'redirect', the flow is executed without
@@ -172,7 +176,7 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
         $orderNumber = $this->saveOrder(
             $charge->id, // transactionId
             $charge->source->id, // paymentUniqueId
-            self::PAYMENT_STATUS_COMPLETELY_PAID // paymentStatusId
+            ($charge->status === 'succeeded') ? self::PAYMENT_STATUS_COMPLETELY_PAID : self::PAYMENT_STATUS_OPEN // paymentStatusId
         );
         if (!$orderNumber) {
             // Order creation failed
