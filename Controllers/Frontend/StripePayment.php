@@ -171,7 +171,7 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
         // account, so it can be used to easily identify an order.
         $orderNumber = $this->saveOrder(
             $charge->id, // transactionId
-            $charge->balance_transaction, // paymentUniqueId
+            $charge->source->id, // paymentUniqueId
             self::PAYMENT_STATUS_COMPLETELY_PAID // paymentStatusId
         );
         if (!$orderNumber) {
