@@ -214,6 +214,18 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                         'additionalDescription' => ''
                     )
                 );
+                // Add a payment method for Bancontact payments
+                $this->createPayment(
+                    array(
+                        'active' => 0,
+                        'name' => 'stripe_payment_bancontact',
+                        'description' => 'Stripe Bancontact',
+                        'template' => '',
+                        'action' => 'stripe_payment',
+                        'class' => 'StripePaymentBancontact',
+                        'additionalDescription' => ''
+                    )
+                );
 
                 break;
             default:
