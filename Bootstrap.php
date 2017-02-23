@@ -190,6 +190,18 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                         'additionalDescription' => ''
                     )
                 );
+                // Add a payment method for SOFORT payments
+                $this->createPayment(
+                    array(
+                        'active' => 0,
+                        'name' => 'stripe_payment_sofort',
+                        'description' => 'Stripe SOFORT Überweisung',
+                        'template' => '',
+                        'action' => 'stripe_payment',
+                        'class' => 'StripePaymentSofort',
+                        'additionalDescription' => ''
+                    )
+                );
 
                 break;
             default:
