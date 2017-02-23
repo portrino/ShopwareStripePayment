@@ -8,13 +8,17 @@ use Shopware\Plugins\StripePayment\Util;
 abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Controllers_Frontend_Payment
 {
     /**
+     * The ID of the order payment status 'completely paid';
+     */
+    const PAYMENT_STATUS_COMPLETELY_PAID = 12;
+
+    /**
      * Creates a source using the selected Stripe payment method class and completes its payment
      * flow. That is, if the source is already chargeable, the charge is created and the order is
      * saved.
      */
     public function indexAction()
     {
-        Util::initStripeAPI();
         // Create a source using the selected Stripe payment method
         try {
             $source = $this->getStripePaymentMethod()->createStripeSource(
@@ -107,11 +111,10 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
         // it displays NOT the transactionId, but the field 'temporaryID', to which the paymentUniqueId
         // is written. Additionally the balance_transaction is displayed in the shop owner's Stripe
         // account, so it can be used to easily identify an order.
-        $paymentUniqueId = $charge->balance_transaction;
         $orderNumber = $this->saveOrder(
             $charge->id, // transactionId
-            $paymentUniqueId, // paymentUniqueId
-            12 // paymentStatusId; 12 = completely paid
+            $charge->balance_transaction, // paymentUniqueId
+            self::PAYMENT_STATUS_COMPLETELY_PAID // paymentStatusId
         );
         if (!$orderNumber) {
             // Order creation failed

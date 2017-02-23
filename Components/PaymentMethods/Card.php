@@ -14,9 +14,10 @@ class Card extends Base
      */
     public function createStripeSource($amountInCents, $currencyCode)
     {
+        Util::initStripeAPI();
+
         // Determine the card source
         $stripeSession = Util::getStripeSession();
-
         if (!$stripeSession->selectedCard) {
             throw new \Exception($this->getSnippet('payment_error/message/no_card_selected'));
         } elseif ($stripeSession->selectedCard['token_id']) {
