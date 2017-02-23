@@ -301,6 +301,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
         $this->get('events')->addSubscriber(new Subscriber\Controllers($this));
         $this->get('events')->addSubscriber(new Subscriber\Frontend\Account($this));
         $this->get('events')->addSubscriber(new Subscriber\Frontend\Checkout($this));
+        $this->get('events')->addSubscriber(new Subscriber\Modules\Order());
         $this->get('events')->addSubscriber(new Subscriber\Theme($this));
     }
 
