@@ -180,8 +180,8 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
         }
 
         try {
-            // Save the order number in the description of the charge
-            $charge->description .= ' / Bestell-Nr.: ' . $this->getOrderNumber();
+            // Save the order number in the description and metadata of the charge
+            $charge->description .= ' / Bestell-Nr.: ' . $orderNumber;
             $charge->save();
         } catch (Exception $e) {
             // Ignore exceptions in this case, because the order has already been created
