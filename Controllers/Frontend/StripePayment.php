@@ -15,10 +15,13 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
     /**
      * Creates a source using the selected Stripe payment method class and completes its payment
      * flow. That is, if the source is already chargeable, the charge is created and the order is
-     * saved.
+     * saved. If however the source requires a flow like 'redirect', the flow is executed without
+     * charing the source or creating an order (these steps will be peformed by the flow).
      */
     public function indexAction()
     {
+        $stripeSession = Util::getStripeSession();
+
         // Create a source using the selected Stripe payment method
         try {
             $source = $this->getStripePaymentMethod()->createStripeSource(
@@ -32,7 +35,18 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
             return;
         }
 
-        if ($source->status === 'chargeable') {
+        // Trigger the payment flow if required
+        if ($source->flow === 'redirect') {
+            if ($source->redirect->status === 'failed') {
+                $message = $this->getStripePaymentMethod()->getSnippet('payment_error/message/redirect/failed');
+                $this->cancelCheckout($message);
+                return;
+            }
+
+            // Perform a redirect to complete the payment flow
+            $stripeSession->redirectClientSecret = $source->client_secret;
+            $this->redirect($source->redirect->url);
+        } elseif ($source->status === 'chargeable') {
             // No special flow required, hence use the source to create the charge and save the order
             try {
                 $charge = $this->createCharge($source);
@@ -50,6 +64,50 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
             $message = $this->getStripePaymentMethod()->getSnippet('payment_error/message/source_declined');
             $this->cancelCheckout($message);
         }
+    }
+
+    /**
+     * Note: Only use this action for creating the return URL of a Stripe redirect flow.
+     *
+     * Compares the 'client_secret' contained in the redirect request with the session and,
+     * if valid, fetches the respective source and charges it with the order amount. Finally
+     * the order is saved and the checkout is finished.
+     */
+    public function completeRedirectFlowAction()
+    {
+        Util::initStripeAPI();
+        // Compare the client secrets
+        $clientSecret = $this->Request()->getParam('client_secret');
+        if (!$clientSecret || $clientSecret !== Util::getStripeSession()->redirectClientSecret) {
+            $message = $this->getStripePaymentMethod()->getSnippet('payment_error/message/redirect/internal_error');
+            $this->cancelCheckout($message);
+            return;
+        }
+
+        // Try to get the Stripe source
+        $sourceId = $this->Request()->getParam('source');
+        $source = Stripe\Source::retrieve($sourceId);
+        if (!$source) {
+            $message = $this->getStripePaymentMethod()->getSnippet('payment_error/message/redirect/internal_error');
+            $this->cancelCheckout($message);
+            return;
+        } elseif ($source->status !== 'chargeable') {
+            $message = $this->getStripePaymentMethod()->getSnippet('payment_error/message/redirect/source_not_chargeable');
+            $this->cancelCheckout($message);
+            return;
+        }
+
+        // Use the source to create the charge and save the order
+        try {
+            $charge = $this->createCharge($source);
+            $order = $this->saveOrderWithCharge($charge);
+        } catch (Exception $e) {
+            $message = $this->getStripePaymentMethod()->getErrorMessage($e);
+            $this->cancelCheckout($message);
+            return;
+        }
+
+        $this->finishCheckout($order);
     }
 
     /**

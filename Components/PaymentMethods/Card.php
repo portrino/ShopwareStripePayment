@@ -52,6 +52,31 @@ class Card extends Base
             throw new \Exception($this->getSnippet('payment_error/message/transaction_not_found'));
         }
 
+        // Check the created/retrieved source
+        if ($source->card->three_d_secure === 'required') {
+            // The card requires the 3D-Secure flow or supports it and the selected payment method requires it,
+            // hence create a new 3D-Secure source that is based on the card source
+            $returnUrl = $this->assembleShopwareUrl(array(
+                'controller' => 'StripePaymentCard',
+                'action' => 'completeRedirectFlow'
+            ));
+            try {
+                $source = Stripe\Source::create(array(
+                    'type' => 'three_d_secure',
+                    'amount' => $amountInCents,
+                    'currency' => $currencyCode,
+                    'three_d_secure' => array(
+                        'card' => $source->id
+                    ),
+                    'redirect' => array(
+                        'return_url' => $returnUrl
+                    )
+                ));
+            } catch (\Exception $e) {
+                throw new \Exception($this->getErrorMessage($e), 0, $e);
+            }
+        }
+
         return $source;
     }
 
