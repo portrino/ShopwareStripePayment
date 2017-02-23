@@ -161,6 +161,12 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                     'onAddConsoleCommand'
                 );
             case '1.1.1':
+                // Clear all stripe customer IDs from the user accountes to remove references to now incompatible
+                // stripe cards
+                $this->get('db')->query(
+                   'UPDATE s_user_attributes
+                    SET stripe_customer_id = NULL'
+                );
                 // Rename the original payment method to 'stripe_payment_card'
                 $stripePaymentMethod = $this->get('models')->getRepository('Shopware\Models\Payment\Payment')->findOneBy(array(
                     'name' => 'stripe_payment'
@@ -183,12 +189,6 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                         'class' => 'StripePaymentCard',
                         'additionalDescription' => ''
                     )
-                );
-                // Clear all stripe customer IDs from the user accountes to remove references to now incompatible
-                // stripe cards
-                $this->get('db')->query(
-                   'UPDATE s_user_attributes
-                    SET stripe_customer_id = NULL'
                 );
 
                 break;
