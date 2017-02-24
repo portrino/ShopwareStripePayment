@@ -46,13 +46,4 @@ class Sofort extends Base
     {
         return ($this->get('snippets')->getNamespace('frontend/plugins/payment/stripe_payment/sofort')->get($name)) ?: parent::getSnippet($name);
     }
-
-    /**
-     * @inheritdoc
-     */
-    protected function doValidate(array $paymentData)
-    {
-        // Sofort payments are always valid
-        return array();
-    }
 }

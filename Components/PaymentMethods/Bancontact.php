@@ -37,13 +37,4 @@ class Bancontact extends Base
 
         return $source;
     }
-
-    /**
-     * @inheritdoc
-     */
-    protected function doValidate(array $paymentData)
-    {
-        // Bancontact payments are always valid
-        return array();
-    }
 }

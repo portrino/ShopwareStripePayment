@@ -37,13 +37,4 @@ class Giropay extends Base
 
         return $source;
     }
-
-    /**
-     * @inheritdoc
-     */
-    protected function doValidate(array $paymentData)
-    {
-        // Giropay payments are always valid
-        return array();
-    }
 }

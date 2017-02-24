@@ -45,13 +45,4 @@ class Ideal extends Base
     {
         return ($this->get('snippets')->getNamespace('frontend/plugins/payment/stripe_payment/ideal')->get($name)) ?: parent::getSnippet($name);
     }
-
-    /**
-     * @inheritdoc
-     */
-    protected function doValidate(array $paymentData)
-    {
-        // iDEAL payments are always valid
-        return array();
-    }
 }

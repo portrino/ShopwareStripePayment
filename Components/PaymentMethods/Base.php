@@ -21,15 +21,6 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
     abstract public function createStripeSource($amountInCents, $currencyCode, $statementDescriptor);
 
     /**
-     * Validates the given payment data. If the data is invalid, an array containing error messages or codes
-     * must be returned. Otherwiese an empty array i returned.
-     *
-     * @param array $paymentData
-     * @return array
-     */
-    abstract protected function doValidate(array $paymentData);
-
-    /**
      * @inheritdoc
      */
     public function getCurrentPaymentDataAsArray($userId)
@@ -60,6 +51,19 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
     public function getSnippet($name)
     {
         return $this->get('snippets')->getNamespace('frontend/plugins/payment/stripe_payment/base')->get($name);
+    }
+
+    /**
+     * Validates the given payment data. If the data is invalid, an array containing error messages or codes
+     * must be returned. By default this method returns an empty array, which indicates that the $paymentData
+     * is valid.
+     *
+     * @param array $paymentData
+     * @return array
+     */
+    protected function doValidate(array $paymentData)
+    {
+        return array();
     }
 
     /**
