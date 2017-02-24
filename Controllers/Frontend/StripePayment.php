@@ -337,27 +337,4 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
 
         return $adminModule->sInitiatePaymentClass($paymentMethod);
     }
-
-    /**
-     * Checks the Stripe session for a 'statementDescriptor' and, if not found, creates a new one and
-     * saves it in the session, before returning it. The statement descriptor has the format
-     * '<shop_name> (<shop_url>), Nr. <order_number>' and is truncated to at most 22 characters, which
-     * is the hard limit enforced by the Stripe API.
-     *
-     * @return string
-     */
-    protected function getStatementDescriptor()
-    {
-        $stripeSession = Util::getStripeSession();
-        if (!$stripeSession->statementDescriptor) {
-            // Determine the statement descriptor and save it in the session
-            $shopName = $this->get('shop')->getName();
-            $shopUrl = $this->Request()->getHttpHost() . $this->Request()->getBaseUrl();
-            $orderNumber = $this->getOrderNumber();
-            $statementDescriptor = sprintf('%s (%s), Nr. %s', $shopName, $shopUrl, $orderNumber);
-            $stripeSession->statementDescriptor = substr($statementDescriptor, 0, 22);
-        }
-
-        return $stripeSession->statementDescriptor;
-    }
 }
