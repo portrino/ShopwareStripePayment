@@ -12,7 +12,7 @@ class Sofort extends Base
     /**
      * @inheritdoc
      */
-    public function createStripeSource($amountInCents, $currencyCode, $statementDescriptor)
+    public function createStripeSource($amountInCents, $currencyCode, $orderNumber)
     {
         Util::initStripeAPI();
         // Create a new SOFORT source
@@ -29,7 +29,7 @@ class Sofort extends Base
             ),
             'sofort' => array(
                 'country' => $this->get('session')->sOrderVariables->sCountry['countryiso'],
-                'statement_descriptor' => $statementDescriptor
+                'statement_descriptor' => $this->getLongStatementDescriptor($orderNumber)
             ),
             'redirect' => array(
                 'return_url' => $returnUrl
@@ -37,6 +37,15 @@ class Sofort extends Base
         ));
 
         return $source;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function chargeStatementDescriptor($orderNumber)
+    {
+        // SOFORT payments require the statement descriptor to be part of their source
+        return null;
     }
 
     /**

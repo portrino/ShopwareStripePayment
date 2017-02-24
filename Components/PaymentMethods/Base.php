@@ -14,11 +14,20 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
      *
      * @param int $amountInCents
      * @param string $currencyCode
-     * @param string $statementDescriptor
+     * @param string $orderNumber
      * @return Stripe\Source
      * @throws \Exception
      */
-    abstract public function createStripeSource($amountInCents, $currencyCode, $statementDescriptor);
+    abstract public function createStripeSource($amountInCents, $currencyCode, $orderNumber);
+
+    /**
+     * Returns the statement descriptor that shall be used for the charge or order with
+     * $orderNumber. Return null to omit the statement descriptor.
+     *
+     * @param string $orderNumber
+     * @return string|null
+     */
+    abstract public function chargeStatementDescriptor($orderNumber);
 
     /**
      * @inheritdoc
@@ -64,6 +73,32 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
     protected function doValidate(array $paymentData)
     {
         return array();
+    }
+
+    /**
+     * Format: 'ORDER <order_number>'
+     *
+     * @param string $orderNumber
+     * @return string
+     */
+    protected function getShortStatementDescriptor($orderNumber)
+    {
+        return 'ORDER ' . $orderNumber;
+    }
+
+    /**
+     * Format: 'ORDER <order_number>, <shop_name> (<shop_url>)'
+     *
+     * @param string $orderNumber
+     * @return string
+     */
+    protected function getLongStatementDescriptor($orderNumber)
+    {
+        $shortDescriptor = $this->getShortStatementDescriptor($orderNumber);
+        $shopName = $this->get('shop')->getName();
+        $shopUrl = $this->get('front')->Request()->getHttpHost() . $this->get('front')->Request()->getBaseUrl();
+
+        return sprintf('%s, %s (%s)', $shortDescriptor, $shopName, $shopUrl);
     }
 
     /**

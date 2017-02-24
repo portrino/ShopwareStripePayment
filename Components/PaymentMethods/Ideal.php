@@ -12,7 +12,7 @@ class Ideal extends Base
     /**
      * @inheritdoc
      */
-    public function createStripeSource($amountInCents, $currencyCode, $statementDescriptor)
+    public function createStripeSource($amountInCents, $currencyCode, $orderNumber)
     {
         Util::initStripeAPI();
         // Create a new iDEAL source
@@ -28,7 +28,7 @@ class Ideal extends Base
                 'name' => Util::getCustomerName()
             ),
             'ideal' => array(
-                'statement_descriptor' => $statementDescriptor
+                'statement_descriptor' => $this->getLongStatementDescriptor($orderNumber)
             ),
             'redirect' => array(
                 'return_url' => $returnUrl
@@ -36,6 +36,15 @@ class Ideal extends Base
         ));
 
         return $source;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function chargeStatementDescriptor($orderNumber)
+    {
+        // iDEAL payments require the statement descriptor to be part of their source
+        return null;
     }
 
     /**

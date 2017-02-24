@@ -12,7 +12,7 @@ class Card extends Base
     /**
      * @inheritdoc
      */
-    public function createStripeSource($amountInCents, $currencyCode, $statementDescriptor)
+    public function createStripeSource($amountInCents, $currencyCode, $orderNumber)
     {
         Util::initStripeAPI();
 
@@ -79,6 +79,15 @@ class Card extends Base
         }
 
         return $source;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function chargeStatementDescriptor($orderNumber)
+    {
+        // Card sources can be reused several times and hence should contain a statement descriptor in charge
+        return $this->getShortStatementDescriptor($orderNumber);
     }
 
     /**

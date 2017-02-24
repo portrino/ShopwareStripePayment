@@ -61,7 +61,7 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
             $source = $this->getStripePaymentMethod()->createStripeSource(
                 ($this->getAmount() * 100), // Amount has to be in cents!
                 $this->getCurrencyShortName(),
-                $this->getStatementDescriptor()
+                $this->getOrderNumber()
             );
         } catch (Exception $e) {
             $this->get('pluginlogger')->error('StripePayment: Failed to create source', array('exception' => $e, 'trace' => $e->getTrace()));
@@ -227,6 +227,11 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
                 'platform_name' => Util::STRIPE_PLATFORM_NAME
             )
         );
+        // Add a statement descriptor, if necessary
+        $statementDescriptor = $this->getStripePaymentMethod()->chargeStatementDescriptor($orderNumber);
+        if ($statementDescriptor) {
+            $chargeData['statement_descriptor'] = substr($statementDescriptor, 0, 22);
+        }
         // Try to add a customer reference to the charge
         $stripeCustomer = Util::getStripeCustomer();
         if ($source->customer && $stripeCustomer) {
