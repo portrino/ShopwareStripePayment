@@ -32,6 +32,7 @@ class Payment implements SubscriberInterface
         $dirs['StripePaymentCard'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Card';
         $dirs['StripePaymentIdeal'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Ideal';
         $dirs['StripePaymentGiropay'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Giropay';
+        $dirs['StripePaymentSepa'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Sepa';
         $dirs['StripePaymentSofort'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Sofort';
         $args->setReturn($dirs);
     }

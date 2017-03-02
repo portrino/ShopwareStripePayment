@@ -5,7 +5,7 @@
 {/block}
 
 {block name="frontend_index_header_javascript_jquery" append}
-    {if $sUserData.additional.payment.action == "stripe_payment_card" && $stripePayment.selectedCard}
+    {if ($sUserData.additional.payment.class == "StripePaymentCard" && $stripePayment.selectedCard) || ($sUserData.additional.payment.class == "StripePaymentSepa" && $stripePayment.sepaSource)}
         <script type="text/javascript">
             $(document).ready(function() {
                 // Add special class to body to trigger custom CSS rules in Shopware versions >= 5.0 and < 5.2.
@@ -15,8 +15,17 @@
                     $('body').addClass('is--stripe-payment-selected');
                 }
 
-                // Insert a new element right below the general payment information showing details of the selected credit card
-                var element = $('<p class="stripe-payment-details is--bold">{$stripePayment.selectedCard.name} | {$stripePayment.selectedCard.brand} | &bull;&bull;&bull;&bull;{$stripePayment.selectedCard.last4} | {$stripePayment.selectedCard.exp_month|string_format:"%02d"}/{$stripePayment.selectedCard.exp_year}</p>');
+                // Insert a new element right below the general payment information showing details of the selected payment method
+                var paymentMethodClass = '{$sUserData.additional.payment.class}',
+                    content;
+                if (paymentMethodClass === 'StripePaymentCard') {
+                    // Show details of selected credit card
+                    content = '{$stripePayment.selectedCard.name} | {$stripePayment.selectedCard.brand} | &bull;&bull;&bull;&bull;{$stripePayment.selectedCard.last4} | {$stripePayment.selectedCard.exp_month|string_format:"%02d"}/{$stripePayment.selectedCard.exp_year}';
+                } else if (paymentMethodClass === 'StripePaymentSepa') {
+                    // Show details of SEPA source
+                    content = '{$stripePayment.sepaSource.owner.name} | {$stripePayment.sepaSource.sepa_debit.country}&bull;&bull;&bull;&bull;{$stripePayment.sepaSource.sepa_debit.last4} | {$stripePayment.sepaSource.sepa_debit.mandate_reference}';
+                }
+                var element = $('<p class="stripe-payment-details is--bold">' + content + '</p>');
                 element.insertAfter('.payment--panel .payment--content .payment--method-info');
             });
         </script>

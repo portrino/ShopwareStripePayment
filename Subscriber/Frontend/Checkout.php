@@ -73,6 +73,28 @@ class Checkout implements SubscriberInterface
                 }
             }
 
+            // Add name of SEPA creditor (company or shop name as fallback)
+            $stripeViewParams['sepaCreditor'] = (Shopware()->Container()->get('config')->get('company')) ?: Shopware()->Container()->get('shop')->getName();
+
+            // Add the countries configured for SEPA payments to the view
+            $stripeViewParams['sepaCountryList'] = Shopware()->Container()->get('modules')->Admin()->sGetCountryList();
+            $sepaCountyIds = Shopware()->Container()->get('db')->fetchCol(
+               'SELECT pc.countryID
+                FROM s_core_paymentmeans_countries pc
+                LEFT JOIN s_core_paymentmeans c
+                    ON c.id = pc.paymentID
+                WHERE c.class = \'StripePaymentSepa\''
+            );
+            if (count($sepaCountyIds)) {
+                $stripeViewParams['sepaCountryList'] = array_filter($stripeViewParams['sepaCountryList'], function ($country) use ($sepaCountyIds) {
+                    return in_array($country['id'], $sepaCountyIds);
+                });
+            }
+
+            // Add the shop's currency
+            $stripeViewParams['currency'] = Shopware()->Container()->get('shop')->getCurrency()->getCurrency();
+            $stripeViewParams['currency'] = strtolower($stripeViewParams['currency']);
+
             // Update view parameters
             try {
                 $stripeViewParams['availableCards'] = Util::getAllStripeCards();
@@ -96,6 +118,11 @@ class Checkout implements SubscriberInterface
                 }
             }
             $stripeViewParams['rawAvailableCards'] = json_encode($stripeViewParams['availableCards']);
+            if ($stripeSession->sepaSource) {
+                // Write the source info to the template both JSON encoded and in a form usable by smarty
+                $stripeViewParams['rawSepaSource'] = json_encode($stripeSession->sepaSource);
+                $stripeViewParams['sepaSource'] = $stripeSession->sepaSource;
+            }
             $view->stripePayment = $stripeViewParams;
         }
         if ($actionName === 'confirm' && Shopware()->Container()->get('shop')->getTemplate()->getVersion() < 3) {
@@ -105,6 +132,14 @@ class Checkout implements SubscriberInterface
 
             // Simulate a new customer to make the payment selection in the checkout process visible
             $view->sRegisterFinished = 'false';
+        }
+        if ($actionName === 'finish' && $view->sPayment['class'] === 'StripePaymentSepa' && isset($view->sPayment['data']['sepaSource']['sepa_debit']['mandate_url'])) {
+            // Add the SEPA mandate URL to the view
+            $view->stripePaymentSepatMandateUrl = $view->sPayment['data']['sepaSource']['sepa_debit']['mandate_url'];
+            if (Shopware()->Container()->get('shop')->getTemplate()->getVersion() < 3) {
+                // Load the required template (Shopware 4 templates only)
+                $view->extendsTemplate('frontend/stripe_payment/checkout/finish.tpl');
+            }
         }
 
         $customer = Util::getCustomer();
@@ -128,6 +163,9 @@ class Checkout implements SubscriberInterface
         }
         if ($request->getParam('stripeSaveCard')) {
             $stripeSession->saveCardForFutureCheckouts = $request->getParam('stripeSaveCard') === 'on';
+        }
+        if ($request->getParam('stripeSepaSource')) {
+            $stripeSession->sepaSource = json_decode($request->getParam('stripeSepaSource'), true);
         }
     }
 }

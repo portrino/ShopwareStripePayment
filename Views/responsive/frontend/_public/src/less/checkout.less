@@ -1,4 +1,5 @@
-.stripe-payment-card-form {
+.stripe-payment-card-form,
+.stripe-payment-sepa-form {
     .panel--tr {
         border-width: 0;
     }
@@ -22,7 +23,8 @@
 
     input,
     .StripeElement,
-    .saved-cards .js--fancy-select {
+    .saved-cards .js--fancy-select,
+    .country-selection .js--fancy-select {
         float: none;
         width: 100%;
     }
@@ -45,6 +47,10 @@
 
     .saved-cards {
         .unitize(margin-top, 10);
+    }
+
+    .alert {
+        .unitize(margin-top, 20);
     }
 
     .description {
@@ -104,13 +110,31 @@
     }
 }
 
+.checkout--content.finish--content .stripe-payment-sepa-mandate {
+    .info {
+        .unitize(margin-bottom, 10);
+    }
+
+    .btn.is--link {
+        .border-radius();
+        border: 1px solid @btn-default-border-color;
+
+        &:hover {
+            background: transparent;
+            color: darken(@highlight-info, 15%);
+            border-color: darken(@highlight-info, 15%);
+        }
+    }
+}
+
 // Phone Landscape styling
 @media screen and (min-width: @phoneLandscapeViewportWidth) {
 }
 
 // Tablet styling
 @media screen and (min-width: @tabletViewportWidth) {
-    .stripe-payment-card-form {
+    .stripe-payment-card-form,
+    .stripe-payment-sepa-form, {
         .panel--tr {
             .unitize(margin-top, 10);
         }
@@ -122,7 +146,8 @@
 
         input,
         .StripeElement,
-        .saved-cards .js--fancy-select {
+        .saved-cards .js--fancy-select,
+        .country-selection .js--fancy-select {
             width: 45%;
         }
 
@@ -158,14 +183,16 @@
 
 // Tablet Landscape styling
 @media screen and (min-width: @tabletLandscapeViewportWidth) {
-    .stripe-payment-card-form {
+    .stripe-payment-card-form,
+    .stripe-payment-sepa-form {
         label span.panel--td {
             width: 35%;
         }
 
         input,
         .StripeElement,
-        .saved-cards .js--fancy-select {
+        .saved-cards .js--fancy-select,
+        .country-selection .js--fancy-select {
             width: 39%;
         }
     }
@@ -173,14 +200,16 @@
 
 // Desktop styling
 @media screen and (min-width: @desktopViewportWidth) {
-    .stripe-payment-card-form {
+    .stripe-payment-card-form,
+    .stripe-payment-sepa-form {
         label span.panel--td {
             width: 20%;
         }
 
         input,
         .StripeElement,
-        .saved-cards .js--fancy-select {
+        .saved-cards .js--fancy-select,
+        .country-selection .js--fancy-select {
             width: 26%;
         }
     }

@@ -238,6 +238,18 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                         'additionalDescription' => ''
                     )
                 );
+                // Add a payment method for SEPA payments
+                $this->createPayment(
+                    array(
+                        'active' => 0,
+                        'name' => 'stripe_payment_sepa',
+                        'description' => 'Stripe SEPA-Lastschrift',
+                        'template' => 'stripe_payment_sepa.tpl',
+                        'action' => 'stripe_payment',
+                        'class' => 'StripePaymentSepa',
+                        'additionalDescription' => ''
+                    )
+                );
 
                 break;
             default:
