@@ -1,4 +1,4 @@
-{if $Controller != "account" && $payment_mean.action == "stripe_payment_card"}
+{if $Controller != "account" && $payment_mean.class == "StripePaymentCard"}
     <style type="text/css">
         {* Include shared CSS for credit card logo SVGs *}
         {include file="frontend/stripe_payment/_resources/styles/credit_card_logos.css"}
@@ -29,7 +29,7 @@
                 <div class="panel--tr saved-cards">
                     <label>
                         <span class="panel--td">{s namespace=frontend/plugins/payment/stripe_payment/card name=form/card_selection}{/s}</span>
-                        <select class="stripe-saved-cards" class="panel--td">
+                        <select class="stripe-saved-cards panel--td">
                             <option value="new" selected>
                                 {s namespace=frontend/plugins/payment/stripe_payment/card name=form/card_selection/new_card}{/s}
                             </option>

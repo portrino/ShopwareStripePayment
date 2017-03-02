@@ -44,19 +44,20 @@ var StripePaymentCard = {
     },
 
     /**
-     * Saves the values of the given config in this object and triggers the initial setup of the
-     * payment form. Finally, a listener on the event for changing the payment method is added,
-     * which will trigger the form setup again.
+     * Initializes the Stripe service using the given public key, saves the values of the given
+     * config in this object and triggers the initial setup of the payment form. Finally, a
+     * listener on the event for changing the payment method is added, which will trigger the
+     * form setup again.
      *
+     * @param String stripePublicKey
      * @param Object config
      */
-    init: function(config) {
+    init: function(stripePublicKey, config) {
         var me = this;
+        me.stripeService = Stripe(stripePublicKey);
         // Save config
         me.setSelectedCard((typeof config.card !== 'undefined') ? config.card : null);
         me.allCards = (typeof config.allCards !== 'undefined') ? config.allCards : [];
-        me.snippets = (typeof config.snippets !== 'undefined') ? config.snippets : me.snippets;
-        me.stripeService = Stripe(config.stripePublicKey);
 
         // Setup form and CVC popup
         me.setupCVCPopupControls();

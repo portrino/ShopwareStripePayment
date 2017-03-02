@@ -1,5 +1,5 @@
 {block name="frontend_checkout_payment_fieldset_description"}
-    {if $Controller != "account" && $payment_mean.action == "stripe_payment_card"}
+    {if $Controller != "account" && $payment_mean.class == "StripePaymentCard"}
         <style type="text/css">
             {* Include shared CSS for credit card logo SVGs *}
             {include file="frontend/stripe_payment/_resources/styles/credit_card_logos.css"}

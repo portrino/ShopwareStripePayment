@@ -1,4 +1,4 @@
-{if $Controller != "account" && $payment_mean.action == "stripe_payment_card"}
+{if $Controller != "account" && $payment_mean.class == "StripePaymentCard"}
     {* Include the custom styles for the payment form *}
     <link href="{link file='frontend/stripe_payment/_resources/styles/stripe_payment_card.css'}" rel="stylesheet">
     {* Include and set up the Stripe SDK *}

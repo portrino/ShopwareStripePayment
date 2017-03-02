@@ -58,7 +58,7 @@ class Card extends Base
             // The card requires the 3D-Secure flow or supports it and the selected payment method requires it,
             // hence create a new 3D-Secure source that is based on the card source
             $returnUrl = $this->assembleShopwareUrl(array(
-                'controller' => 'StripePaymentCard',
+                'controller' => 'StripePayment',
                 'action' => 'completeRedirectFlow'
             ));
             try {

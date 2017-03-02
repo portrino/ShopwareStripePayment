@@ -175,7 +175,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                     $stripePaymentMethod->setName('stripe_payment_card');
                     $stripePaymentMethod->setTemplate('stripe_payment_card.tpl');
                     $stripePaymentMethod->setClass('StripePaymentCard');
-                    $stripePaymentMethod->setAction('stripe_payment_card');
+                    $stripePaymentMethod->setAction('stripe_payment');
                     $this->get('models')->flush($stripePaymentMethod);
                 }
                 // Add a payment method for credit card payments with 3D-Secure
@@ -185,7 +185,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                         'name' => 'stripe_payment_card_three_d_secure',
                         'description' => 'Stripe Kreditkarte (mit 3D-Secure)',
                         'template' => 'stripe_payment_card.tpl',
-                        'action' => 'stripe_payment_card',
+                        'action' => 'stripe_payment',
                         'class' => 'StripePaymentCard',
                         'additionalDescription' => ''
                     )

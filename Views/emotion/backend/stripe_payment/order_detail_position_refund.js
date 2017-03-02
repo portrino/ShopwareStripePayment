@@ -31,7 +31,7 @@ Ext.define('Shopware.apps.StripePayment.Order.view.detail.Position', {
         var toolbar = this.callParent(arguments);
 
         // Check if the order was payed with Stripe
-        if (this.record.getPaymentStore.first() && this.record.getPaymentStore.first().raw.action.indexOf('stripe_payment') === 0) {
+        if (this.record.getPayment().first() && this.record.getPayment().first().raw.class.indexOf('StripePayment') === 0) {
             // Add the refund button
             this.stripeRefundPositionButton = Ext.create('Ext.button.Button', {
                 iconCls: 'sprite-money--minus',
