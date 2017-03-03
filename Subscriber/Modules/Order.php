@@ -15,7 +15,7 @@ class Order implements SubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            'Shopware_Modules_Order_GetOrdernumber_FilterOrdernumber' => ['onFilterOrderNumber', 10000]
+            'Shopware_Modules_Order_GetOrdernumber_FilterOrdernumber' => array('onFilterOrderNumber', 10000)
         );
     }
 
