@@ -155,6 +155,10 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                     'onAddConsoleCommand'
                 );
             case '1.1.1':
+                $this->get('models')->persist($this->Form());
+                // Update descriptions of config elements
+                $this->Form()->getElement('stripeSecretKey')->setDescription('Tragen Sie hier Ihren geheimen Schlüssel ("Secret Key") ein. Diesen finden Sie im Stripe Dashboard unter "API" im Feld "Live Secret Key".');
+                $this->Form()->getElement('stripePublicKey')->setDescription('Tragen Sie hier Ihren öffentlichen Schlüssel ("Publishable Key") ein. Diesen finden Sie im Stripe Dashboard unter "API" im Feld "Live Publishable Key".');
                 // Add static event subscriber on the earliest event possible
                 $this->subscribeEvent(
                     'Enlight_Controller_Front_StartDispatch',
