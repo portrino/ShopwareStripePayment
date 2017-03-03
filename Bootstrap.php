@@ -58,12 +58,6 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
     {
         switch ($oldVersion) {
             case 'install':
-                // Add static event subscribers
-                $this->subscribeEvent(
-                    'Enlight_Controller_Front_DispatchLoopStartup',
-                    'onDispatchLoopStartup'
-                );
-
                 // Check for any Stripe payment methods
                 $builder = $this->get('models')->createQueryBuilder();
                 $builder->select('payment')
@@ -161,6 +155,11 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                     'onAddConsoleCommand'
                 );
             case '1.1.1':
+                // Add static event subscriber on the earliest event possible
+                $this->subscribeEvent(
+                    'Enlight_Controller_Front_StartDispatch',
+                    'onStartDispatch'
+                );
                 // Clear all stripe customer IDs from the user accountes to remove references to now incompatible
                 // stripe cards
                 $this->get('db')->query(
@@ -317,7 +316,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
      *
      * @param \Enlight_Event_EventArgs $args
      */
-    public function onDispatchLoopStartup(\Enlight_Event_EventArgs $args)
+    public function onStartDispatch(\Enlight_Event_EventArgs $args)
     {
         $this->get('events')->addSubscriber(new Subscriber\Payment());
         $this->get('events')->addSubscriber(new Subscriber\Backend\Index($this));
