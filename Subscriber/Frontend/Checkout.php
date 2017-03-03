@@ -73,6 +73,15 @@ class Checkout implements SubscriberInterface
                 }
             }
 
+            $session = Shopware()->Container()->get('session');
+            if ($actionName === 'confirm' && $session->sOrderVariables->sPayment['class'] === 'StripePaymentApplePay') {
+                // Add the payment method's statement descriptor to the view
+                $modules = Shopware()->Container()->get('modules');
+                $paymentMethod = $modules->Admin()->sInitiatePaymentClass($session->sOrderVariables->sPayment);
+                $orderNumber = ($stripeSession->orderNumber) ?: $modules->Order()->sGetOrderNumber();
+                $stripeViewParams['applePayStatementDescriptor'] = $paymentMethod->chargeStatementDescriptor($orderNumber);
+            }
+
             // Add name of SEPA creditor (company or shop name as fallback)
             $stripeViewParams['sepaCreditor'] = (Shopware()->Container()->get('config')->get('company')) ?: Shopware()->Container()->get('shop')->getName();
 
@@ -166,6 +175,9 @@ class Checkout implements SubscriberInterface
         }
         if ($request->getParam('stripeSepaSource')) {
             $stripeSession->sepaSource = json_decode($request->getParam('stripeSepaSource'), true);
+        }
+        if ($request->getParam('stripeApplePayToken')) {
+            $stripeSession->applePayToken = $request->getParam('stripeApplePayToken');
         }
     }
 }

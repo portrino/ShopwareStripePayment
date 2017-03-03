@@ -2,6 +2,16 @@
 
 {block name="frontend_checkout_confirm_error_messages" append}
     {include file="frontend/checkout/stripe_payment_error.tpl"}
+
+    {if $sUserData.additional.payment.class == "StripePaymentApplePay"}
+        {* Add a hidden error message component *}
+        <div id="stripe-payment-apple-pay-error-box" class="alert is--error is--rounded" style="display: none;">
+            <div class="alert--icon">
+                <i class="icon--element icon--cross"></i>
+            </div>
+            <div class="alert--content error-content"></div>
+        </div>
+    {/if}
 {/block}
 
 {block name="frontend_index_header_javascript_jquery" append}
@@ -28,6 +38,19 @@
                 var element = $('<p class="stripe-payment-details is--bold">' + content + '</p>');
                 element.insertAfter('.payment--panel .payment--content .payment--method-info');
             });
+        </script>
+    {elseif $sUserData.additional.payment.class == "StripePaymentApplePay"}
+        {* Include and set up the Stripe SDK *}
+        <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+        <script type="text/javascript">
+            {**
+             * Uncomment the following line the speed up development by including the custom
+             * Stripe payment library instead of loading it from the compiled Javascript file.
+             *}
+            {* {include file="frontend/stripe_payment/_resources/javascript/stripe_payment_apple_pay.js"} *}
+
+            {* Include the shared initialization of the StripePaymentApplePay library *}
+            {include file='frontend/stripe_payment/checkout/stripe_payment_apple_pay/header.js'}
         </script>
     {/if}
 {/block}

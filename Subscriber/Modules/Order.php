@@ -2,6 +2,7 @@
 namespace Shopware\Plugins\StripePayment\Subscriber\Modules;
 
 use Enlight\Event\SubscriberInterface;
+use Shopware\Plugins\StripePayment\Util;
 
 /**
  * @copyright Copyright (c) 2015, VIISON GmbH
@@ -39,12 +40,14 @@ class Order implements SubscriberInterface
             return;
         }
 
-        if (!isset($session->sOrderVariables->sOrderNumber)) {
-            // Save the create order number in the session
+        $stripeSession = Util::getStripeSession();
+        if (!isset($stripeSession->orderNumber)) {
+            // Save the created order number both in the session's sOrderVariables and stripeSession
+            $stripeSession->orderNumber = $args->getReturn();
             $session->sOrderVariables->sOrderNumber = $args->getReturn();
         }
 
         // Use the cached order number
-        return $session->sOrderVariables->sOrderNumber;
+        return $stripeSession->orderNumber;
     }
 }

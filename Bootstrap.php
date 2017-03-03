@@ -250,6 +250,18 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                         'additionalDescription' => ''
                     )
                 );
+                // Add a payment method for Apple Pay payments
+                $this->createPayment(
+                    array(
+                        'active' => 0,
+                        'name' => 'stripe_payment_apple_pay',
+                        'description' => 'Stripe Apple Pay',
+                        'template' => '',
+                        'action' => 'stripe_payment',
+                        'class' => 'StripePaymentApplePay',
+                        'additionalDescription' => ''
+                    )
+                );
 
                 break;
             default:

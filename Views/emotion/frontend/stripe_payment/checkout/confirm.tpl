@@ -1,3 +1,15 @@
+{block name="frontend_index_header_javascript" append}
+    {if $sUserData.additional.payment.class == "StripePaymentApplePay"}
+        {* Include and set up the Stripe SDK *}
+        <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+        <script type="text/javascript" src="{link file="frontend/stripe_payment/_resources/javascript/stripe_payment_apple_pay.js"}"></script>
+        <script type="text/javascript">
+            {* Include the shared initialization of the StripePaymentApplePay library *}
+            {include file='frontend/stripe_payment/checkout/stripe_payment_apple_pay/header.js'}
+        </script>
+    {/if}
+{/block}
+
 {block name="frontend_index_content_top" append}
     {if $stripePayment.error}
         <div class="grid_20 first">
@@ -8,4 +20,13 @@
             </div>
         </div>
     {/if}
+
+    {if $sUserData.additional.payment.class == "StripePaymentApplePay"}
+        {* Add a hidden error message component *}
+        <div id="stripe-payment-apple-pay-error-box" class="grid_20 first" style="display: none;">
+            <div class="error">
+                <div class="error-content"></div>
+            </div>
+        </div>
+   {/if}
 {/block}
