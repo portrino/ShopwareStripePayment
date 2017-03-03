@@ -35,8 +35,7 @@ class Order implements SubscriberInterface
     {
         $session = Shopware()->Container()->get('session');
         // Check the selected payment method
-        $paymentMethod = $session->sOrderVariables->sPayment['name'];
-        if (strpos($paymentMethod, 'stripe_payment_') !== 0) {
+        if ($session->sOrderVariables->sPayment['action'] === 'StripePayment') {
             return;
         }
 
