@@ -100,9 +100,13 @@ class Checkout implements SubscriberInterface
                 });
             }
 
-            // Add the shop's currency
-            $stripeViewParams['currency'] = Shopware()->Container()->get('shop')->getCurrency()->getCurrency();
+            // Add the shop's currency and locale
+            $shop = Shopware()->Container()->get('shop');
+            $stripeViewParams['currency'] = $shop->getCurrency()->getCurrency();
             $stripeViewParams['currency'] = strtolower($stripeViewParams['currency']);
+            $locale = $shop->getLocale()->getLocale();
+            $locale = explode('_', $locale);
+            $stripeViewParams['locale'] = $locale[0];
 
             // Update view parameters
             try {

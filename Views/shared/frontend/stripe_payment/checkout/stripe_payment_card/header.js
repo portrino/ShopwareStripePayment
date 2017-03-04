@@ -23,7 +23,9 @@ var stripePaymentCardSnippets = {
         unexpected: '{s namespace=frontend/plugins/payment/stripe_payment/card name=error/unexpected}{/s}'
     }
 };
-var stripePaymentCardConfig = {};
+var stripePaymentCardConfig = {
+    locale: '{$stripePayment.locale}'
+};
 if ('{$stripePayment.rawSelectedCard}') {
     stripePaymentCardConfig.card = JSON.parse('{$stripePayment.rawSelectedCard}');
 }

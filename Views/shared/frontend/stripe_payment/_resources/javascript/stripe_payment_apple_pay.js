@@ -29,11 +29,6 @@ var StripePaymentApplePay = {
     applePayToken: null,
 
     /**
-     * The locale used to configure Stripe error messsages and placeholders.
-     */
-    locale: 'de',
-
-    /**
      * The snippets used for Stripe error descriptions.
      */
     snippets: {
@@ -61,7 +56,7 @@ var StripePaymentApplePay = {
 
         // Configure Stripe.js (v2)
         Stripe.setPublishableKey(stripePublicKey);
-        Stripe.setLanguage(me.locale);
+        Stripe.setLanguage(config.locale || 'en');
 
         if (me.isShopware5Template()) {
             // Save the original submit button content and add a listiner on the preloader

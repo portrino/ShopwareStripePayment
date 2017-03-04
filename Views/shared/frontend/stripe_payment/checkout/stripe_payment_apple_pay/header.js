@@ -8,6 +8,7 @@ var stripePaymentApplePaySnippets = {
 var stripePaymentApplePayConfig = {
     countryCode: '{$sUserData.additional.country.countryiso}',
     currencyCode: '{$stripePayment.currency}',
+    locale: '{$stripePayment.locale}',
     statementDescriptor: '{$stripePayment.applePayStatementDescriptor}',
     amount: '{$sAmount}'
 };

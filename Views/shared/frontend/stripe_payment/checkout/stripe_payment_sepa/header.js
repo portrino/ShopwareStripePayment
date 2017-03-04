@@ -15,7 +15,8 @@ var stripePaymentSepaSnippets = {
     }
 };
 var stripePaymentSepaConfig = {
-    currency: '{$stripePayment.currency}'
+    currency: '{$stripePayment.currency}',
+    locale: '{$stripePayment.locale}'
 };
 if ('{$stripePayment.rawSepaSource}') {
     stripePaymentSepaConfig.sepaSource = JSON.parse('{$stripePayment.rawSepaSource}');

@@ -32,7 +32,7 @@ var StripePaymentCard = {
     /**
      * The locale used to configure Stripe error messsages and placeholders.
      */
-    locale: 'de',
+    locale: 'en',
 
     /**
      * The snippets used for Stripe error descriptions.
@@ -58,6 +58,7 @@ var StripePaymentCard = {
         // Save config
         me.setSelectedCard((typeof config.card !== 'undefined') ? config.card : null);
         me.allCards = (typeof config.allCards !== 'undefined') ? config.allCards : [];
+        me.locale = config.locale || me.locale;
 
         // Setup form and CVC popup
         me.setupCVCPopupControls();

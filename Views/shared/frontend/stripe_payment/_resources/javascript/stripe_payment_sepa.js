@@ -19,11 +19,6 @@ var StripePaymentSepa = {
     invalidFields: {},
 
     /**
-     * The locale used to configure Stripe error messsages and placeholders.
-     */
-    locale: 'de',
-
-    /**
      * The snippets used for Stripe error descriptions.
      */
     snippets: {
@@ -48,7 +43,7 @@ var StripePaymentSepa = {
 
         // Configure Stripe.js (v2)
         Stripe.setPublishableKey(stripePublicKey);
-        Stripe.setLanguage(me.locale);
+        Stripe.setLanguage(config.locale || 'en');
 
         me.setupForm();
 
