@@ -1,3 +1,30 @@
+## NEXT RELEASE
+
+### en
+
+**Note:** Please refer to the [plugin documentation](https://docs.google.com/document/d/1FfZU0AqEWtiXd7Ito6e7UiLzfpP5F_D8CT9gtogaZlk) before activating any of the new payment methods.
+
+* Adds a new (disabled) payment method "Stripe Kreditkarte (mit 3D-Secure)"
+* Adds a new (disabled) payment method "Stripe SEPA-Lastschrift"
+* Adds a new (disabled) payment method "Stripe SOFORT Überweisung"
+* Adds a new (disabled) payment method "Stripe Giropay"
+* Adds a new (disabled) payment method "Stripe Apple Pay"
+* Adds a new (disabled) payment method "Stripe Bancontact"
+* Adds a new (disabled) payment method "Stripe iDEAL"
+
+### de
+
+**Hinweis:** Bitte lesen Sie zunächste die [Plugin-Dokumentation](https://docs.google.com/document/d/1FfZU0AqEWtiXd7Ito6e7UiLzfpP5F_D8CT9gtogaZlk), bevor Sie eine der neuen Zahlungsarten aktivieren.
+
+* Fügt eine (deaktivierte) Zahlungsart "Stripe Kreditkarte (mit 3D-Secure)" hinzu
+* Fügt eine (deaktivierte) Zahlungsart "Stripe SEPA-Lastschrift" hinzu
+* Fügt eine (deaktivierte) Zahlungsart "Stripe SOFORT Überweisung" hinzu
+* Fügt eine (deaktivierte) Zahlungsart "Stripe Giropay" hinzu
+* Fügt eine (deaktivierte) Zahlungsart "Stripe Apple Pay" hinzu
+* Fügt eine (deaktivierte) Zahlungsart "Stripe Bancontact" hinzu
+* Fügt eine (deaktivierte) Zahlungsart "Stripe iDEAL" hinzu
+
+
 ## 1.1.1
 
 ### en
