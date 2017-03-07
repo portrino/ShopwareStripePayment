@@ -24,7 +24,8 @@ class Card extends Base
             // Use the token to create a new Stripe card source
             $source = Stripe\Source::create(array(
                 'type' => 'card',
-                'token' => $stripeSession->selectedCard['token_id']
+                'token' => $stripeSession->selectedCard['token_id'],
+                'metadata' => $this->getSourceMetadata()
             ));
 
             // Remove the token from the selected card, since it can only be consumed once
@@ -71,7 +72,8 @@ class Card extends Base
                     ),
                     'redirect' => array(
                         'return_url' => $returnUrl
-                    )
+                    ),
+                    'metadata' => $this->getSourceMetadata()
                 ));
             } catch (\Exception $e) {
                 throw new \Exception($this->getErrorMessage($e), 0, $e);

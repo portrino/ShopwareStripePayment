@@ -32,7 +32,8 @@ class Giropay extends Base
             ),
             'redirect' => array(
                 'return_url' => $returnUrl
-            )
+            ),
+            'metadata' => $this->getSourceMetadata()
         ));
 
         return $source;

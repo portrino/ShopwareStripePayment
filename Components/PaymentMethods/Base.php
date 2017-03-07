@@ -123,6 +123,20 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
     }
 
     /**
+     * By default returns an array containing the platform name of this plugin as well as
+     * the ID of the active shopware session.
+     *
+     * @return array
+     */
+    protected function getSourceMetadata()
+    {
+        return array(
+            'platform_name' => Util::STRIPE_PLATFORM_NAME,
+            'shopware_session_id' => $this->get('SessionID')
+        );
+    }
+
+    /**
      * @param string $key
      * @return mixed
      */

@@ -30,6 +30,10 @@ class Sepa extends Base
             throw new \Exception($this->getSnippet('payment_error/message/processing_error'));
         }
 
+        // Update the source's metadata
+        $source->metadata = $this->getSourceMetadata();
+        $source->save();
+
         return $source;
     }
 

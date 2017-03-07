@@ -33,7 +33,8 @@ class Sofort extends Base
             ),
             'redirect' => array(
                 'return_url' => $returnUrl
-            )
+            ),
+            'metadata' => $this->getSourceMetadata()
         ));
 
         return $source;
