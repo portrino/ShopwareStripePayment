@@ -146,12 +146,11 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
     }
 
     /**
-     * Parses the request body and tries to retrieve both the POSTed webhook event as well as the
-     * order that references the source contained in the event for verification. If the webhook
-     * call is valid, the is updated based on the event type:
+     * Validates the webhook event and, if valid, tries to process the event based on its type.
+     * Currently the following event types are supported:
      *
-     *  - charge.succeeded: Set the orders payment status to 'completely paid'
-     *  - charge.failed: Set the orders payment status to 'review necessary'
+     *  - charge.failed
+     *  - charge.succeeded
      */
     public function stripeWebhookAction()
     {
@@ -159,38 +158,27 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
         // Disable the default renderer to supress errors caused by the template engine
         $this->Front()->Plugins()->ViewRenderer()->setNoRender();
 
-        // Try to parse the request payload
         try {
-            $rawBody = $this->Request()->getRawBody();
-            $eventJson = Zend_Json::decode($rawBody);
+            $event = Util::verifyWebhookRequest($this->Request());
         } catch (\Exception $e) {
-            echo 'Failed to decode request JSON';
+            // Invalid event
             return;
         }
 
-        // Verify the event by fetching it from Stripe and finding the corresponding order
-        $event = Stripe\Event::retrieve($eventJson['id']);
-        $order = $this->get('models')->getRepository('Shopware\Models\Order\Order')->findOneBy(array(
-            'temporaryId' => $event->data->object->source->id
-        ));
-        if (!$order) {
-            echo 'Could not find order for event';
+        try {
+            switch ($event->type) {
+                case 'charge.failed':
+                    $this->processChargeFailedEvent($event);
+                    break;
+                case 'charge.succeeded':
+                    $this->processChargeSucceededEvent($event);
+                    break;
+            }
+        } catch (\Exception $e) {
+            // Log the error and respond with 'ERROR' to make debugging easier
+            $this->get('pluginlogger')->error('StripePayment: Failed to process Stripe webhook', array('exception' => $e, 'trace' => $e->getTrace(), 'eventId' => $event->id));
+            echo 'ERROR';
             return;
-        }
-
-        switch ($event->type) {
-            case 'charge.succeeded':
-                // Update the order's payment status to 'completely paid'
-                $paymentStatus = $this->get('models')->find('Shopware\Models\Order\Status', self::PAYMENT_STATUS_COMPLETELY_PAID);
-                $order->setPaymentStatus($paymentStatus);
-                $this->get('models')->flush($order);
-                break;
-            case 'charge.failed':
-                // Update the order's payment status to 'review necessary'
-                $paymentStatus = $this->get('models')->find('Shopware\Models\Order\Status', self::PAYMENT_STATUS_REVIEW_NECESSARY);
-                $order->setPaymentStatus($paymentStatus);
-                $this->get('models')->flush($order);
-                break;
         }
 
         // Just respond with 'OK' to make debugging easier
@@ -336,5 +324,63 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
         $adminModule = $this->get('modules')->Admin();
 
         return $adminModule->sInitiatePaymentClass($paymentMethod);
+    }
+
+    /**
+     * Tries to find the order the event belongs to and, if found, update its payment status
+     * to 'review necessary'.
+     *
+     * @param Stripe\Event $event
+     */
+    protected function processChargeFailedEvent(Stripe\Event $event)
+    {
+        $order = $this->findOrderForWebhookEvent($event);
+        if (!$order) {
+            return;
+        }
+        $paymentStatus = $this->get('models')->find('Shopware\Models\Order\Status', self::PAYMENT_STATUS_REVIEW_NECESSARY);
+        $order->setPaymentStatus($paymentStatus);
+        $this->get('models')->flush($order);
+    }
+
+    /**
+     * Tries to find the order the event belongs to and, if found, update its payment status
+     * to 'completely paid'.
+     *
+     * @param Stripe\Event $event
+     */
+    protected function processChargeSucceededEvent(Stripe\Event $event)
+    {
+        $order = $this->findOrderForWebhookEvent($event);
+        if (!$order) {
+            return;
+        }
+        $paymentStatus = $this->get('models')->find('Shopware\Models\Order\Status', self::PAYMENT_STATUS_COMPLETELY_PAID);
+        $order->setPaymentStatus($paymentStatus);
+        $this->get('models')->flush($order);
+    }
+
+    /**
+     * @param Stripe\Event $event
+     * @return Shopware\Models\Order\Order|null
+     */
+    protected function findOrderForWebhookEvent(Stripe\Event $event)
+    {
+        // Determine the Stripe source
+        if ($event->data->object instanceof Stripe\Source) {
+            $source = $event->data->object;
+        } elseif ($event->data->object instanceof Stripe\Charge) {
+            $source = $event->data->object->source;
+        } else {
+            // Not supported
+            return null;
+        }
+
+        // Find the order that references the source ID
+        $order = $this->get('models')->getRepository('Shopware\Models\Order\Order')->findOneBy(array(
+            'temporaryId' => $source->id
+        ));
+
+        return $order;
     }
 }

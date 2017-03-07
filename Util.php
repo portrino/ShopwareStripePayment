@@ -255,6 +255,26 @@ class Util
     }
 
     /**
+     * Decodes the requests's JSON body and tries to retrieve the Stripe event whose
+     * ID is contained in the request.
+     *
+     * @param \Enlight_Controller_Request_RequestHttp $request
+     * @return Stripe\Event
+     */
+    public static function verifyWebhookRequest(\Enlight_Controller_Request_RequestHttp $request)
+    {
+        self::initStripeAPI();
+        // Try to parse the request payload
+        $rawBody = $request->getRawBody();
+        $eventJson = \Zend_Json::decode($rawBody);
+
+        // Verify the event by fetching it from Stripe
+        $event = Stripe\Event::retrieve($eventJson['id']);
+
+        return $event;
+    }
+
+    /**
      * @return \ArrayObject
      */
     public static function getStripeSession()
