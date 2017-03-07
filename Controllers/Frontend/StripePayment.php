@@ -78,6 +78,9 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
                 return;
             }
 
+            // Mark the session as processing the payment, which will help to handle webhook events
+            $stripeSession->processingSourceId = $source->id;
+
             // Perform a redirect to complete the payment flow
             $stripeSession->redirectClientSecret = $source->client_secret;
             $this->redirect($source->redirect->url);
@@ -151,6 +154,7 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
      *
      *  - charge.failed
      *  - charge.succeeded
+     *  - source.chargeable
      */
     public function stripeWebhookAction()
     {
@@ -172,6 +176,9 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
                     break;
                 case 'charge.succeeded':
                     $this->processChargeSucceededEvent($event);
+                    break;
+                case 'source.chargeable':
+                    $this->processSourceChargeableEvent($event);
                     break;
             }
         } catch (\Exception $e) {
@@ -358,6 +365,44 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
         $paymentStatus = $this->get('models')->find('Shopware\Models\Order\Status', self::PAYMENT_STATUS_COMPLETELY_PAID);
         $order->setPaymentStatus($paymentStatus);
         $this->get('models')->flush($order);
+    }
+
+    /**
+     * First checks the Shopware session for the 'stripePayment->processingSourceId' field and,
+     * if set, makes sure the ID matches the source contained in the event. Then waits for five
+     * seconds to prevent timing issues caused by webhooks arriving earlier than e.g. a redirect
+     * during the payment process. That is, if completing the  payment process involves e.g.
+     * a redirect to the payment provider, the 'source.chargeable' event might arrive at the shop
+     * earlier than the redirect returns. By pausing the webhook handler, we give the redirect a
+     * head start to complete the order creation. After waiting, the database is checked for an
+     * order that used the event's source. If no such order is found, the source is used to
+     * create a charge and the session's order is saved to the database.
+     *
+     * @param Stripe\Event $event
+     */
+    protected function processSourceChargeableEvent(Stripe\Event $event)
+    {
+        // Check whether the webhook event is allowed to create an order
+        $source = $event->data->object;
+        $stripeSession = Util::getStripeSession();
+        if ($source->id !== $stripeSession->processingSourceId) {
+            return;
+        }
+
+        // Wait for five seconds
+        sleep(5);
+
+        // Make sure the source has not already been used to create an order, e.g. by completing
+        // a redirect
+        $order = $this->findOrderForWebhookEvent($event);
+        if ($order) {
+            return;
+        }
+
+        // Use the source to create the charge and save the order
+        $charge = $this->createCharge($event->data->object);
+        $order = $this->saveOrderWithCharge($charge);
+        $this->get('pluginlogger')->info('StripePayment: Created order after receiving "source.chargeable" webhook event', array('orderId' => $order->getId(), 'eventId' => $event->id));
     }
 
     /**

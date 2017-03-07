@@ -50,6 +50,10 @@ class Checkout implements SubscriberInterface
         $view = $args->getSubject()->View();
         $stripeSession = Util::getStripeSession();
 
+        // Unmark the session as processing the payment to prevent incoming source webhooks from
+        // trying to create charges
+        unset($stripeSession->processingSourceId);
+
         // Prepare the view
         $actionName = $args->getSubject()->Request()->getActionName();
         if (in_array($actionName, array('confirm', 'shippingPayment', 'saveShippingPayment'))) {
