@@ -4,7 +4,6 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f446e58c7f384a7a4d88f513d0622197",
     "content-hash": "d682a36b1c0661e7d84644d82a3f1b7d",
     "packages": [
         {
@@ -112,20 +111,20 @@
                 "zend",
                 "zikula"
             ],
-            "time": "2016-08-13 20:53:52"
+            "time": "2016-08-13T20:53:52+00:00"
         },
         {
             "name": "stripe/stripe-php",
-            "version": "v4.1.1",
+            "version": "v4.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stripe/stripe-php.git",
-                "reference": "a3c940bd90f0ca1bad07c93ff31900ca4b99af64"
+                "reference": "c9d4326bb99edd1a9849a6f22c0d8ea3351105de"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/a3c940bd90f0ca1bad07c93ff31900ca4b99af64",
-                "reference": "a3c940bd90f0ca1bad07c93ff31900ca4b99af64",
+                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/c9d4326bb99edd1a9849a6f22c0d8ea3351105de",
+                "reference": "c9d4326bb99edd1a9849a6f22c0d8ea3351105de",
                 "shasum": ""
             },
             "require": {
@@ -167,7 +166,7 @@
                 "payment processing",
                 "stripe"
             ],
-            "time": "2016-10-21 18:25:10"
+            "time": "2017-02-27T15:48:36+00:00"
         }
     ],
     "packages-dev": [],
