@@ -123,7 +123,7 @@ var StripePaymentCard = {
         });
         var createAndMountStripeElement = function(type, mountSelector) {
             // Create the element and add the change listener
-            var element = elements.create(type);
+            var element = elements.create(type, defaultOptions);
             element.on('change', function(event) {
                 if (event.error && event.error.type === 'validation_error') {
                     me.markFieldInvalid(type, event.error.code, event.error.message);
