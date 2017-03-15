@@ -265,6 +265,8 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                         'additionalDescription' => ''
                     )
                 );
+            case '2.0.0':
+                // Next release
 
                 break;
             default:
