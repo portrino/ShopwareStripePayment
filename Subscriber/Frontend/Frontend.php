@@ -20,7 +20,7 @@ class Frontend implements SubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            'Enlight_Controller_Front_RouteStartup' => ['onRouteStartup', -10000],
+            'Enlight_Controller_Front_RouteStartup' => array('onRouteStartup', -10000),
             'Enlight_Controller_Front_RouteShutdown' => 'onRouteShutdown'
         );
     }
