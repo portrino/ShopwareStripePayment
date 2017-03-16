@@ -96,9 +96,13 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
     {
         $shortDescriptor = $this->getShortStatementDescriptor($orderNumber);
         $shopName = $this->get('shop')->getName();
-        $shopUrl = $this->get('front')->Request()->getHttpHost() . $this->get('front')->Request()->getBaseUrl();
+        $longDescriptor = sprintf('%s, %s', $shortDescriptor, $shopName);
+        $shopUrl = parse_url(($this->get('front')->Request()->getHttpHost() . $this->get('front')->Request()->getBaseUrl()), PHP_URL_HOST);
+        if ($shopUrl) {
+            $longDescriptor .= sprintf(' (%s)', $shopUrl);
+        }
 
-        return sprintf('%s, %s (%s)', $shortDescriptor, $shopName, $shopUrl);
+        return $longDescriptor;
     }
 
     /**
