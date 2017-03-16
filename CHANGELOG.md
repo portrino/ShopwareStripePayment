@@ -1,3 +1,14 @@
+## 2.0.1
+
+### en
+
+* Fixes an error in the creation of "SOFORT Überweisung" payments
+
+### de
+
+* Behebt einen Fehler beim Erstellen von Zahlungen mittels "SOFORT Überweisung"
+
+
 ## 2.0.0
 
 ### en
