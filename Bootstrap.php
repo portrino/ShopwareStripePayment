@@ -268,7 +268,43 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
             case '2.0.0':
                 // Nothing to do
             case '2.0.1':
-                // Next release
+                // Find duplicate order numbers created since the release of v2.0.0
+                $duplicateOrderNumbers = $this->get('db')->fetchCol(
+                    'SELECT ordernumber
+                    FROM s_order
+                    WHERE ordernumber != 0
+                    AND ordertime > \'2017-03-15 00:00:00\'
+                    GROUP BY ordernumber
+                    HAVING COUNT(id) > 1'
+                );
+                $orderModule = $this->get('modules')->Order();
+                foreach ($duplicateOrderNumbers as $orderNumber) {
+                    // Change the order number of all but the oldest orders having the same order number
+                    $orderIds = $this->get('db')->fetchCol(
+                        'SELECT id
+                        FROM s_order
+                        WHERE ordernumber = :orderNumber',
+                        array(
+                            'orderNumber' => $orderNumber
+                        )
+                    );
+                    array_shift($orderIds);
+                    foreach ($orderIds as $orderId) {
+                        // Generate a new order number and save it both in the order and its details
+                        $newOrderNumber = $orderModule->sGetOrderNumber();
+                        $this->get('db')->query(
+                            'UPDATE s_order o
+                            INNER JOIN s_order_details od
+                                ON od.orderID = o.id
+                            SET o.ordernumber = :newOrderNumber, od.ordernumber = :newOrderNumber
+                            WHERE o.id = :orderId',
+                            array(
+                                'orderId' => $orderId,
+                                'newOrderNumber' => $newOrderNumber
+                            )
+                        );
+                    }
+                }
 
                 break;
             default:
