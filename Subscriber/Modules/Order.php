@@ -41,6 +41,21 @@ class Order implements SubscriberInterface
 
         // Use the order number saved in the stripe session, if possible
         $stripeSession = Util::getStripeSession();
+        if (isset($stripeSession->orderNumber)) {
+            // Make sure the order number has not already been consumed, before using it
+            $orderId = Shopware()->Container()->get('db')->fetchOne(
+                'SELECT id
+                FROM s_order
+                WHERE ordernumber = :orderNumber',
+                array(
+                    'orderNumber' => $stripeSession->orderNumber
+                )
+            );
+            if ($orderId) {
+                // Order number already consumed, hence remove it from the session
+                unset($stripeSession->orderNumber);
+            }
+        }
         $stripeSession->orderNumber = ($stripeSession->orderNumber) ?: $args->getReturn();
 
         return $stripeSession->orderNumber;
