@@ -93,7 +93,7 @@ class Util
         }, $cardSources);
 
         // Sort the cards by id (which correspond to the date, the card was created/added)
-        usort($cards, function($cardA, $cardB) {
+        usort($cards, function ($cardA, $cardB) {
             return strcmp($cardA['id'], $cardB['id']);
         });
 

@@ -92,7 +92,7 @@ class Checkout implements SubscriberInterface
             // Add the countries configured for SEPA payments to the view
             $stripeViewParams['sepaCountryList'] = Shopware()->Container()->get('modules')->Admin()->sGetCountryList();
             $sepaCountyIds = Shopware()->Container()->get('db')->fetchCol(
-               'SELECT pc.countryID
+                'SELECT pc.countryID
                 FROM s_core_paymentmeans_countries pc
                 LEFT JOIN s_core_paymentmeans c
                     ON c.id = pc.paymentID

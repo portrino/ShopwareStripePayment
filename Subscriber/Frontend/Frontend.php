@@ -59,7 +59,7 @@ class Frontend implements SubscriberInterface
             return;
         }
         $session = Shopware()->Container()->get('db')->fetchRow(
-           'SELECT *
+            'SELECT *
             FROM s_core_sessions
             WHERE id = :sessionId',
             array(
