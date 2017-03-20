@@ -45,7 +45,11 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
      */
     public function getOrderNumber()
     {
-        return (parent::getOrderNumber()) ?: $this->get('modules')->Order()->sGetOrderNumber();
+        // Use the order number saved in the Stripe Session, if possible
+        $stripeSession = Util::getStripeSession();
+        $orderNumber = ($stripeSession->orderNumber) ?: $this->get('modules')->Order()->sGetOrderNumber();
+
+        return $orderNumber;
     }
 
     /**

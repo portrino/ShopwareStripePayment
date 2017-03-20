@@ -23,30 +23,26 @@ class Order implements SubscriberInterface
      * Note: In case that a payment method is selected that is not a Stripe payment method,
      *       this method does nothing.
      *
-     * Checks the session's 'sOrderVariables' for a 'sOrderNumber' and, if it is not set,
-     * saves the order number contained in the event $args in the session and returns it.
-     * If however 'sOrderNumber' is already set in the session, the cached value is returned.
-     * This is a workaround that allows calling 'sOrder::sGetOrderNumber()' more than once
-     * for the same session and still receiving the same order number.
+     * Checks the Stripe session for an 'orderNumber' and, if it is not set, saves the order
+     * number contained in the event $args in the session and returns it. If however 'orderNumber'
+     * is already set in the Stripe session, the cached value is returned. This is a workaround
+     * that allows calling 'sOrder::sGetOrderNumber()' more than once for the same checkout and
+     * still receiving the same order number.
      *
      * @param \Enlight_Event_EventArgs $args
      */
     public function onFilterOrderNumber(\Enlight_Event_EventArgs $args)
     {
-        $session = Shopware()->Container()->get('session');
         // Check the selected payment method
-        if ($session->sOrderVariables->sPayment['action'] === 'StripePayment') {
+        $session = Shopware()->Container()->get('session');
+        if ($session->sOrderVariables->sPayment['action'] !== 'StripePayment') {
             return;
         }
 
+        // Use the order number saved in the stripe session, if possible
         $stripeSession = Util::getStripeSession();
-        if (!isset($stripeSession->orderNumber)) {
-            // Save the created order number both in the session's sOrderVariables and stripeSession
-            $stripeSession->orderNumber = $args->getReturn();
-            $session->sOrderVariables->sOrderNumber = $args->getReturn();
-        }
+        $stripeSession->orderNumber = ($stripeSession->orderNumber) ?: $args->getReturn();
 
-        // Use the cached order number
         return $stripeSession->orderNumber;
     }
 }
