@@ -1,3 +1,16 @@
+## 2.0.2
+
+### en
+
+* Fixes an error that caused more than one order to use the same order number
+* Adds aadditional safeguards to prevent duplication of order numbers
+
+### de
+
+* Behebt einen Fehler der dazu führte, dass Bestellnummern teilweise mehrfach verwendet wurden
+* Fügt zusätzlich Schutzmaßnahmen ein, die eine Mehrfachverwendung von Bestellnummern verhindern
+
+
 ## 2.0.1
 
 ### en
