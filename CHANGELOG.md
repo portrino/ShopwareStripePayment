@@ -1,3 +1,14 @@
+## 2.0.3
+
+### en
+
+* Fixes an error in some payment methods that was caused by invalid characters in the statement descriptor
+
+### de
+
+* Behebt einen Fehler in manchen Zahlungsarten, der durch ungültige Zeichen im Verwendungszweck hervorgerufen wurde
+
+
 ## 2.0.2
 
 ### en
