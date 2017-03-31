@@ -87,7 +87,7 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
     }
 
     /**
-     * Format: 'ORDER <order_number>, <shop_name> (<shop_url>)'
+     * Format: 'ORDER <order_number>, <shop_name>, <shop_url>'
      *
      * @param string $orderNumber
      * @return string
@@ -99,8 +99,11 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
         $longDescriptor = sprintf('%s, %s', $shortDescriptor, $shopName);
         $shopUrl = parse_url(($this->get('front')->Request()->getHttpHost() . $this->get('front')->Request()->getBaseUrl()), PHP_URL_HOST);
         if ($shopUrl) {
-            $longDescriptor .= sprintf(' (%s)', $shopUrl);
+            $longDescriptor .= ', ' . $shopUrl;
         }
+
+        // Strip all characters that are not allowed in statement descriptors
+        $longDescriptor = preg_replace('/[^a-zA-Z0-9\-\., ]/', '', $longDescriptor);
 
         return $longDescriptor;
     }
