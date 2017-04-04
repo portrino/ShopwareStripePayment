@@ -103,10 +103,10 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
         }
 
         // Strip all characters that are not allowed in statement descriptors
-        $longDescriptor = preg_replace('/[^a-zA-Z0-9\-\., ]/', '', $longDescriptor);
+        $longDescriptor = preg_replace('/[\<\>\/\\(\)\{\}\'"]/', '', $longDescriptor);
 
         // Keep at most 35 characters
-        $longDescriptor = substr($longDescriptor, 0, 35);
+        $longDescriptor = mb_substr($longDescriptor, 0, 35);
 
         return $longDescriptor;
     }
