@@ -1,3 +1,14 @@
+## 2.0.4
+
+### en
+
+* Further improves the construction of statement descriptors
+
+### de
+
+* Verbessert die Erzeugung des Verwendungszwecks
+
+
 ## 2.0.3
 
 ### en
