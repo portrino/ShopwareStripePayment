@@ -1,3 +1,14 @@
+## 2.0.5
+
+### en
+
+* Fixes an error in the snippets, which could cause an error when loading the credit card payment form
+
+### de
+
+* Behebt einen Fehler in den Textschnipseln, der dazu führen konnte, dass die Form für Kreditkartenzahlungen nicht geladen wurde
+
+
 ## 2.0.4
 
 ### en
