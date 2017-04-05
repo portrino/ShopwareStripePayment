@@ -76,31 +76,50 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
     }
 
     /**
-     * Format: 'ORDER <order_number>'
+     * Format: 'ORD <order_number>'
      *
      * @param string $orderNumber
      * @return string
      */
     protected function getShortStatementDescriptor($orderNumber)
     {
-        return 'ORDER ' . $orderNumber;
+        return 'ORD ' . $orderNumber;
     }
 
     /**
-     * Format: 'ORDER <order_number>, <shop_name>, <shop_url>'
+     * The format of the statement descriptor depends on the plugin config. If a custom statement descriptor
+     * is set, the format looks like so:
+     *
+     *  'ORD <order_number> <custom_statement_descriptor>'
+     *
+     * Otherwise the second part is constructed from either the shop name or URL:
+     *
+     *  'ORD <order_number> <shop_name>' or 'ORD <order_number> <shop_url>'
+     *
+     * Please note that in any case, at most 35 characters of the statement descriptor are kept to meet the
+     * constraints of all payment providers.
      *
      * @param string $orderNumber
      * @return string
      */
     protected function getLongStatementDescriptor($orderNumber)
     {
-        $shortDescriptor = $this->getShortStatementDescriptor($orderNumber);
-        $shopName = $this->get('shop')->getName();
-        $longDescriptor = sprintf('%s, %s', $shortDescriptor, $shopName);
-        $shopUrl = parse_url(($this->get('front')->Request()->getHttpHost() . $this->get('front')->Request()->getBaseUrl()), PHP_URL_HOST);
-        if ($shopUrl) {
-            $longDescriptor .= ', ' . $shopUrl;
+        // Determine the suffix of the long descriptor
+        $descriptorSuffix = $this->get('plugins')->get('Frontend')->get('StripePayment')->Config()->get('statementDescriptorSuffix');
+        if (!$descriptorSuffix) {
+            // Construct the suffix using the shop name
+            $descriptorSuffix = $this->get('shop')->getName();
         }
+        if (!$descriptorSuffix) {
+            // Construct the suffix using the URL
+            $shopUrl = parse_url(($this->get('front')->Request()->getHttpHost() . $this->get('front')->Request()->getBaseUrl()), PHP_URL_HOST);
+            if ($shopUrl) {
+                $descriptorSuffix = $shopUrl;
+            }
+        }
+
+        $shortDescriptor = $this->getShortStatementDescriptor($orderNumber);
+        $longDescriptor = $shortDescriptor . ' ' . $descriptorSuffix;
 
         // Strip all characters that are not allowed in statement descriptors
         $longDescriptor = preg_replace('/[\<\>\/\\(\)\{\}\'"]/', '', $longDescriptor);

@@ -312,7 +312,18 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
             case '2.0.4':
                 // Nothing to do
             case '2.0.5':
-                // Next release
+                // Add a config element for the custom statement descriptor suffix
+                $this->Form()->setElement(
+                    'text',
+                    'statementDescriptorSuffix',
+                    array(
+                        'label' => 'Verwendungszweck',
+                        'description' => 'Tragen Sie hier einen eigenen Verwendungszweck ein, der zusammen mit der Nummer der Bestellung an die Zahlungsdienstleister übermittelt wird. Bitte beachten Sie, dass nur Buchstaben, Zahlen sowie Punkt, Komma und Leerzeichen erlaubt sind.',
+                        'value' => '',
+                        'scope' => Element::SCOPE_SHOP,
+                        'maxLength' => 23
+                    )
+                );
 
                 break;
             default:
