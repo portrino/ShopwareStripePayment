@@ -6,7 +6,7 @@
 
 ### de
 
-* Behebt einen Fehler in den Textschnipseln, der dazu führen konnte, dass die Form für Kreditkartenzahlungen nicht geladen wurde
+* Behebt einen Fehler in den Textbausteinen, der dazu führen konnte, dass die Form für Kreditkartenzahlungen nicht geladen wurde
 
 
 ## 2.0.4
