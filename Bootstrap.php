@@ -324,6 +324,8 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                         'maxLength' => 23
                     )
                 );
+            case '2.0.6':
+                // Next release
 
                 break;
             default:

@@ -1,3 +1,16 @@
+## 2.0.6
+
+### en
+
+* Adds a new config field for specifying a custom statement descriptor that is used e.g. for SOFORT payments
+* Improves the internal handling of text snippets to fix some errors causing the credit card payment form to not load
+
+### de
+
+* Fügt der Plugin-Konfiguration ein neues Feld "Verwendungszweck" hinzu, mithilfe dessen der Verwendungszweck von z.B. SOFORT Zahlungen gesetzt werden kann
+* Verbessert die interne Handhabung von Textbausteinen um einige Fehler zu beheben, welche dazu führten, dass das Formular für Kreditkartenzahlungen nicht geladen wurde
+
+
 ## 2.0.5
 
 ### en
