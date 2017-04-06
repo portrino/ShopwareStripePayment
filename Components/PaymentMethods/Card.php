@@ -97,7 +97,7 @@ class Card extends Base
      */
     public function getSnippet($name)
     {
-        return ($this->get('snippets')->getNamespace('frontend/plugins/payment/stripe_payment/card')->get($name)) ?: parent::getSnippet($name);
+        return (Util::getUnescapedSnippet('frontend/plugins/payment/stripe_payment/card', $name)) ?: parent::getSnippet($name);
     }
 
     /**

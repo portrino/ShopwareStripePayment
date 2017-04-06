@@ -44,7 +44,7 @@ class Shopware_Controllers_Frontend_StripePaymentAccount extends Shopware_Contro
             // Load all cards of the customer
             $cards = Util::getAllStripeCards();
         } catch (Exception $e) {
-            $error = ($this->get('snippets')->getNamespace('frontend/plugins/stripe_payment/account')->get('credit_cards/error/list_cards')) ?: 'Failed to load credit cards.';
+            $error = Util::getUnescapedSnippet('frontend/plugins/stripe_payment/account', 'credit_cards/error/list_cards', 'Failed to load credit cards.');
             if ($stripeSession->accountError) {
                 $error = $stripeSession->accountError . "\n" . $error;
             }
@@ -81,7 +81,7 @@ class Shopware_Controllers_Frontend_StripePaymentAccount extends Shopware_Contro
             // Delete the card with the given id from Stripe
             $customer->sources->retrieve($cardId)->delete();
         } catch (Exception $e) {
-            $stripeSession->accountError = ($this->get('snippets')->getNamespace('frontend/plugins/stripe_payment/account')->get('credit_cards/error/delete_card')) ?: 'Failed to delete credit card.';
+            $stripeSession->accountError = Util::getUnescapedSnippet('frontend/plugins/stripe_payment/account', 'credit_cards/error/delete_card', 'Failed to delete credit card.');
         }
 
         // Clear all checkout related fields from the stripe session to avoid caching deleted credit cards

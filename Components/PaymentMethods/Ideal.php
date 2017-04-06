@@ -53,6 +53,6 @@ class Ideal extends Base
      */
     public function getSnippet($name)
     {
-        return ($this->get('snippets')->getNamespace('frontend/plugins/payment/stripe_payment/ideal')->get($name)) ?: parent::getSnippet($name);
+        return (Util::getUnescapedSnippet('frontend/plugins/payment/stripe_payment/ideal', $name)) ?: parent::getSnippet($name);
     }
 }

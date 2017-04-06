@@ -51,7 +51,7 @@ class Sepa extends Base
      */
     public function getSnippet($name)
     {
-        return ($this->get('snippets')->getNamespace('frontend/plugins/payment/stripe_payment/sepa')->get($name)) ?: parent::getSnippet($name);
+        return (Util::getUnescapedSnippet('frontend/plugins/payment/stripe_payment/sepa', $name)) ?: parent::getSnippet($name);
     }
 
     /**

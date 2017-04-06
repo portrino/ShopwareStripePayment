@@ -316,7 +316,7 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
     protected function cancelCheckout($errorMessage = null)
     {
         if ($errorMessage) {
-            $prefix = $this->get('snippets')->getNamespace('frontend/plugins/payment/stripe_payment/base')->get('payment_error/message/charge_failed');
+            $prefix = Util::getUnescapedSnippet('frontend/plugins/payment/stripe_payment/base', 'payment_error/message/charge_failed');
             Util::getStripeSession()->paymentError = $prefix . ' ' . $errorMessage;
         }
         $this->redirect(array(
