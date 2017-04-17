@@ -97,6 +97,29 @@
     vertical-align: top;
 }
 
+.stripe-payment-card-cvc-header {
+    display: inline-block;
+    width: 100%;
+    .unitize-height(45);
+}
+
+.stripe-payment-card-cvc-header-title {
+    float: left;
+    text-align: left;
+}
+
+.stripe-payment-card-cvc-header-logos {
+    display: inline-block;
+    float: right;
+
+    .card {
+        float: right;
+        .unitize(max-width, 50);
+        .unitize-height(35);
+        .unitize-margin(0, 0, 0, 5);
+    }
+}
+
 .stripe-payment-card-cvc-infotext {
     .unitize(padding-top, 15);
     .unitize(padding-bottom, 20);

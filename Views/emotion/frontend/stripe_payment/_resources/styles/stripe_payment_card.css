@@ -126,6 +126,28 @@
     width: 310px;
     vertical-align: top;
 }
+.stripe-payment-card-cvc-header {
+    display: inline-block;
+    width: 100%;
+    height: 45px;
+}
+.stripe-payment-card-cvc-header-title {
+    float: left;
+    font-size: 15px;
+    line-height: 1.3;
+    color: #555555;
+    text-align: left;
+}
+.stripe-payment-card-cvc-header-logos {
+    display: inline-block;
+    float: right;
+}
+.stripe-payment-card-cvc-header-logos .card {
+    float: right;
+    max-width: 50px;
+    height: 35px;
+    margin: 0 0 0 5px;
+}
 .stripe-payment-card-cvc-infotext {
     padding-top: 30px;
     font-size: 15px;
