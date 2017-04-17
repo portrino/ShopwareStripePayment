@@ -10,6 +10,13 @@
     {/if}
 {/block}
 
+{block name="frontend_index_header_css_screen" append}
+    <style type="text/css">
+        {* Include shared CSS for payment provider logo SVGs *}
+        {include file="frontend/stripe_payment/_resources/styles/stripe_payment_provider_logos.css"}
+    </style>
+{/block}
+
 {block name="frontend_index_content_top" append}
     {if $stripePayment.error}
         <div class="grid_20 first">

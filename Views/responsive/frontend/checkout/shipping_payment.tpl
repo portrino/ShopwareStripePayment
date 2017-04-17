@@ -1,5 +1,12 @@
 {extends file="parent:frontend/checkout/shipping_payment.tpl"}
 
+{block name="frontend_index_header" append}
+    <style type="text/css">
+        {* Include shared CSS for payment provider logo SVGs *}
+        {include file="frontend/stripe_payment/_resources/styles/stripe_payment_provider_logos.css"}
+    </style>
+{/block}
+
 {block name="frontend_index_header_javascript_jquery" append}
     <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
     <script type="text/javascript" src="https://js.stripe.com/v3/"></script>

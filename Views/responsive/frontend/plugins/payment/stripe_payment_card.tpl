@@ -1,25 +1,6 @@
 {if $Controller != "account" && $payment_mean.class == "StripePaymentCard"}
-    <style type="text/css">
-        {* Include shared CSS for payment provider logo SVGs *}
-        {include file="frontend/stripe_payment/_resources/styles/stripe_payment_provider_logos.css"}
-    </style>
     {* The main container for filling in the credit card information *}
     <div class="stripe-payment-card-form payment--form-group">
-        {* Credit card logos *}
-        <div class="panel--table">
-            <div class="panel--tr">
-                {if $payment_mean.name == "stripe_payment_card_three_d_secure"}
-                    <div class="panel--td stripe-payment-provider-logo verified-by-visa"></div>
-                    <div class="panel--td stripe-payment-provider-logo mastercard-secure-code"></div>
-                    <div class="panel--td stripe-payment-provider-logo american-express-safe-key"></div>
-                {else}
-                    <div class="panel--td stripe-payment-provider-logo visa"></div>
-                    <div class="panel--td stripe-payment-provider-logo mastercard"></div>
-                    <div class="panel--td stripe-payment-provider-logo american-express"></div>
-                {/if}
-            </div>
-        </div>
-
         {* A box for displaying general errors *}
         <div class="stripe-payment-error-box alert is--error is--rounded" style="display: none;">
             <div class="alert--icon">
