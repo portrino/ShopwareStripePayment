@@ -9,8 +9,8 @@
         <div class="panel--table">
             <div class="panel--tr">
                 <div class="panel--td stripe-payment-provider-logo visa"></div>
-                <div class="panel--td stripe-payment-provider-logo master-card"></div>
-                <div class="panel--td stripe-payment-provider-logo amex"></div>
+                <div class="panel--td stripe-payment-provider-logo mastercard"></div>
+                <div class="panel--td stripe-payment-provider-logo american-express"></div>
             </div>
         </div>
 

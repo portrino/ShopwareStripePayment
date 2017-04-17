@@ -144,8 +144,8 @@
 }
 .stripe-payment-card-cvc-header-logos .stripe-payment-provider-logo {
     float: right;
-    max-width: 50px;
-    height: 35px;
+    width: 40px;
+    height: 40px;
     margin: 0 0 0 5px;
 }
 .stripe-payment-card-cvc-infotext {

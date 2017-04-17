@@ -8,8 +8,8 @@
         <div class="grid_10 last">
             {* Credit card logos *}
             <div class="stripe-payment-provider-logo visa"></div>
-            <div class="stripe-payment-provider-logo master-card"></div>
-            <div class="stripe-payment-provider-logo amex"></div>
+            <div class="stripe-payment-provider-logo mastercard"></div>
+            <div class="stripe-payment-provider-logo american-express"></div>
             {* Default content *}
             <div class="grid_10 last" style="margin-top: 5px; margin-left: 0px;">
                 {include file="string:{$payment_mean.additionaldescription}"}
