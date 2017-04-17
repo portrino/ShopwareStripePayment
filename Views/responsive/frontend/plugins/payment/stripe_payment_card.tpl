@@ -8,9 +8,15 @@
         {* Credit card logos *}
         <div class="panel--table">
             <div class="panel--tr">
-                <div class="panel--td stripe-payment-provider-logo visa"></div>
-                <div class="panel--td stripe-payment-provider-logo mastercard"></div>
-                <div class="panel--td stripe-payment-provider-logo american-express"></div>
+                {if $payment_mean.name == "stripe_payment_card_three_d_secure"}
+                    <div class="panel--td stripe-payment-provider-logo verified-by-visa"></div>
+                    <div class="panel--td stripe-payment-provider-logo mastercard-secure-code"></div>
+                    <div class="panel--td stripe-payment-provider-logo american-express-safe-key"></div>
+                {else}
+                    <div class="panel--td stripe-payment-provider-logo visa"></div>
+                    <div class="panel--td stripe-payment-provider-logo mastercard"></div>
+                    <div class="panel--td stripe-payment-provider-logo american-express"></div>
+                {/if}
             </div>
         </div>
 

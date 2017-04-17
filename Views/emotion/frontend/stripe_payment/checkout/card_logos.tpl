@@ -7,9 +7,15 @@
         {* Inject the credit card logos before the additional description *}
         <div class="grid_10 last">
             {* Credit card logos *}
-            <div class="stripe-payment-provider-logo visa"></div>
-            <div class="stripe-payment-provider-logo mastercard"></div>
-            <div class="stripe-payment-provider-logo american-express"></div>
+            {if $payment_mean.name == "stripe_payment_card_three_d_secure"}
+                <div class="stripe-payment-provider-logo verified-by-visa"></div>
+                <div class="stripe-payment-provider-logo mastercard-secure-code"></div>
+                <div class="stripe-payment-provider-logo american-express-safe-key"></div>
+            {else}
+                <div class="stripe-payment-provider-logo visa"></div>
+                <div class="stripe-payment-provider-logo mastercard"></div>
+                <div class="stripe-payment-provider-logo american-express"></div>
+            {/if}
             {* Default content *}
             <div class="grid_10 last" style="margin-top: 5px; margin-left: 0px;">
                 {include file="string:{$payment_mean.additionaldescription}"}
