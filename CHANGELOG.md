@@ -1,3 +1,18 @@
+## 2.1.0
+
+### en
+
+* Makes the title snippets of the CVC info popup localizable
+* Adds respective logos for all payment methods provided by this plugin
+* Adds a new config element for showing/hiding the payment provider logos in the payment form
+
+### de
+
+* Überarbeitet das CVC-Popup, sodass der Title nun ebenfalls als Textbaustein hinterlegt werden kann
+* Fügt die Logos aller Zahlungsarten hinzu, die von diesem Plugin bereitgestellt werden
+* Fügt der Plugin-Konfiguration ein neues Feld "Logos der Zahlungsarten anzeigen" hinzu, mithilfe dessen die Logos der Zahlungsarten im Bezahlungs-Formular angezeigt oder ausgeblendet werden können
+
+
 ## 2.0.6
 
 ### en
