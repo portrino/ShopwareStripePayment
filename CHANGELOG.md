@@ -8,7 +8,7 @@
 
 ### de
 
-* Überarbeitet das CVC-Popup, sodass der Title nun ebenfalls als Textbaustein hinterlegt werden kann
+* Überarbeitet das CVC-Popup, sodass der Titel nun ebenfalls als Textbaustein hinterlegt werden kann
 * Fügt die Logos aller Zahlungsarten hinzu, die von diesem Plugin bereitgestellt werden
 * Fügt der Plugin-Konfiguration ein neues Feld "Logos der Zahlungsarten anzeigen" hinzu, mithilfe dessen die Logos der Zahlungsarten im Bezahlungs-Formular angezeigt oder ausgeblendet werden können
 
