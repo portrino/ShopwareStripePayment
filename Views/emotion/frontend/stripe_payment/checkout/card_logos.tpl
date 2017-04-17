@@ -1,5 +1,5 @@
 {block name="frontend_checkout_payment_fieldset_description"}
-    {if $Controller != "account" && $payment_mean.action == "StripePayment"}
+    {if $Controller != "account" && $payment_mean.action == "StripePayment" && $stripePayment.showPaymentProviderLogos}
         {* Inject the payment logos before the additional description *}
         <div class="grid_10 last">
             {* Payment logos *}

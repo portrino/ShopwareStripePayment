@@ -61,6 +61,7 @@ class Checkout implements SubscriberInterface
             // Set the stripe public key and some plugin configuration
             $stripeViewParams['publicKey'] = Util::stripePublicKey();
             $stripeViewParams['allowSavingCreditCard'] = Shopware()->Container()->get('plugins')->get('Frontend')->get('StripePayment')->Config()->get('allowSavingCreditCard', true);
+            $stripeViewParams['showPaymentProviderLogos'] = Shopware()->Container()->get('plugins')->get('Frontend')->get('StripePayment')->Config()->get('showPaymentProviderLogos', true);
 
             // Check for an error
             if ($stripeSession->paymentError) {

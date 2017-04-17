@@ -325,7 +325,17 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                     )
                 );
             case '2.0.6':
-                // Next release
+                // Add a config element for showing/hiding the payment provider logos
+                $this->Form()->setElement(
+                    'checkbox',
+                    'showPaymentProviderLogos',
+                    array(
+                        'label' => 'Logos der Zahlungsarten anzeigen',
+                        'description' => 'Aktivieren Sie diese Feld, um in der Liste der verfügbaren Zahlungsarten die Logos der von diesem Plugin zur Verfügung gestellten Zahlungsarten anzuzeigen.',
+                        'value' => true,
+                        'scope' => Element::SCOPE_SHOP
+                    )
+                );
 
                 break;
             default:
