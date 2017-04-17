@@ -1,16 +1,16 @@
 {if $Controller != "account" && $payment_mean.class == "StripePaymentCard"}
     <style type="text/css">
-        {* Include shared CSS for credit card logo SVGs *}
-        {include file="frontend/stripe_payment/_resources/styles/credit_card_logos.css"}
+        {* Include shared CSS for payment provider logo SVGs *}
+        {include file="frontend/stripe_payment/_resources/styles/stripe_payment_provider_logos.css"}
     </style>
     {* The main container for filling in the credit card information *}
     <div class="stripe-payment-card-form payment--form-group">
         {* Credit card logos *}
         <div class="panel--table">
             <div class="panel--tr">
-                <div class="panel--td card visa"></div>
-                <div class="panel--td card master-card"></div>
-                <div class="panel--td card amex"></div>
+                <div class="panel--td stripe-payment-provider-logo visa"></div>
+                <div class="panel--td stripe-payment-provider-logo master-card"></div>
+                <div class="panel--td stripe-payment-provider-logo amex"></div>
             </div>
         </div>
 

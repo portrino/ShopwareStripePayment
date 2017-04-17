@@ -142,7 +142,7 @@
     display: inline-block;
     float: right;
 }
-.stripe-payment-card-cvc-header-logos .card {
+.stripe-payment-card-cvc-header-logos .stripe-payment-provider-logo {
     float: right;
     max-width: 50px;
     height: 35px;
