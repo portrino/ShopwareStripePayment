@@ -137,7 +137,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                 foreach ($this->Form()->getElements() as $element) {
                     $element->setScope(Element::SCOPE_SHOP);
                 }
-                // Add a config element for the stripe secret key
+                // Add a config element for showing/hiding the 'save credit card' checkbox for card payment methods
                 $this->Form()->setElement(
                     'checkbox',
                     'allowSavingCreditCard',
