@@ -54,6 +54,6 @@ class Sofort extends Base
      */
     public function getSnippet($name)
     {
-        return (Util::getUnescapedSnippet('frontend/plugins/payment/stripe_payment/sofort', $name)) ?: parent::getSnippet($name);
+        return ($this->get('snippets')->getNamespace('frontend/plugins/payment/stripe_payment/sofort')->get($name)) ?: parent::getSnippet($name);
     }
 }

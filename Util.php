@@ -294,21 +294,4 @@ class Util
     {
         Shopware()->Container()->get('session')->stripePayment = new \ArrayObject(array(), \ArrayObject::STD_PROP_LIST);
     }
-
-    /**
-     * @param string $namespaceName
-     * @param string $name
-     * @return string|null
-     */
-    public static function getUnescapedSnippet($namespaceName, $name, $default = null)
-    {
-        $namespace = Shopware()->Container()->get('snippets')->getNamespace($namespaceName);
-        $snippet = $namespace->get($name);
-        if ($snippet) {
-            // Remove escaping of single quotes, which is necessary to be able to use snippets in JavaScript
-            return str_replace('\\\'', '\'', $snippet);
-        }
-
-        return $default;
-    }
 }

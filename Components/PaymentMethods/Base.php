@@ -59,7 +59,7 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
      */
     public function getSnippet($name)
     {
-        return Util::getUnescapedSnippet('frontend/plugins/payment/stripe_payment/base', $name);
+        return $this->get('snippets')->getNamespace('frontend/plugins/payment/stripe_payment/base')->get($name);
     }
 
     /**
