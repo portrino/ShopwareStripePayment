@@ -1,3 +1,14 @@
+## 2.1.2
+
+### en
+
+* Fixes an error that occurred during the plugin update
+
+### de
+
+* Behebt einen Fehler, der während des Plugin-Updates auftrat
+
+
 ## 2.1.1
 
 ### en
