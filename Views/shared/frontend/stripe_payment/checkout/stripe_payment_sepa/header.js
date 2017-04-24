@@ -1,16 +1,16 @@
 var stripePublicKey = '{$stripePayment.publicKey}';
 var stripePaymentSepaSnippets = {
     error: {
-        invalid_account_owner: '{s namespace=frontend/plugins/payment/stripe_payment/sepa name=error/invalid_account_owner}{/s}',
-        invalid_city: '{s namespace=frontend/plugins/payment/stripe_payment/sepa name=error/invalid_city}{/s}',
-        invalid_country: '{s namespace=frontend/plugins/payment/stripe_payment/sepa name=error/invalid_country}{/s}',
-        invalid_iban: '{s namespace=frontend/plugins/payment/stripe_payment/sepa name=error/invalid_iban}{/s}',
-        invalid_street: '{s namespace=frontend/plugins/payment/stripe_payment/sepa name=error/invalid_street}{/s}',
-        invalid_zip_code: '{s namespace=frontend/plugins/payment/stripe_payment/sepa name=error/invalid_zip_code}{/s}',
-        title: '{s namespace=frontend/plugins/payment/stripe_payment/sepa name=error/title}{/s}',
+        invalid_account_owner: '{stripe_snippet namespace=frontend/plugins/payment/stripe_payment/sepa name=error/invalid_account_owner}{/stripe_snippet}',
+        invalid_city: '{stripe_snippet namespace=frontend/plugins/payment/stripe_payment/sepa name=error/invalid_city}{/stripe_snippet}',
+        invalid_country: '{stripe_snippet namespace=frontend/plugins/payment/stripe_payment/sepa name=error/invalid_country}{/stripe_snippet}',
+        invalid_iban: '{stripe_snippet namespace=frontend/plugins/payment/stripe_payment/sepa name=error/invalid_iban}{/stripe_snippet}',
+        invalid_street: '{stripe_snippet namespace=frontend/plugins/payment/stripe_payment/sepa name=error/invalid_street}{/stripe_snippet}',
+        invalid_zip_code: '{stripe_snippet namespace=frontend/plugins/payment/stripe_payment/sepa name=error/invalid_zip_code}{/stripe_snippet}',
+        title: '{stripe_snippet namespace=frontend/plugins/payment/stripe_payment/sepa name=error/title}{/stripe_snippet}',
         sourceCreation: {
-            invalid_bank_account_iban: '{s namespace=frontend/plugins/payment/stripe_payment/sepa name=payment_error/message/invalid_bank_account_iban}{/s}',
-            invalid_owner_name: '{s namespace=frontend/plugins/payment/stripe_payment/sepa name=payment_error/message/invalid_owner_name}{/s}'
+            invalid_bank_account_iban: '{stripe_snippet namespace=frontend/plugins/payment/stripe_payment/sepa name=payment_error/message/invalid_bank_account_iban}{/stripe_snippet}',
+            invalid_owner_name: '{stripe_snippet namespace=frontend/plugins/payment/stripe_payment/sepa name=payment_error/message/invalid_owner_name}{/stripe_snippet}'
         }
     }
 };

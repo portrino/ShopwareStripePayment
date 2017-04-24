@@ -1,8 +1,8 @@
 var stripePublicKey = '{$stripePayment.publicKey}';
 var stripePaymentApplePaySnippets = {
     error: {
-        notAvailable: '{s namespace=frontend/plugins/payment/stripe_payment/apple_pay name=error/not_available}{/s}',
-        title: '{s namespace=frontend/plugins/payment/stripe_payment/apple_pay name=error/title}{/s}'
+        notAvailable: '{stripe_snippet namespace=frontend/plugins/payment/stripe_payment/apple_pay name=error/not_available}{/stripe_snippet}',
+        title: '{stripe_snippet namespace=frontend/plugins/payment/stripe_payment/apple_pay name=error/title}{/stripe_snippet}'
     }
 };
 var stripePaymentApplePayConfig = {
