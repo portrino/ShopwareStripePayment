@@ -1,3 +1,14 @@
+## 2.1.1
+
+### en
+
+* Improves the internal handling of text snippets to make explicit escaping of single quotes in snippets obsolete
+
+### de
+
+* Verbessert die interne Handhabung von Textbausteinen, sodass einfachen Anführungszeichen in Textbausteinen kein Backslash mehr vorangestellt werden muss
+
+
 ## 2.1.0
 
 ### en
