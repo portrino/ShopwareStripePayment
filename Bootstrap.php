@@ -341,7 +341,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                 // Remove all single quote escaping from stripe snippets in the database
                 $this->get('db')->query(
                     "UPDATE s_core_snippets
-                    SET value = REPLACE(value, '\\\'', '\'')
+                    SET value = REPLACE(value, '\\\\\'', '\'')
                     WHERE namespace LIKE '%stripe_payment%'"
                 );
             case '2.1.1':
