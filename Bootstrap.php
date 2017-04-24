@@ -4,6 +4,7 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 }
 
 use Shopware\Models\Config\Element;
+use Shopware\Plugins\StripePayment\Classes\SmartyPlugins;
 use Shopware\Plugins\StripePayment\Subscriber;
 
 /**
@@ -404,6 +405,10 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
         $this->get('events')->addSubscriber(new Subscriber\Frontend\Frontend());
         $this->get('events')->addSubscriber(new Subscriber\Modules\Order());
         $this->get('events')->addSubscriber(new Subscriber\Theme($this));
+
+        // Register the custom smarty plugins
+        $smartyPlugins = new SmartyPlugins(Shopware()->Container());
+        $smartyPlugins->register();
     }
 
     /**
