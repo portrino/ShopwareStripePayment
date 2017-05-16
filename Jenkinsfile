@@ -4,6 +4,7 @@ node {
 	buildPlugin()
 	testUnit()
 	testIntegration()
+	testUi()
 	release()
 	scsUpload()
 }
