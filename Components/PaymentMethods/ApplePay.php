@@ -12,7 +12,7 @@ class ApplePay extends Base
     /**
      * @inheritdoc
      */
-    public function createStripeSource($amountInCents, $currencyCode, $orderNumber)
+    public function createStripeSource($amountInCents, $currencyCode)
     {
         Util::initStripeAPI();
 
@@ -37,9 +37,9 @@ class ApplePay extends Base
     /**
      * @inheritdoc
      */
-    public function chargeStatementDescriptor($orderNumber)
+    public function chargeStatementDescriptor()
     {
         // Apple Pay sources should contain a statement descriptor in the charge
-        return $this->getShortStatementDescriptor($orderNumber);
+        return $this->getStatementDescriptor();
     }
 }

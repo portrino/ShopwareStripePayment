@@ -12,7 +12,7 @@ class Sepa extends Base
     /**
      * @inheritdoc
      */
-    public function createStripeSource($amountInCents, $currencyCode, $orderNumber)
+    public function createStripeSource($amountInCents, $currencyCode)
     {
         Util::initStripeAPI();
 
@@ -40,10 +40,10 @@ class Sepa extends Base
     /**
      * @inheritdoc
      */
-    public function chargeStatementDescriptor($orderNumber)
+    public function chargeStatementDescriptor()
     {
         // SEPA sources can be reused several times and hence should contain a statement descriptor in the charge
-        return $this->getShortStatementDescriptor($orderNumber);
+        return $this->getStatementDescriptor();
     }
 
     /**

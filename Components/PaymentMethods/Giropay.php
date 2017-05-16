@@ -12,7 +12,7 @@ class Giropay extends Base
     /**
      * @inheritdoc
      */
-    public function createStripeSource($amountInCents, $currencyCode, $orderNumber)
+    public function createStripeSource($amountInCents, $currencyCode)
     {
         Util::initStripeAPI();
         // Create a new Giropay source
@@ -28,7 +28,7 @@ class Giropay extends Base
                 'name' => Util::getCustomerName()
             ),
             'giropay' => array(
-                'statement_descriptor' => $this->getLongStatementDescriptor($orderNumber)
+                'statement_descriptor' => $this->getStatementDescriptor()
             ),
             'redirect' => array(
                 'return_url' => $returnUrl
@@ -42,7 +42,7 @@ class Giropay extends Base
     /**
      * @inheritdoc
      */
-    public function chargeStatementDescriptor($orderNumber)
+    public function chargeStatementDescriptor()
     {
         // Giropay payments require the statement descriptor to be part of their source
         return null;

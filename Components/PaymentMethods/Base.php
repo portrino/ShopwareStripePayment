@@ -14,20 +14,18 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
      *
      * @param int $amountInCents
      * @param string $currencyCode
-     * @param string $orderNumber
      * @return Stripe\Source
      * @throws \Exception
      */
-    abstract public function createStripeSource($amountInCents, $currencyCode, $orderNumber);
+    abstract public function createStripeSource($amountInCents, $currencyCode);
 
     /**
      * Returns the statement descriptor that shall be used for the charge or order with
      * $orderNumber. Return null to omit the statement descriptor.
      *
-     * @param string $orderNumber
      * @return string|null
      */
-    abstract public function chargeStatementDescriptor($orderNumber);
+    abstract public function chargeStatementDescriptor();
 
     /**
      * @inheritdoc
@@ -76,58 +74,36 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
     }
 
     /**
-     * Format: 'ORD <order_number>'
-     *
-     * @param string $orderNumber
-     * @return string
-     */
-    protected function getShortStatementDescriptor($orderNumber)
-    {
-        return 'ORD ' . $orderNumber;
-    }
-
-    /**
      * The format of the statement descriptor depends on the plugin config. If a custom statement descriptor
-     * is set, the format looks like so:
+     * is set, it is used. Otherwise it is constructed from either the shop name or shop URL. Please note that
+     * in any case, at most 35 characters of the statement descriptor are kept to meet the constraints of all
+     * payment providers.
      *
-     *  'ORD <order_number> <custom_statement_descriptor>'
-     *
-     * Otherwise the second part is constructed from either the shop name or URL:
-     *
-     *  'ORD <order_number> <shop_name>' or 'ORD <order_number> <shop_url>'
-     *
-     * Please note that in any case, at most 35 characters of the statement descriptor are kept to meet the
-     * constraints of all payment providers.
-     *
-     * @param string $orderNumber
      * @return string
      */
-    protected function getLongStatementDescriptor($orderNumber)
+    protected function getStatementDescriptor()
     {
         // Determine the suffix of the long descriptor
-        $descriptorSuffix = $this->get('plugins')->get('Frontend')->get('StripePayment')->Config()->get('statementDescriptorSuffix');
-        if (!$descriptorSuffix) {
+        $descriptor = $this->get('plugins')->get('Frontend')->get('StripePayment')->Config()->get('statementDescriptorSuffix');
+        if (!$descriptor) {
             // Construct the suffix using the shop name
-            $descriptorSuffix = $this->get('shop')->getName();
+            $descriptor = $this->get('shop')->getName();
         }
-        if (!$descriptorSuffix) {
+        if (!$descriptor) {
             // Construct the suffix using the URL
             $shopUrl = parse_url(($this->get('front')->Request()->getHttpHost() . $this->get('front')->Request()->getBaseUrl()), PHP_URL_HOST);
             if ($shopUrl) {
-                $descriptorSuffix = $shopUrl;
+                $descriptor = $shopUrl;
             }
         }
 
-        $shortDescriptor = $this->getShortStatementDescriptor($orderNumber);
-        $longDescriptor = $shortDescriptor . ' ' . $descriptorSuffix;
-
         // Strip all characters that are not allowed in statement descriptors
-        $longDescriptor = preg_replace('/[\<\>\/\\(\)\{\}\'"]/', '', $longDescriptor);
+        $descriptor = preg_replace('/[\<\>\/\\(\)\{\}\'"]/', '', $descriptor);
 
         // Keep at most 35 characters
-        $longDescriptor = mb_substr($longDescriptor, 0, 35);
+        $descriptor = mb_substr($descriptor, 0, 35);
 
-        return $longDescriptor;
+        return $descriptor;
     }
 
     /**

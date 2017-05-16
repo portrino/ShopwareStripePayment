@@ -41,18 +41,6 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
     }
 
     /**
-     * @inheritdoc
-     */
-    public function getOrderNumber()
-    {
-        // Use the order number saved in the Stripe Session, if possible
-        $stripeSession = Util::getStripeSession();
-        $orderNumber = ($stripeSession->orderNumber) ?: $this->get('modules')->Order()->sGetOrderNumber();
-
-        return $orderNumber;
-    }
-
-    /**
      * Creates a source using the selected Stripe payment method class and completes its payment
      * flow. That is, if the source is already chargeable, the charge is created and the order is
      * saved. If however the source requires a flow like 'redirect', the flow is executed without
@@ -66,8 +54,7 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
         try {
             $source = $this->getStripePaymentMethod()->createStripeSource(
                 ($this->getAmount() * 100), // Amount has to be in cents!
-                $this->getCurrencyShortName(),
-                $this->getOrderNumber()
+                $this->getCurrencyShortName()
             );
         } catch (Exception $e) {
             $this->get('pluginlogger')->error('StripePayment: Failed to create source', array('exception' => $e, 'trace' => $e->getTrace()));
@@ -216,20 +203,19 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
         } else {
             $customerNumber = $user['billingaddress']['customernumber'];
         }
-        $orderNumber = $this->getOrderNumber();
 
         // Prepare the charge data
         $chargeData = array(
             'source' => $source->id,
             'amount' => ($this->getAmount() * 100), // Amount has to be in cents!
             'currency' => $this->getCurrencyShortName(),
-            'description' => sprintf('%s / Kunden-Nr.: %s / Bestell-Nr. %s', $userEmail, $customerNumber, $orderNumber),
+            'description' => sprintf('%s / Customer %s', $userEmail, $customerNumber),
             'metadata' => array(
                 'platform_name' => Util::STRIPE_PLATFORM_NAME
             )
         );
         // Add a statement descriptor, if necessary
-        $statementDescriptor = $this->getStripePaymentMethod()->chargeStatementDescriptor($orderNumber);
+        $statementDescriptor = $this->getStripePaymentMethod()->chargeStatementDescriptor();
         if ($statementDescriptor) {
             $chargeData['statement_descriptor'] = substr($statementDescriptor, 0, 22);
         }
@@ -250,7 +236,7 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
      * field 'temporaryID', to which the 'paymentUniqueId' is written. Additionally the
      * 'balance_transaction' is displayed in the shop owner's Stripe account, so it can be used to
      * easily identify an order. Finally the cleared date of the order is set to the current date
-     * and the order is returned.
+     * and the order number is saved in the $charge.
      *
      * @param Stripe\Charge $charge
      * @return Order
@@ -278,6 +264,15 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
         ));
         $order->setClearedDate(new \DateTime());
         $this->get('models')->flush($order);
+
+        try {
+            // Save the order number in the charge description
+            $charge->description .= ' / Order ' . $orderNumber;
+            $charge->save();
+        } catch (Exception $e) {
+            // Ignore exceptions in this case, because the order has already been created
+            // and adding the order number is not essential for identifying the payment
+        }
 
         return $order;
     }

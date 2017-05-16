@@ -83,8 +83,7 @@ class Checkout implements SubscriberInterface
                 // Add the payment method's statement descriptor to the view
                 $modules = Shopware()->Container()->get('modules');
                 $paymentMethod = $modules->Admin()->sInitiatePaymentClass($session->sOrderVariables->sPayment);
-                $orderNumber = ($stripeSession->orderNumber) ?: $modules->Order()->sGetOrderNumber();
-                $stripeViewParams['applePayStatementDescriptor'] = $paymentMethod->chargeStatementDescriptor($orderNumber);
+                $stripeViewParams['applePayStatementDescriptor'] = $paymentMethod->chargeStatementDescriptor();
             }
 
             // Add name of SEPA creditor (company or shop name as fallback)
@@ -194,7 +193,6 @@ class Checkout implements SubscriberInterface
             $selectedPaymentMethod = Shopware()->Container()->get('models')->find('Shopware\Models\Payment\Payment', $request->getParam('payment'));
             if ($selectedPaymentMethod && $selectedPaymentMethod->getAction() !== 'StripePayment') {
                 unset($stripeSession->applePayToken);
-                unset($stripeSession->orderNumber);
             }
         }
     }
