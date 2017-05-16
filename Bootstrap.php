@@ -72,7 +72,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                         array(
                             'active' => 0,
                             'name' => 'stripe_payment',
-                            'description' => 'Stripe Kreditkarte (ohne 3D-Secure)',
+                            'description' => 'Kreditkarte (via Stripe)',
                             'template' => 'stripe_payment.tpl',
                             'action' => 'stripe_payment',
                             'class' => 'StripePaymentMethod',
@@ -187,7 +187,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                     array(
                         'active' => 0,
                         'name' => 'stripe_payment_card_three_d_secure',
-                        'description' => 'Stripe Kreditkarte (mit 3D-Secure)',
+                        'description' => 'Kreditkarte (mit 3D-Secure, via Stripe)',
                         'template' => 'stripe_payment_card.tpl',
                         'action' => 'StripePayment',
                         'class' => 'StripePaymentCard',
@@ -199,7 +199,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                     array(
                         'active' => 0,
                         'name' => 'stripe_payment_sofort',
-                        'description' => 'Stripe SOFORT Überweisung',
+                        'description' => 'SOFORT Überweisung (via Stripe)',
                         'template' => '',
                         'action' => 'StripePayment',
                         'class' => 'StripePaymentSofort',
@@ -211,7 +211,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                     array(
                         'active' => 0,
                         'name' => 'stripe_payment_ideal',
-                        'description' => 'Stripe iDEAL',
+                        'description' => 'iDEAL (via Stripe)',
                         'template' => '',
                         'action' => 'StripePayment',
                         'class' => 'StripePaymentIdeal',
@@ -223,7 +223,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                     array(
                         'active' => 0,
                         'name' => 'stripe_payment_bancontact',
-                        'description' => 'Stripe Bancontact',
+                        'description' => 'Bancontact (via Stripe)',
                         'template' => '',
                         'action' => 'StripePayment',
                         'class' => 'StripePaymentBancontact',
@@ -235,7 +235,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                     array(
                         'active' => 0,
                         'name' => 'stripe_payment_giropay',
-                        'description' => 'Stripe Giropay',
+                        'description' => 'Giropay (via Stripe)',
                         'template' => '',
                         'action' => 'StripePayment',
                         'class' => 'StripePaymentGiropay',
@@ -247,7 +247,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                     array(
                         'active' => 0,
                         'name' => 'stripe_payment_sepa',
-                        'description' => 'Stripe SEPA-Lastschrift',
+                        'description' => 'SEPA-Lastschrift (via Stripe)',
                         'template' => 'stripe_payment_sepa.tpl',
                         'action' => 'StripePayment',
                         'class' => 'StripePaymentSepa',
@@ -259,7 +259,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                     array(
                         'active' => 0,
                         'name' => 'stripe_payment_apple_pay',
-                        'description' => 'Stripe Apple Pay',
+                        'description' => 'Apple Pay (via Stripe)',
                         'template' => '',
                         'action' => 'StripePayment',
                         'class' => 'StripePaymentApplePay',
