@@ -42,9 +42,9 @@ class Giropay extends Base
     /**
      * @inheritdoc
      */
-    public function chargeStatementDescriptor()
+    public function includeStatmentDescriptorInCharge()
     {
         // Giropay payments require the statement descriptor to be part of their source
-        return null;
+        return false;
     }
 }

@@ -20,12 +20,11 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
     abstract public function createStripeSource($amountInCents, $currencyCode);
 
     /**
-     * Returns the statement descriptor that shall be used for the charge or order with
-     * $orderNumber. Return null to omit the statement descriptor.
+     * Should return true, if the payment method supports charges of their sources to contain a statement descriptor.
      *
-     * @return string|null
+     * @return boolean
      */
-    abstract public function chargeStatementDescriptor();
+    abstract public function includeStatmentDescriptorInCharge();
 
     /**
      * @inheritdoc
@@ -61,19 +60,6 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
     }
 
     /**
-     * Validates the given payment data. If the data is invalid, an array containing error messages or codes
-     * must be returned. By default this method returns an empty array, which indicates that the $paymentData
-     * is valid.
-     *
-     * @param array $paymentData
-     * @return array
-     */
-    protected function doValidate(array $paymentData)
-    {
-        return array();
-    }
-
-    /**
      * The format of the statement descriptor depends on the plugin config. If a custom statement descriptor
      * is set, it is used. Otherwise it is constructed from either the shop name or shop URL. Please note that
      * in any case, at most 35 characters of the statement descriptor are kept to meet the constraints of all
@@ -81,7 +67,7 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
      *
      * @return string
      */
-    protected function getStatementDescriptor()
+    public function getStatementDescriptor()
     {
         // Determine the suffix of the long descriptor
         $descriptor = $this->get('plugins')->get('Frontend')->get('StripePayment')->Config()->get('statementDescriptorSuffix');
@@ -104,6 +90,19 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
         $descriptor = mb_substr($descriptor, 0, 35);
 
         return $descriptor;
+    }
+
+    /**
+     * Validates the given payment data. If the data is invalid, an array containing error messages or codes
+     * must be returned. By default this method returns an empty array, which indicates that the $paymentData
+     * is valid.
+     *
+     * @param array $paymentData
+     * @return array
+     */
+    protected function doValidate(array $paymentData)
+    {
+        return array();
     }
 
     /**

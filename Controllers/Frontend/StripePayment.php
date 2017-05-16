@@ -215,9 +215,9 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
             )
         );
         // Add a statement descriptor, if necessary
-        $statementDescriptor = $this->getStripePaymentMethod()->chargeStatementDescriptor();
-        if ($statementDescriptor) {
-            $chargeData['statement_descriptor'] = substr($statementDescriptor, 0, 22);
+        $paymentMethod = $this->getStripePaymentMethod();
+        if ($paymentMethod->includeStatmentDescriptorInCharge()) {
+            $chargeData['statement_descriptor'] = substr($paymentMethod->getStatementDescriptor(), 0, 22);
         }
         // Try to add a customer reference to the charge
         $stripeCustomer = Util::getStripeCustomer();

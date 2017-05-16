@@ -86,10 +86,10 @@ class Card extends Base
     /**
      * @inheritdoc
      */
-    public function chargeStatementDescriptor()
+    public function includeStatmentDescriptorInCharge()
     {
         // Card sources can be reused several times and hence should contain a statement descriptor in charge
-        return $this->getStatementDescriptor();
+        return true;
     }
 
     /**

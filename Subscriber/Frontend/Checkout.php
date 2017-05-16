@@ -83,7 +83,7 @@ class Checkout implements SubscriberInterface
                 // Add the payment method's statement descriptor to the view
                 $modules = Shopware()->Container()->get('modules');
                 $paymentMethod = $modules->Admin()->sInitiatePaymentClass($session->sOrderVariables->sPayment);
-                $stripeViewParams['applePayStatementDescriptor'] = $paymentMethod->chargeStatementDescriptor();
+                $stripeViewParams['applePayStatementDescriptor'] = $paymentMethod->getStatementDescriptor();
             }
 
             // Add name of SEPA creditor (company or shop name as fallback)

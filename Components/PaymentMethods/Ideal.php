@@ -42,10 +42,10 @@ class Ideal extends Base
     /**
      * @inheritdoc
      */
-    public function chargeStatementDescriptor()
+    public function includeStatmentDescriptorInCharge()
     {
         // iDEAL payments require the statement descriptor to be part of their source
-        return null;
+        return false;
     }
 
     /**

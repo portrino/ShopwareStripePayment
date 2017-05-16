@@ -42,9 +42,9 @@ class Bancontact extends Base
     /**
      * @inheritdoc
      */
-    public function chargeStatementDescriptor()
+    public function includeStatmentDescriptorInCharge()
     {
         // Bancontact payments require the statement descriptor to be part of their source
-        return null;
+        return false;
     }
 }

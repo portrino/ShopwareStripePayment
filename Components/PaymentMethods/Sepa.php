@@ -40,10 +40,10 @@ class Sepa extends Base
     /**
      * @inheritdoc
      */
-    public function chargeStatementDescriptor()
+    public function includeStatmentDescriptorInCharge()
     {
         // SEPA sources can be reused several times and hence should contain a statement descriptor in the charge
-        return $this->getStatementDescriptor();
+        return true;
     }
 
     /**

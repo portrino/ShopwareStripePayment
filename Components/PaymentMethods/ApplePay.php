@@ -37,9 +37,9 @@ class ApplePay extends Base
     /**
      * @inheritdoc
      */
-    public function chargeStatementDescriptor()
+    public function includeStatmentDescriptorInCharge()
     {
         // Apple Pay sources should contain a statement descriptor in the charge
-        return $this->getStatementDescriptor();
+        return true;
     }
 }
