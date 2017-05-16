@@ -1,3 +1,14 @@
+## 2.1.3
+
+### en
+
+* Changes the creation of statement descriptors to prevent skipping order numbers
+
+### de
+
+* Passt die Erstellung von Verwendungszwecken an, sodass keine Bestellnummern mehr übersprungen werden
+
+
 ## 2.1.2
 
 ### en
