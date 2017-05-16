@@ -3,10 +3,12 @@
 ### en
 
 * Changes the creation of statement descriptors to prevent skipping order numbers
+* Fixes an error that occurred when removing a credit card from a customer account
 
 ### de
 
 * Passt die Erstellung von Verwendungszwecken an, sodass keine Bestellnummern mehr übersprungen werden
+* Behebt einen Fehler beim Entfernen einer Kreditkarte aus dem Kundenkonto
 
 
 ## 2.1.2
