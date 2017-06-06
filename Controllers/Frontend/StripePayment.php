@@ -1,11 +1,4 @@
 <?php
-// Define the CSRFWhitelistAware interface for Shopware versions < 5.2
-if (!interface_exists('\Shopware\Components\CSRFWhitelistAware')) {
-    interface CSRFWhitelistAware
-    {
-    }
-}
-
 use Shopware\Components\CSRFWhitelistAware;
 use Shopware\Models\Order\Order;
 use Shopware\Plugins\StripePayment\Util;

@@ -398,6 +398,9 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
             'Shopware\Plugins\StripePayment',
             $this->Path()
         );
+
+        // Load the Shopware polyfill
+        require_once __DIR__ . '/Polyfill/Loader.php';
     }
 
     /**
