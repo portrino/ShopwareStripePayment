@@ -1,3 +1,14 @@
+## 2.1.4
+
+### en
+
+* Fixes an error that occurred during checkout in Shopware versions < 5.2.0
+
+### de
+
+* Behebt einen Fehler im Checkout unter Shopware Versionen < 5.2.0
+
+
 ## 2.1.3
 
 ### en
