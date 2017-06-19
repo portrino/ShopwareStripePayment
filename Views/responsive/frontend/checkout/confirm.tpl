@@ -17,7 +17,7 @@
 {block name="frontend_index_header_javascript_jquery" append}
     {if ($sUserData.additional.payment.class == "StripePaymentCard" && $stripePayment.selectedCard) || ($sUserData.additional.payment.class == "StripePaymentSepa" && $stripePayment.sepaSource)}
         <script type="text/javascript">
-            $(document).ready(function() {
+            document.stripeJQueryReady(function() {
                 // Add special class to body to trigger custom CSS rules in Shopware versions >= 5.0 and < 5.2.
                 // Starting from Shopware 5.2, the enclosing container uses content based autoresizing, which
                 // would break, if we enabled the custom CSS rule.
@@ -49,8 +49,10 @@
              *}
             {* {include file="frontend/stripe_payment/_resources/javascript/stripe_payment_apple_pay.js"} *}
 
-            {* Include the shared initialization of the StripePaymentApplePay library *}
-            {include file='frontend/stripe_payment/checkout/stripe_payment_apple_pay/header.js'}
+            document.stripeJQueryReady(function() {
+                // Include the shared initialization of the StripePaymentApplePay library
+                {include file='frontend/stripe_payment/checkout/stripe_payment_apple_pay/header.js'}
+            });
         </script>
     {/if}
 {/block}
