@@ -1,3 +1,14 @@
+## 2.2.0
+
+### en
+
+* Adds compatiblity with Shopware 5.3
+
+### de
+
+* Fügt die Kompatiblität zu Shopware 5.3 hinzu
+
+
 ## 2.1.4
 
 ### en
