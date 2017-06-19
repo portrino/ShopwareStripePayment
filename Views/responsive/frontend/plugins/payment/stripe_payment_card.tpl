@@ -16,16 +16,18 @@
                 <div class="panel--tr saved-cards">
                     <label>
                         <span class="panel--td">{s namespace=frontend/plugins/payment/stripe_payment/card name=form/card_selection}{/s}</span>
-                        <select class="stripe-saved-cards panel--td">
-                            <option value="new" selected>
-                                {s namespace=frontend/plugins/payment/stripe_payment/card name=form/card_selection/new_card}{/s}
-                            </option>
-                            {foreach from=$stripePayment.availableCards item=card}
-                                <option value="{$card.id}"}>
-                                    {$card.name} | {$card.brand} | &bull;&bull;&bull;&bull;{$card.last4} | {$card.exp_month|string_format:"%02d"}/{$card.exp_year}
+                        <div class="select-field">
+                            <select class="stripe-saved-cards panel--td">
+                                <option value="new" selected>
+                                    {s namespace=frontend/plugins/payment/stripe_payment/card name=form/card_selection/new_card}{/s}
                                 </option>
-                            {/foreach}
-                        </select>
+                                {foreach from=$stripePayment.availableCards item=card}
+                                    <option value="{$card.id}"}>
+                                        {$card.name} | {$card.brand} | &bull;&bull;&bull;&bull;{$card.last4} | {$card.exp_month|string_format:"%02d"}/{$card.exp_year}
+                                    </option>
+                                {/foreach}
+                            </select>
+                        </div>
                     </label>
                 </div>
             {/if}
