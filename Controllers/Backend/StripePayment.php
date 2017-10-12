@@ -1,6 +1,5 @@
 <?php
 use Shopware\Plugins\StripePayment\Util;
-use Stripe;
 
 /**
  * The general backend controller, which handles refundings.
