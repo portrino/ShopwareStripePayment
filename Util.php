@@ -1,6 +1,7 @@
 <?php
 namespace Shopware\Plugins\StripePayment;
 
+use Shopware\Models\Customer\Customer;
 use Stripe;
 use Shopware\Models\Attribute\Customer as CustomerAttribute;
 
@@ -20,7 +21,7 @@ class Util
      * This field is used as a cache for the Stripe customer object of the
      * currently logged in user.
      *
-     * @var Stripe_Customer
+     * @var Stripe\Customer
      */
     private static $stripeCustomer;
 
@@ -47,27 +48,27 @@ class Util
     }
 
     /**
-     * @return The Stripe public key set in the plugin configuration for the currently active shop.
+     * @return string The Stripe public key set in the plugin configuration for the currently active shop.
      */
     public static function stripePublicKey()
     {
-        return Shopware()->Plugins()->Frontend()->StripePayment()->Config()->get('stripePublicKey');
+        return (string)Shopware()->Plugins()->Frontend()->StripePayment()->Config()->get('stripePublicKey');
     }
 
     /**
-     * @return The Stripe secret key set in the plugin configuration for the currently active shop.
+     * @return string The Stripe secret key set in the plugin configuration for the currently active shop.
      */
     public static function stripeSecretKey()
     {
-        return Shopware()->Plugins()->Frontend()->StripePayment()->Config()->get('stripeSecretKey');
+        return (string)Shopware()->Plugins()->Frontend()->StripePayment()->Config()->get('stripeSecretKey');
     }
 
     /**
      * Uses the Stripe customer id of the active user to retrieve the customer from Stripe
      * and returns the customer's credit cards.
      *
-     * @return An array containing information about all loaded credit cards.
-     * @throws An exception, if loading the Stripe customer fails.
+     * @return array array containing information about all loaded credit cards.
+     * @throws \Exception if loading the Stripe customer fails.
      */
     public static function getAllStripeCards()
     {
@@ -104,8 +105,8 @@ class Util
      * Uses the Stripe customer id of the active user to retrieve the customer from Stripe
      * and returns the customer's default credit card.
      *
-     * @return The default credit card or null, if no cards exist.
-     * @throws An exception, if loading the Stripe customer fails.
+     * @return array|null The default credit card or null, if no cards exist.
+     * @throws \Exception exception, if loading the Stripe customer fails.
      */
     public static function getDefaultStripeCard()
     {
@@ -117,6 +118,7 @@ class Util
 
         // Get all cards and try to find the one matching the default id
         $cards = self::getAllStripeCards();
+        /** @var array $card */
         foreach ($cards as $card) {
             if ($card['id'] === $customer->default_source) {
                 // Return the default card
@@ -132,8 +134,8 @@ class Util
      * First tries to find currently logged in user in the database and checks their stripe customer id.
      * If found, the customer information is loaded from Stripe and returned.
      *
-     * @return The customer, which was loaded from Stripe or null, if e.g. the customer does not exist.
-     * @throws An exception, if Stripe could not load the customer.
+     * @return Stripe\Customer|null customer, which was loaded from Stripe or null, if e.g. the customer does not exist.
+     * @throws \Exception An exception, if Stripe could not load the customer.
      */
     public static function getStripeCustomer()
     {
@@ -171,7 +173,7 @@ class Util
      * Creates a new Stripe customer for the currently logged in user/customer and saves
      * the respective ID in the customer attributes.
      *
-     * @return Stripe\Customer
+     * @return Stripe\Customer|null
      */
     public static function createStripeCustomer()
     {
@@ -214,7 +216,7 @@ class Util
     /**
      * Checks if a user/customer is currently logged in and tries to get and return that customer.
      *
-     * @return The customer object of the user who is logged in, or null, if no user is logged in.
+     * @return null|Customer The customer object of the user who is logged in or null, if no user is logged in.
      */
     public static function getCustomer()
     {
@@ -229,13 +231,14 @@ class Util
             return null;
         }
         $customerRepository = Shopware()->Models()->getRepository('\Shopware\Models\Customer\Customer');
+        /** @var Customer $customer */
         $customer = $customerRepository->find($customerId);
 
         return $customer;
     }
 
     /**
-     * @return The customers company name, if it exists. Otherwise their joined first and last name or null, if no user is logged in.
+     * @return null|string The customers company name, if it exists. Otherwise their joined first and last name or null, if no user is logged in.
      */
     public static function getCustomerName()
     {
