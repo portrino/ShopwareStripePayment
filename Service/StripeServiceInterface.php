@@ -24,25 +24,26 @@
 
 namespace Shopware\Plugins\StripePayment\Service;
 
-use Shopware\Models\Customer\Customer;
+use Stripe\Collection;
+use Stripe\Customer;
+
 
 /**
  * Interface CustomerServiceInterface
  * @package Shopware\Plugins\StripePayment\Service
  */
-interface CustomerServiceInterface
+interface StripeServiceInterface
 {
     /**
-     * Returns the current loggedIn Customer or null if not logged in
+     * First tries to find currently logged in user in the database and checks their stripe customer id.
+     * If found, the customer information is loaded from Stripe and returned.
      *
      * @return Customer|null
      */
-    public function getCurrent();
+    public function getCurrentCustomer();
 
     /**
-     * Removes the stripeId from the customer (attributes)
-     *
-     * @param Customer $customer
+     * @return array
      */
-    public function removeStripeId($customer);
+    public function getAllCardsOfCurrentCustomer();
 }

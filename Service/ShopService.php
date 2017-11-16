@@ -24,25 +24,45 @@
 
 namespace Shopware\Plugins\StripePayment\Service;
 
-use Shopware\Models\Customer\Customer;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
+use Shopware\Models\Shop\DetachedShop;
+use Shopware\Models\Shop\Repository;
 
 /**
- * Interface CustomerServiceInterface
+ * Class ShopService
  * @package Shopware\Plugins\StripePayment\Service
  */
-interface CustomerServiceInterface
+class ShopService implements ShopServiceInterface
 {
     /**
-     * Returns the current loggedIn Customer or null if not logged in
-     *
-     * @return Customer|null
+     * @var EntityManager
      */
-    public function getCurrent();
+    protected $entityManager;
 
     /**
-     * Removes the stripeId from the customer (attributes)
-     *
-     * @param Customer $customer
+     * ShopService constructor.
+     * @param EntityManager $entityManager
      */
-    public function removeStripeId($customer);
+    public function __construct(EntityManager $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
+    /**
+     * @return Repository|EntityRepository
+     */
+    protected function getRepository()
+    {
+        return $this->entityManager->getRepository('Shopware\Models\Shop\Shop');
+    }
+
+    /**
+     * @return DetachedShop
+     */
+    public function getActiveDefault()
+    {
+        return $this->getRepository()->getActiveDefault();
+    }
+
 }

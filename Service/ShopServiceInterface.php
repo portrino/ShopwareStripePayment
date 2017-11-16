@@ -24,25 +24,19 @@
 
 namespace Shopware\Plugins\StripePayment\Service;
 
-use Shopware\Models\Customer\Customer;
+use Shopware\Models\Shop\DetachedShop;
+
 
 /**
- * Interface CustomerServiceInterface
+ * Interface ShopServiceInterface
  * @package Shopware\Plugins\StripePayment\Service
  */
-interface CustomerServiceInterface
+interface ShopServiceInterface
 {
     /**
-     * Returns the current loggedIn Customer or null if not logged in
+     * Returns the default shop with additional data
      *
-     * @return Customer|null
+     * @return DetachedShop|null
      */
-    public function getCurrent();
-
-    /**
-     * Removes the stripeId from the customer (attributes)
-     *
-     * @param Customer $customer
-     */
-    public function removeStripeId($customer);
+    public function getActiveDefault();
 }

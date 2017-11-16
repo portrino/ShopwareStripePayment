@@ -5,6 +5,12 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 
 use Shopware\Models\Config\Element;
 use Shopware\Plugins\StripePayment\Classes\SmartyPlugins;
+use Shopware\Plugins\StripePayment\Service\CustomerService;
+use Shopware\Plugins\StripePayment\Service\CustomerServiceInterface;
+use Shopware\Plugins\StripePayment\Service\ShopService;
+use Shopware\Plugins\StripePayment\Service\ShopServiceInterface;
+use Shopware\Plugins\StripePayment\Service\StripeService;
+use Shopware\Plugins\StripePayment\Service\StripeServiceInterface;
 use Shopware\Plugins\StripePayment\Subscriber;
 
 /**
@@ -361,6 +367,23 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                     'Enlight_Bootstrap_InitResource_stripe_payment.customer_service',
                     'onInitCustomerService'
                 );
+                $this->subscribeEvent(
+                    'Enlight_Bootstrap_InitResource_stripe_payment.shop_service',
+                    'onInitShopService'
+                );
+                $this->subscribeEvent(
+                    'Enlight_Bootstrap_InitResource_stripe_payment.stripe_service',
+                    'onInitStripeService'
+                );
+                $this->Form()->setElement(
+                    'text',
+                    'stripeAppName',
+                    array(
+                        'label' => 'Stripe Application Name',
+                        'description' => 'Tragen Sie hier ihren Namen der Stripe Application ein.',
+                        'value' => ''
+                    )
+                );
 
                 break;
             default:
@@ -436,12 +459,36 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
     }
 
     /**
-     * @return \Shopware\Plugins\StripePayment\Service\CustomerServiceInterface
+     * @return CustomerServiceInterface
      */
     public function onInitCustomerService()
     {
-        return new \Shopware\Plugins\StripePayment\Service\CustomerService(
+        return new CustomerService(
             $this->get('models')
+        );
+    }
+
+    /**
+     * @return ShopServiceInterface
+     */
+    public function onInitShopService()
+    {
+        return new ShopService(
+            $this->get('models')
+        );
+    }
+
+    /**
+     * @return StripeServiceInterface
+     */
+    public function onInitStripeService()
+    {
+        return new StripeService(
+            $this->get('stripe_payment.customer_service'),
+            $this->get('stripe_payment.shop_service'),
+            $this->get('config'),
+            $this->get('plugin_manager'),
+            '2016-07-06'
         );
     }
 

@@ -42,6 +42,13 @@ class CustomerService implements CustomerServiceInterface
     protected $entityManager;
 
     /**
+     * This field is used as a cache for the customer object of the currently logged in user.
+     *
+     * @var Customer
+     */
+    private $cachedCustomer;
+
+    /**
      * CustomerService constructor.
      * @param EntityManager $entityManager
      */
@@ -72,14 +79,27 @@ class CustomerService implements CustomerServiceInterface
      */
     public function getCurrent()
     {
+        if ($this->cachedCustomer) {
+            return $this->cachedCustomer;
+        }
+
         $result = null;
         $customerId = $this->getSession()->sUserId;
-
         if (!empty($customerId)) {
             /** @var Customer|null $result */
             $result = $this->getRepository()->find($customerId);
         }
         return $result;
+    }
+
+    /**
+     * Removes the stripeId from the customer (attributes)
+     *
+     * @param Customer $customer
+     */
+    public function removeStripeId($customer) {
+        $customer->getAttribute()->setStripeCustomerId(null);
+        $this->entityManager->flush($customer->getAttribute());
     }
 
 }
