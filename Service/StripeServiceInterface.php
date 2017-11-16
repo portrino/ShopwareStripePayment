@@ -24,9 +24,8 @@
 
 namespace Shopware\Plugins\StripePayment\Service;
 
-use Stripe\Collection;
-use Stripe\Customer;
-
+use Stripe\Customer as StripeCustomer;
+use Shopware\Models\Customer\Customer as ShopwareCustomer;
 
 /**
  * Interface CustomerServiceInterface
@@ -38,12 +37,25 @@ interface StripeServiceInterface
      * First tries to find currently logged in user in the database and checks their stripe customer id.
      * If found, the customer information is loaded from Stripe and returned.
      *
-     * @return Customer|null
+     * @return StripeCustomer|null
      */
     public function getCurrentCustomer();
 
     /**
+     * Creates a new Stripe customer for given shopware customer and saves
+     * the respective ID in the customer attributes.
+     *
+     * @param ShopwareCustomer $customer
+     * @return StripeCustomer
+     */
+    public function createCustomer($customer);
+
+    /**
+     * Returns the credit cards of the given stripe customer
+     *
+     * @param StripeCustomer $customer
      * @return array
      */
-    public function getAllCardsOfCurrentCustomer();
+    public function getAllCardsOfCustomer($customer);
+
 }

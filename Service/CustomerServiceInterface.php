@@ -45,4 +45,46 @@ interface CustomerServiceInterface
      * @param Customer $customer
      */
     public function removeStripeId($customer);
+
+    /**
+     * Ensure that customer has attribute object, if not create one and save it
+     *
+     * @param Customer $customer
+     */
+    public function ensureHasAttribute($customer);
+
+    /**
+     * @param Customer $customer
+     * @return bool
+     */
+    public function isEnabled($customer);
+
+    /**
+     * @param Customer $customer
+     * @return bool
+     */
+    public function isDisabled($customer);
+
+    /**
+     * @return string The customers company name, if it exists. Otherwise their joined first and last name
+     */
+    public function getName($customer);
+
+    /**
+     * @param Customer $customer
+     * @return bool
+     */
+    public function hasStripeId($customer);
+
+    /**
+     * @param Customer $customer
+     * @return bool
+     */
+    public function hasNotStripeId($customer);
+
+    /**
+     * @param Customer $customer
+     * @param string $stripeId
+     */
+    public function addStripeId($customer, $stripeId);
 }

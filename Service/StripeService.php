@@ -25,10 +25,10 @@
 namespace Shopware\Plugins\StripePayment\Service;
 
 use Enlight_Plugin_PluginManager;
+use Exception;
 use Shopware\Models\Customer\Customer as ShopwareCustomer;
 use Shopware_Components_Config;
 use Shopware_Plugins_Frontend_StripePayment_Bootstrap;
-use Stripe\Customer;
 use Stripe\Customer as StripeCustomer;
 use Stripe\Stripe;
 
@@ -68,7 +68,22 @@ class StripeService implements StripeServiceInterface
     /**
      * @var string
      */
+    protected $apiKey;
+
+    /**
+     * @var string
+     */
     protected $apiVersion;
+
+    /**
+     * @var string
+     */
+    protected $pluginVersion;
+
+    /**
+     * @var string
+     */
+    protected $appName;
 
     /**
      * StripeService constructor.
@@ -99,20 +114,20 @@ class StripeService implements StripeServiceInterface
      */
     protected function initializeApi()
     {
-        $apiKey = $this->config->getByNamespace('StripePayment', 'stripeSecretKey');
-        $appName = $this->config->getByNamespace('StripePayment', 'stripeAppName');
+        $this->apiKey = $this->config->getByNamespace('StripePayment', 'stripeSecretKey');
+        $this->appName = $this->config->getByNamespace('StripePayment', 'stripeAppName');
         /** @var Shopware_Plugins_Frontend_StripePayment_Bootstrap $bootstrap */
         $bootstrap = $this->pluginManager->get('Frontend')->get('StripePayment');
-        $appVersion = $bootstrap->getVersion();
+        $this->pluginVersion = $bootstrap->getVersion();
         $defaultShop = $this->shopService->getActiveDefault();
 
-        Stripe::setApiKey($apiKey);
+        Stripe::setApiKey($this->apiKey);
         Stripe::setApiVersion($this->apiVersion);
 
         // Set some plugin info that will be added to every Stripe request
         Stripe::setAppInfo(
-            $appName,
-            $appVersion,
+            $this->appName,
+            $this->apiVersion,
             ($defaultShop !== null) ? $defaultShop->getHost() : null
         );
     }
@@ -130,7 +145,10 @@ class StripeService implements StripeServiceInterface
         }
 
         $customer = $this->customerService->getCurrent();
-        if (!$this->isValidCustomer($customer)) {
+
+        if ($customer === null ||
+            $this->customerService->isDisabled($customer) ||
+            $this->customerService->hasNotStripeId($customer)) {
             return null;
         }
 
@@ -139,10 +157,10 @@ class StripeService implements StripeServiceInterface
         try {
             $stripeCustomer = Customer::retrieve($stripeCustomerId);
             if ($stripeCustomer && isset($stripeCustomer->deleted)) {
-                throw new \Exception('Customer deleted');
+                throw new Exception('Customer deleted');
             }
             $this->cachedStripeCustomer = $stripeCustomer;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             /**
              * Customer cannot be found
              * - remove him from cache
@@ -155,17 +173,17 @@ class StripeService implements StripeServiceInterface
     }
 
     /**
+     * @param StripeCustomer $customer
      * @return array
      */
-    public function getAllCardsOfCurrentCustomer()
+    public function getAllCardsOfCustomer($customer)
     {
-        $currentCustomer = $this->getCurrentCustomer();
-        if ($currentCustomer === null || isset($currentCustomer->deleted)) {
+        if (isset($customer->deleted)) {
             return [];
         }
 
         // Get information about all card sources
-        $cardSources = array_filter($currentCustomer->sources->data, function ($source) {
+        $cardSources = array_filter($customer->sources->data, function ($source) {
             return $source->type === 'card';
         });
         $cards = array_map(function ($source) {
@@ -188,19 +206,28 @@ class StripeService implements StripeServiceInterface
     }
 
     /**
-     * @param ShopwareCustomer|null $customer
-     * @return bool
+     * Creates a new Stripe customer for given shopware customer and saves
+     * the respective ID in the customer attributes.
+     *
+     * @param ShopwareCustomer $customer
+     * @return StripeCustomer
      */
-    protected function isValidCustomer($customer = null)
+    public function createCustomer($customer)
     {
-        $result = true;
-        if ($customer === null ||
-            $customer->getAccountMode() === 1 ||
-            $customer->getAttribute() === null ||
-            $customer->getAttribute()->getStripeCustomerId() === null) {
+        $this->customerService->ensureHasAttribute($customer);
 
-            $result = false;
-        }
-        return $result;
+        $stripeCustomer = StripeCustomer::create(
+            [
+                'description' => $this->customerService->getName($customer),
+                'email' => $customer->getEmail(),
+                'metadata' => [
+                    'platform_name' => $this->appName
+                ]
+            ]
+        );
+        $this->customerService->addStripeId($customer, $stripeCustomer->id);
+
+        return $stripeCustomer;
     }
+
 }

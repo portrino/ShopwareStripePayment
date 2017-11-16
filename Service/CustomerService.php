@@ -29,6 +29,7 @@ use Doctrine\ORM\EntityRepository;
 use Enlight_Components_Session_Namespace;
 use Shopware\Models\Customer\Customer;
 use Shopware\Models\Customer\Repository;
+use Shopware\Models\Attribute\Customer as CustomerAttribute;
 
 /**
  * Class CustomerService
@@ -99,6 +100,94 @@ class CustomerService implements CustomerServiceInterface
      */
     public function removeStripeId($customer) {
         $customer->getAttribute()->setStripeCustomerId(null);
+        $this->entityManager->flush($customer->getAttribute());
+    }
+
+    /**
+     * @param Customer $customer
+     * @return bool
+     */
+    public function isEnabled($customer)
+    {
+        return $customer->getAccountMode() === 1;
+    }
+
+    /**
+     * @param Customer $customer
+     * @return bool
+     */
+    public function isDisabled($customer)
+    {
+        return $customer->getAccountMode() === 0;
+    }
+
+
+    /**
+     * Ensure that customer has attribute object, if not create one and save it
+     *
+     * @param Customer $customer
+     */
+    public function ensureHasAttribute($customer)
+    {
+        // Make sure the customer has attributes
+        if ($customer->getAttribute() === null) {
+            $customerAttribute = new CustomerAttribute();
+            $customerAttribute->setCustomer($customer);
+            $customer->setAttribute($customerAttribute);
+            $this->entityManager->persist($customerAttribute);
+            $this->entityManager->flush($customerAttribute);
+            $this->entityManager->flush($customer);
+        }
+    }
+
+    /**
+     * @param Customer $customer
+     * @return string
+     */
+    public function getName($customer)
+    {
+        $defaultBillingAddress = $customer->getDefaultBillingAddress();
+
+        // Check for company
+        $company = $defaultBillingAddress->getCompany();
+        if (!empty($company)) {
+            return $company;
+        }
+
+        // Use first and last name
+        return trim($defaultBillingAddress->getFirstName() . ' ' . $defaultBillingAddress->getLastName());
+    }
+
+    /**
+     * @param Customer $customer
+     * @return bool
+     */
+    public function hasStripeId($customer)
+    {
+        $result = true;
+        if ($customer->getAttribute() === null ||
+            $customer->getAttribute()->getStripeCustomerId() === null) {
+            $result = false;
+        }
+        return $result;
+    }
+
+    /**
+     * @param Customer $customer
+     * @return bool
+     */
+    public function hasNotStripeId($customer)
+    {
+        return !$this->hasStripeId($customer);
+    }
+
+    /**
+     * @param Customer $customer
+     * @param string $stripeId
+     */
+    public function addStripeId($customer, $stripeId)
+    {
+        $customer->getAttribute()->setStripeCustomerId($stripeId);
         $this->entityManager->flush($customer->getAttribute());
     }
 
