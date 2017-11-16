@@ -356,6 +356,11 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                 // Nothing to do
             case '2.2.1':
                 // Next release
+            case '2.3.0':
+                $this->subscribeEvent(
+                    'Enlight_Bootstrap_InitResource_stripe_payment.customer_service',
+                    'onInitCustomerService'
+                );
 
                 break;
             default:
@@ -428,6 +433,16 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
         // Register the custom smarty plugins
         $smartyPlugins = new SmartyPlugins(Shopware()->Container());
         $smartyPlugins->register();
+    }
+
+    /**
+     * @return \Shopware\Plugins\StripePayment\Service\CustomerServiceInterface
+     */
+    public function onInitCustomerService()
+    {
+        return new \Shopware\Plugins\StripePayment\Service\CustomerService(
+            $this->get('models')
+        );
     }
 
     /**
