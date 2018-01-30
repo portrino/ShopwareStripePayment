@@ -40,7 +40,7 @@ class Theme implements SubscriberInterface
         return array(
             'Enlight_Controller_Action_PostDispatchSecure' => 'onPostDispatchSecure',
             'Theme_Compiler_Collect_Plugin_Javascript' => 'onCollectPluginJavascriptFiles',
-            'Theme_Compiler_Collect_Plugin_Less' => 'onCollectPluginLESSFiles'
+            'Theme_Compiler_Collect_Plugin_Less' => 'onCollectPluginLESSFiles',
         );
     }
 
@@ -78,26 +78,24 @@ class Theme implements SubscriberInterface
      * Adds Stripe's jQuery payment plugin as well as the custom Stripe payment library
      * to the Javascript resources which are minified.
      *
-     * @param \Enlight_Event_EventArgs $args
      * @return ArrayCollection
      */
-    public function onCollectPluginJavascriptFiles(\Enlight_Event_EventArgs $args)
+    public function onCollectPluginJavascriptFiles()
     {
         return new ArrayCollection(array(
             $this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/jquery.payment.min.js',
             $this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/stripe_payment_apple_pay.js',
             $this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/stripe_payment_card.js',
-            $this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/stripe_payment_sepa.js'
+            $this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/stripe_payment_sepa.js',
         ));
     }
 
     /**
      * Adds this plugin's LESS files to the compile path.
      *
-     * @param \Enlight_Event_EventArgs $args
      * @return ArrayCollection
      */
-    public function onCollectPluginLESSFiles(\Enlight_Event_EventArgs $args)
+    public function onCollectPluginLESSFiles()
     {
         return new ArrayCollection(array(
             new LessDefinition(
@@ -105,7 +103,7 @@ class Theme implements SubscriberInterface
                 array(
                     $this->path . 'Views/responsive/frontend/_public/src/less/checkout.less',
                     $this->path . 'Views/responsive/frontend/_public/src/less/account.less',
-                    $this->path . 'Views/responsive/frontend/_public/src/less/sidebar.less'
+                    $this->path . 'Views/responsive/frontend/_public/src/less/sidebar.less',
                 ),
                 $this->path . 'Views/responsive/'
             )

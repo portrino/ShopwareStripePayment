@@ -18,22 +18,22 @@ class Ideal extends Base
         // Create a new iDEAL source
         $returnUrl = $this->assembleShopwareUrl(array(
             'controller' => 'StripePayment',
-            'action' => 'completeRedirectFlow'
+            'action' => 'completeRedirectFlow',
         ));
         $source = Stripe\Source::create(array(
             'type' => 'ideal',
             'amount' => $amountInCents,
             'currency' => $currencyCode,
             'owner' => array(
-                'name' => Util::getCustomerName()
+                'name' => Util::getCustomerName(),
             ),
             'ideal' => array(
-                'statement_descriptor' => $this->getStatementDescriptor()
+                'statement_descriptor' => $this->getStatementDescriptor(),
             ),
             'redirect' => array(
-                'return_url' => $returnUrl
+                'return_url' => $returnUrl,
             ),
-            'metadata' => $this->getSourceMetadata()
+            'metadata' => $this->getSourceMetadata(),
         ));
 
         return $source;

@@ -23,6 +23,7 @@ class Shopware_Controllers_Backend_StripePayment extends Shopware_Controllers_Ba
             $this->View()->success = false;
             $this->View()->message = 'Required parameter "orderId" not found';
             $this->Response()->setHttpResponseCode(400);
+
             return;
         }
         $amount = floatval($this->Request()->getParam('amount'));
@@ -31,6 +32,7 @@ class Shopware_Controllers_Backend_StripePayment extends Shopware_Controllers_Ba
             $this->View()->success = false;
             $this->View()->message = 'Required parameter "amount" must be greater zero';
             $this->Response()->setHttpResponseCode(400);
+
             return;
         }
         $positions = $this->Request()->getParam('positions', array());
@@ -39,6 +41,7 @@ class Shopware_Controllers_Backend_StripePayment extends Shopware_Controllers_Ba
             $this->View()->success = false;
             $this->View()->message = 'Required parameter "positions" not found or empty';
             $this->Response()->setHttpResponseCode(400);
+
             return;
         }
         $comment = $this->Request()->getParam('comment');
@@ -50,6 +53,7 @@ class Shopware_Controllers_Backend_StripePayment extends Shopware_Controllers_Ba
             $this->View()->success = false;
             $this->View()->message = 'Order with id ' . $orderId . ' not found';
             $this->Response()->setHttpResponseCode(404);
+
             return;
         }
         if ($order->getTransactionId() === null) {
@@ -57,6 +61,7 @@ class Shopware_Controllers_Backend_StripePayment extends Shopware_Controllers_Ba
             $this->View()->success = false;
             $this->View()->message = 'Order with id ' . $orderId . ' has no Stripe charge';
             $this->Response()->setHttpResponseCode(404);
+
             return;
         }
 
@@ -65,7 +70,7 @@ class Shopware_Controllers_Backend_StripePayment extends Shopware_Controllers_Ba
             Util::initStripeAPI();
             $charge = Stripe\Charge::retrieve($order->getTransactionId());
             $charge->refund(array(
-                'amount' => intval($amount * 100)
+                'amount' => intval($amount * 100),
             ));
             $refund = $charge->refunds[count($charge->refunds) - 1];
         } catch (Exception $e) {
@@ -80,6 +85,7 @@ class Shopware_Controllers_Backend_StripePayment extends Shopware_Controllers_Ba
             $this->View()->success = false;
             $this->View()->message = $message;
             $this->Response()->setHttpResponseCode(500);
+
             return;
         }
 

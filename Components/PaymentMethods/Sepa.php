@@ -12,7 +12,7 @@ class Sepa extends Base
     /**
      * @inheritdoc
      */
-    public function createStripeSource($amountInCents, $currencyCode)
+    public function createStripeSource()
     {
         Util::initStripeAPI();
 

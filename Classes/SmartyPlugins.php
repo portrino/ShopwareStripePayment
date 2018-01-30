@@ -103,6 +103,7 @@ class SmartyPlugins
 
             // Replace the whole match with the snippet value
             $matchingBlock = $matches[0];
+            // phpcs:ignore Generic.PHP.ForbiddenFunctions
             $source = substr_replace($source, $snippet, $matchingBlock[1], strlen($matchingBlock[0]));
         }
 

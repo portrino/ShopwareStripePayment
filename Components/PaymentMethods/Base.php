@@ -29,7 +29,7 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
     /**
      * @inheritdoc
      */
-    public function getCurrentPaymentDataAsArray($userId)
+    public function getCurrentPaymentDataAsArray()
     {
         return (array)Util::getStripeSession();
     }
@@ -94,13 +94,12 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
 
     /**
      * Validates the given payment data. If the data is invalid, an array containing error messages or codes
-     * must be returned. By default this method returns an empty array, which indicates that the $paymentData
+     * must be returned. By default this method returns an empty array, which indicates that the payment
      * is valid.
      *
-     * @param array $paymentData
      * @return array
      */
-    protected function doValidate(array $paymentData)
+    protected function doValidate()
     {
         return array();
     }
@@ -116,7 +115,7 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
         $front = $this->get('front');
         $url = $front->Router()->assemble($components);
         if (!preg_match('#^https?://#', $url)) {
-            if (strpos($url, '/') !== 0) {
+            if (mb_strpos($url, '/') !== 0) {
                 $url = $front->Request()->getBaseUrl() . '/' . $url;
             }
             $uri = $front->Request()->getScheme() . '://' . $front->Request()->getHttpHost();
@@ -136,7 +135,7 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
     {
         return array(
             'platform_name' => Util::STRIPE_PLATFORM_NAME,
-            'shopware_session_id' => $this->get('SessionID')
+            'shopware_session_id' => $this->get('SessionID'),
         );
     }
 
@@ -149,6 +148,9 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
         return Shopware()->Container()->get($key);
     }
 }
+
+// We need to declare multiple classe here, hence disable the respective PHP CS sniff
+// phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
 
 /**
  * Returns true, if the signature of GenericPaymentMethod#validate appears consistent with Shopware before version

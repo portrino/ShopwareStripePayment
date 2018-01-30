@@ -53,6 +53,7 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
             $this->get('pluginlogger')->error('StripePayment: Failed to create source', array('exception' => $e, 'trace' => $e->getTrace()));
             $message = $this->getStripePaymentMethod()->getErrorMessage($e);
             $this->cancelCheckout($message);
+
             return;
         }
 
@@ -61,6 +62,7 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
             if ($source->redirect->status === 'failed') {
                 $message = $this->getStripePaymentMethod()->getSnippet('payment_error/message/redirect/failed');
                 $this->cancelCheckout($message);
+
                 return;
             }
 
@@ -79,6 +81,7 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
                 $this->get('pluginlogger')->error('StripePayment: Failed to create charge', array('exception' => $e, 'trace' => $e->getTrace(), 'sourceId' => $source->id));
                 $message = $this->getStripePaymentMethod()->getErrorMessage($e);
                 $this->cancelCheckout($message);
+
                 return;
             }
 
@@ -105,6 +108,7 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
         if (!$clientSecret || $clientSecret !== Util::getStripeSession()->redirectClientSecret) {
             $message = $this->getStripePaymentMethod()->getSnippet('payment_error/message/redirect/internal_error');
             $this->cancelCheckout($message);
+
             return;
         }
 
@@ -114,10 +118,12 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
         if (!$source) {
             $message = $this->getStripePaymentMethod()->getSnippet('payment_error/message/redirect/internal_error');
             $this->cancelCheckout($message);
+
             return;
         } elseif ($source->status !== 'chargeable') {
             $message = $this->getStripePaymentMethod()->getSnippet('payment_error/message/redirect/source_not_chargeable');
             $this->cancelCheckout($message);
+
             return;
         }
 
@@ -128,6 +134,7 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
         } catch (Exception $e) {
             $message = $this->getStripePaymentMethod()->getErrorMessage($e);
             $this->cancelCheckout($message);
+
             return;
         }
 
@@ -171,6 +178,7 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
             // Log the error and respond with 'ERROR' to make debugging easier
             $this->get('pluginlogger')->error('StripePayment: Failed to process Stripe webhook', array('exception' => $e, 'trace' => $e->getTrace(), 'eventId' => $event->id));
             echo 'ERROR';
+
             return;
         }
 
@@ -204,13 +212,13 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
             'currency' => $this->getCurrencyShortName(),
             'description' => sprintf('%s / Customer %s', $userEmail, $customerNumber),
             'metadata' => array(
-                'platform_name' => Util::STRIPE_PLATFORM_NAME
-            )
+                'platform_name' => Util::STRIPE_PLATFORM_NAME,
+            ),
         );
         // Add a statement descriptor, if necessary
         $paymentMethod = $this->getStripePaymentMethod();
         if ($paymentMethod->includeStatmentDescriptorInCharge()) {
-            $chargeData['statement_descriptor'] = substr($paymentMethod->getStatementDescriptor(), 0, 22);
+            $chargeData['statement_descriptor'] = mb_substr($paymentMethod->getStatementDescriptor(), 0, 22);
         }
         // Try to add a customer reference to the charge
         $stripeCustomer = Util::getStripeCustomer();
@@ -253,7 +261,7 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
 
         // Update the cleared date
         $order = $this->get('models')->getRepository('Shopware\Models\Order\Order')->findOneBy(array(
-            'number' => $orderNumber
+            'number' => $orderNumber,
         ));
         $order->setClearedDate(new \DateTime());
         $this->get('models')->flush($order);
@@ -262,7 +270,7 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
             // Save the order number in the charge description
             $charge->description .= ' / Order ' . $orderNumber;
             $charge->save();
-        } catch (Exception $e) {
+        } catch (Exception $e) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCATCH
             // Ignore exceptions in this case, because the order has already been created
             // and adding the order number is not essential for identifying the payment
         }
@@ -290,7 +298,7 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
         $this->redirect(array(
             'controller' => 'checkout',
             'action' => 'finish',
-            'sUniqueID' => $order->getTemporaryId()
+            'sUniqueID' => $order->getTemporaryId(),
         ));
     }
 
@@ -309,7 +317,7 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
         }
         $this->redirect(array(
             'controller' => 'checkout',
-            'action' => ($this->get('shop')->getTemplate()->getVersion() < 3) ? 'confirm' : 'index'
+            'action' => ($this->get('shop')->getTemplate()->getVersion() < 3) ? 'confirm' : 'index',
         ));
     }
 
@@ -417,7 +425,7 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
 
         // Find the order that references the source ID
         $order = $this->get('models')->getRepository('Shopware\Models\Order\Order')->findOneBy(array(
-            'temporaryId' => $source->id
+            'temporaryId' => $source->id,
         ));
 
         return $order;

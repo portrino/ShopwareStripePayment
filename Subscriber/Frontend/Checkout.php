@@ -29,7 +29,7 @@ class Checkout implements SubscriberInterface
             // Shopware 4 templates only
             'Shopware_Controllers_Frontend_Checkout::paymentAction::after' => 'onAfterPaymentAction',
             // Shopware 5 themes only
-            'Shopware_Controllers_Frontend_Checkout::saveShippingPaymentAction::after' => 'onAfterPaymentAction'
+            'Shopware_Controllers_Frontend_Checkout::saveShippingPaymentAction::after' => 'onAfterPaymentAction',
         );
     }
 
@@ -107,7 +107,7 @@ class Checkout implements SubscriberInterface
             // Add the shop's currency and locale
             $shop = Shopware()->Container()->get('shop');
             $stripeViewParams['currency'] = $shop->getCurrency()->getCurrency();
-            $stripeViewParams['currency'] = strtolower($stripeViewParams['currency']);
+            $stripeViewParams['currency'] = mb_strtolower($stripeViewParams['currency']);
             $locale = $shop->getLocale()->getLocale();
             $locale = explode('_', $locale);
             $stripeViewParams['locale'] = $locale[0];

@@ -76,7 +76,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                             'template' => 'stripe_payment.tpl',
                             'action' => 'stripe_payment',
                             'class' => 'StripePaymentMethod',
-                            'additionalDescription' => ''
+                            'additionalDescription' => '',
                         )
                     );
                 }
@@ -88,7 +88,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                     array(
                         'label' => 'Stripe Secret Key',
                         'description' => 'Tragen Sie hier Ihren geheimen Schlüssel ("Secret Key") ein. Diesen finden Sie im Stripe Dashboard unter "Account Settings" > "API Keys" im Feld "Live Secret Key".',
-                        'value' => ''
+                        'value' => '',
                     )
                 );
                 // Add a config element for the stripe public key
@@ -98,7 +98,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                     array(
                         'label' => 'Stripe Publishable Key',
                         'description' => 'Tragen Sie hier Ihren öffentlichen Schlüssel ("Publishable Key") ein. Diesen finden Sie im Stripe Dashboard unter "Account Settings" > "API Keys" im Feld "Live Publishable Key".',
-                        'value' => ''
+                        'value' => '',
                     )
                 );
 
@@ -141,7 +141,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                         'label' => '"Kreditkarte speichern" anzeigen',
                         'description' => 'Aktivieren Sie diese Feld, um beim Bezahlvorgang das Speichern der Kreditkarte zu erlauben',
                         'value' => true,
-                        'scope' => Element::SCOPE_SHOP
+                        'scope' => Element::SCOPE_SHOP,
                     )
                 );
             case '1.1.0':
@@ -168,7 +168,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                 );
                 // Rename the original payment method to 'stripe_payment_card'
                 $stripePaymentMethod = $this->get('models')->getRepository('Shopware\Models\Payment\Payment')->findOneBy(array(
-                    'name' => 'stripe_payment'
+                    'name' => 'stripe_payment',
                 ));
                 if ($stripePaymentMethod) {
                     $stripePaymentMethod->setName('stripe_payment_card');
@@ -186,7 +186,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                         'template' => 'stripe_payment_card.tpl',
                         'action' => 'StripePayment',
                         'class' => 'StripePaymentCard',
-                        'additionalDescription' => ''
+                        'additionalDescription' => '',
                     )
                 );
                 // Add a payment method for SOFORT payments
@@ -198,7 +198,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                         'template' => '',
                         'action' => 'StripePayment',
                         'class' => 'StripePaymentSofort',
-                        'additionalDescription' => ''
+                        'additionalDescription' => '',
                     )
                 );
                 // Add a payment method for iDEAL payments
@@ -210,7 +210,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                         'template' => '',
                         'action' => 'StripePayment',
                         'class' => 'StripePaymentIdeal',
-                        'additionalDescription' => ''
+                        'additionalDescription' => '',
                     )
                 );
                 // Add a payment method for Bancontact payments
@@ -222,7 +222,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                         'template' => '',
                         'action' => 'StripePayment',
                         'class' => 'StripePaymentBancontact',
-                        'additionalDescription' => ''
+                        'additionalDescription' => '',
                     )
                 );
                 // Add a payment method for Giropay payments
@@ -234,7 +234,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                         'template' => '',
                         'action' => 'StripePayment',
                         'class' => 'StripePaymentGiropay',
-                        'additionalDescription' => ''
+                        'additionalDescription' => '',
                     )
                 );
                 // Add a payment method for SEPA payments
@@ -246,7 +246,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                         'template' => 'stripe_payment_sepa.tpl',
                         'action' => 'StripePayment',
                         'class' => 'StripePaymentSepa',
-                        'additionalDescription' => ''
+                        'additionalDescription' => '',
                     )
                 );
                 // Add a payment method for Apple Pay payments
@@ -258,7 +258,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                         'template' => '',
                         'action' => 'StripePayment',
                         'class' => 'StripePaymentApplePay',
-                        'additionalDescription' => ''
+                        'additionalDescription' => '',
                     )
                 );
             case '2.0.0':
@@ -281,7 +281,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                         FROM s_order
                         WHERE ordernumber = :orderNumber',
                         array(
-                            'orderNumber' => $orderNumber
+                            'orderNumber' => $orderNumber,
                         )
                     );
                     array_shift($orderIds);
@@ -296,7 +296,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                             WHERE o.id = :orderId',
                             array(
                                 'orderId' => $orderId,
-                                'newOrderNumber' => $newOrderNumber
+                                'newOrderNumber' => $newOrderNumber,
                             )
                         );
                     }
@@ -317,7 +317,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                         'description' => 'Tragen Sie hier einen eigenen Verwendungszweck ein, der zusammen mit der Nummer der Bestellung an die Zahlungsdienstleister übermittelt wird. Bitte beachten Sie, dass nur Buchstaben, Zahlen sowie Punkt, Komma und Leerzeichen erlaubt sind.',
                         'value' => '',
                         'scope' => Element::SCOPE_SHOP,
-                        'maxLength' => 23
+                        'maxLength' => 23,
                     )
                 );
             case '2.0.6':
@@ -329,7 +329,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                         'label' => 'Logos der Zahlungsarten anzeigen',
                         'description' => 'Aktivieren Sie diese Feld, um in der Liste der verfügbaren Zahlungsarten die Logos der von diesem Plugin zur Verfügung gestellten Zahlungsarten anzuzeigen.',
                         'value' => true,
-                        'scope' => Element::SCOPE_SHOP
+                        'scope' => Element::SCOPE_SHOP,
                     )
                 );
             case '2.1.0':
@@ -363,8 +363,8 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
             'invalidateCache' => array(
                 'backend',
                 'frontend',
-                'config'
-            )
+                'config',
+            ),
         );
     }
 
@@ -402,10 +402,8 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
 
     /**
      * Adds all subscribers to the event manager.
-     *
-     * @param \Enlight_Event_EventArgs $args
      */
-    public function onStartDispatch(\Enlight_Event_EventArgs $args)
+    public function onStartDispatch()
     {
         $this->get('events')->addSubscriber(new Subscriber\Payment());
         $this->get('events')->addSubscriber(new Subscriber\Backend\Index($this));
@@ -423,10 +421,8 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
 
     /**
      * Adds the theme subscriber to the event manager.
-     *
-     * @param \Enlight_Event_EventArgs $args
      */
-    public function onAddConsoleCommand(\Enlight_Event_EventArgs $args)
+    public function onAddConsoleCommand()
     {
         $this->get('events')->addSubscriber(new Subscriber\Theme($this));
     }

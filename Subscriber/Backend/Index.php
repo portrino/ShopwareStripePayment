@@ -24,7 +24,7 @@ class Index implements SubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            'Enlight_Controller_Action_PostDispatchSecure_Backend_Index' => 'onPostDispatchSecure'
+            'Enlight_Controller_Action_PostDispatchSecure_Backend_Index' => 'onPostDispatchSecure',
         );
     }
 

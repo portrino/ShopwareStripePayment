@@ -24,7 +24,10 @@ class Order implements SubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            'Enlight_Controller_Action_PostDispatchSecure_Backend_Order' => array('onPostDispatchSecure', -100)
+            'Enlight_Controller_Action_PostDispatchSecure_Backend_Order' => array(
+                'onPostDispatchSecure',
+                -100,
+            ),
         );
     }
 

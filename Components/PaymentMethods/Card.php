@@ -25,7 +25,7 @@ class Card extends Base
             $source = Stripe\Source::create(array(
                 'type' => 'card',
                 'token' => $stripeSession->selectedCard['token_id'],
-                'metadata' => $this->getSourceMetadata()
+                'metadata' => $this->getSourceMetadata(),
             ));
 
             // Remove the token from the selected card, since it can only be consumed once
@@ -38,7 +38,7 @@ class Card extends Base
                     $stripeCustomer = Util::createStripeCustomer();
                 }
                 $source = $stripeCustomer->sources->create(array(
-                    'source' => $source->id
+                    'source' => $source->id,
                 ));
                 unset($stripeSession->saveCardForFutureCheckouts);
             }
@@ -60,7 +60,7 @@ class Card extends Base
             // hence create a new 3D-Secure source that is based on the card source
             $returnUrl = $this->assembleShopwareUrl(array(
                 'controller' => 'StripePayment',
-                'action' => 'completeRedirectFlow'
+                'action' => 'completeRedirectFlow',
             ));
             try {
                 $source = Stripe\Source::create(array(
@@ -68,12 +68,12 @@ class Card extends Base
                     'amount' => $amountInCents,
                     'currency' => $currencyCode,
                     'three_d_secure' => array(
-                        'card' => $source->id
+                        'card' => $source->id,
                     ),
                     'redirect' => array(
-                        'return_url' => $returnUrl
+                        'return_url' => $returnUrl,
                     ),
-                    'metadata' => $this->getSourceMetadata()
+                    'metadata' => $this->getSourceMetadata(),
                 ));
             } catch (\Exception $e) {
                 throw new \Exception($this->getErrorMessage($e), 0, $e);

@@ -12,7 +12,7 @@ class ApplePay extends Base
     /**
      * @inheritdoc
      */
-    public function createStripeSource($amountInCents, $currencyCode)
+    public function createStripeSource()
     {
         Util::initStripeAPI();
 
@@ -26,7 +26,7 @@ class ApplePay extends Base
         $source = Stripe\Source::create(array(
             'type' => 'card',
             'token' => $stripeSession->applePayToken,
-            'metadata' => $this->getSourceMetadata()
+            'metadata' => $this->getSourceMetadata(),
         ));
         // Remove the token, since it can only be consumed once
         unset($stripeSession->applePayToken);

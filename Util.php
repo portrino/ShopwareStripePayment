@@ -88,7 +88,7 @@ class Util
                 'brand' => $source->card->brand,
                 'last4' => $source->card->last4,
                 'exp_month' => $source->card->exp_month,
-                'exp_year' => $source->card->exp_year
+                'exp_year' => $source->card->exp_year,
             );
         }, $cardSources);
 
@@ -199,8 +199,8 @@ class Util
                 'description' => self::getCustomerName(),
                 'email' => $customer->getEmail(),
                 'metadata' => array(
-                    'platform_name' => self::STRIPE_PLATFORM_NAME
-                )
+                    'platform_name' => self::STRIPE_PLATFORM_NAME,
+                ),
             ));
             $customer->getAttribute()->setStripeCustomerId(self::$stripeCustomer->id);
             $em->flush($customer->getAttribute());
