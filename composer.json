@@ -1,8 +1,26 @@
 {
     "name": "Stripe/Payment",
     "type": "shopware-frontend-plugin",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:VIISON/composer-git-hooks-installer-plugin.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:VIISON/style-guide.git"
+        }
+    ],
     "require": {
         "composer/installers": "~1.0",
         "stripe/stripe-php": "4.*"
+    },
+    "require-dev": {
+        "viison/style-guide": "*"
+    },
+    "required-viison-git-hooks": {
+        "viison/style-guide": [
+            "shopware-plugin"
+        ]
     }
 }
