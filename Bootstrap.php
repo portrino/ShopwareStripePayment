@@ -103,12 +103,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                 );
 
                 // Add an attribute to the user for storing the Stripe customer id
-                $this->get('models')->addAttribute(
-                    's_user_attributes',
-                    'stripe',
-                    'customer_id',
-                    'varchar(255)'
-                );
+                $this->addColumnIfNotExists('s_user_attributes', 'stripe_customer_id', 'varchar(255) DEFAULT NULL');
 
                 // Rebuild the user attributes model
                 $this->get('models')->generateAttributeModels(array(
@@ -381,11 +376,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
     public function uninstall()
     {
         // Remove database columns
-        $this->get('models')->removeAttribute(
-            's_user_attributes',
-            'stripe',
-            'customer_id'
-        );
+        $this->dropColumnIfExists('s_user_attributes', 'stripe_customer_id');
 
         // Rebuild the user attributes model
         $this->get('models')->generateAttributeModels(array(
@@ -457,5 +448,59 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
         $pluginJSON = json_decode($pluginJSON, true);
 
         return $pluginJSON;
+    }
+
+    /**
+     * @param string $tableName
+     * @param string $columnName
+     * @param string $columnSpecification
+     */
+    private function addColumnIfNotExists($tableName, $columnName, $columnSpecification)
+    {
+        if ($this->doesColumnExist($tableName, $columnName)) {
+            return;
+        }
+
+        $sql = 'ALTER TABLE ' . $this->get('db')->quoteIdentifier($tableName)
+            . ' ADD ' . $this->get('db')->quoteIdentifier($columnName)
+            . ' ' . $columnSpecification;
+        $this->get('db')->exec($sql);
+    }
+
+    /**
+     * @param string $tableName
+     * @param string $columnName
+     */
+    private function dropColumnIfExists($tableName, $columnName)
+    {
+        if (!$this->doesColumnExist($tableName, $columnName)) {
+            return;
+        }
+
+        $sql = 'ALTER TABLE ' . $this->get('db')->quoteIdentifier($tableName)
+            . ' DROP COLUMN ' . $this->get('db')->quoteIdentifier($columnName);
+        $this->get('db')->exec($sql);
+    }
+
+    /**
+     * @param string $tableName
+     * @param string $columnName
+     * @return boolean
+     */
+    private function doesColumnExist($tableName, $columnName)
+    {
+        $hasColumn = $this->get('db')->fetchOne(
+            'SELECT COUNT(COLUMN_NAME)
+            FROM information_schema.COLUMNS
+            WHERE TABLE_SCHEMA = (SELECT DATABASE())
+                AND TABLE_NAME = :tableName
+                AND COLUMN_NAME = :columnName',
+            array(
+                'tableName' => $tableName,
+                'columnName' => $columnName,
+            )
+        );
+
+        return $hasColumn === '1';
     }
 }
