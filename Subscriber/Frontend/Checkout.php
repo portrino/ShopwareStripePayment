@@ -26,7 +26,7 @@ class Checkout implements SubscriberInterface
     {
         return array(
             'Enlight_Controller_Action_PostDispatchSecure_Frontend_Checkout' => 'onPostDispatchSecure',
-            // Shopware 4 templates only
+            // Shopware 4 templates only (still valid in Shopware 5.0)
             'Shopware_Controllers_Frontend_Checkout::paymentAction::after' => 'onAfterPaymentAction',
             // Shopware 5 themes only
             'Shopware_Controllers_Frontend_Checkout::saveShippingPaymentAction::after' => 'onAfterPaymentAction',
@@ -143,7 +143,7 @@ class Checkout implements SubscriberInterface
             $view->stripePayment = $stripeViewParams;
         }
         if ($actionName === 'confirm' && Shopware()->Container()->get('shop')->getTemplate()->getVersion() < 3) {
-            // Load the required templates (Shopware 4 templates only)
+            // Load the required templates (Shopware 4 templates only; still valid in Shopware 5.0)
             $view->extendsTemplate('frontend/stripe_payment/checkout/confirm.tpl');
             $view->extendsTemplate('frontend/stripe_payment/checkout/card_logos.tpl');
 
@@ -154,7 +154,7 @@ class Checkout implements SubscriberInterface
             // Add the SEPA mandate URL to the view
             $view->stripePaymentSepatMandateUrl = $view->sPayment['data']['sepaSource']['sepa_debit']['mandate_url'];
             if (Shopware()->Container()->get('shop')->getTemplate()->getVersion() < 3) {
-                // Load the required template (Shopware 4 templates only)
+                // Load the required template (Shopware 4 templates only; still valid in Shopware 5.0)
                 $view->extendsTemplate('frontend/stripe_payment/checkout/finish.tpl');
             }
         }

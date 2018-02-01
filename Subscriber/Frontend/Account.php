@@ -42,7 +42,7 @@ class Account implements SubscriberInterface
     public function onPostDispatchSecure(\Enlight_Event_EventArgs $args)
     {
         if (Shopware()->Shop()->getTemplate()->getVersion() < 3) {
-            // Shopware 4
+            // Shopware 4 template (still valid in Shopware 5.0)
             $args->getSubject()->View()->extendsTemplate('frontend/stripe_payment/account/content_right.tpl');
         }
     }

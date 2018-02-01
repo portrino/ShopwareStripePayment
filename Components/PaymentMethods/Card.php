@@ -7,7 +7,7 @@ use Stripe;
 /**
  * @copyright Copyright (c) 2017, VIISON GmbH
  */
-class Card extends Base
+class Card extends AbstractStripePaymentMethod
 {
     /**
      * @inheritdoc
@@ -103,7 +103,7 @@ class Card extends Base
     /**
      * @inheritdoc
      */
-    protected function doValidate(array $paymentData)
+    public function validate($paymentData)
     {
         // Check the payment data for a selected card
         if (empty($paymentData['selectedCard'])) {

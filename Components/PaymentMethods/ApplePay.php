@@ -7,7 +7,7 @@ use Stripe;
 /**
  * @copyright Copyright (c) 2017, VIISON GmbH
  */
-class ApplePay extends Base
+class ApplePay extends AbstractStripePaymentMethod
 {
     /**
      * @inheritdoc

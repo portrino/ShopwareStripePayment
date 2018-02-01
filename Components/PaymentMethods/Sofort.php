@@ -7,7 +7,7 @@ use Stripe;
 /**
  * @copyright Copyright (c) 2017, VIISON GmbH
  */
-class Sofort extends Base
+class Sofort extends AbstractStripePaymentMethod
 {
     /**
      * @inheritdoc

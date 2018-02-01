@@ -35,7 +35,7 @@ class Shopware_Controllers_Frontend_StripePaymentAccount extends Shopware_Contro
             // Shopware 5
             $this->View()->loadTemplate('frontend/account/stripe_payment_credit_cards.tpl');
         } else {
-            // Shopware 4
+            // Shopware 4 template (still valid in Shopware 5.0)
             $this->View()->loadTemplate('frontend/stripe_payment/account/credit_cards.tpl');
             $this->View()->extendsTemplate('frontend/stripe_payment/account/content_right.tpl');
         }

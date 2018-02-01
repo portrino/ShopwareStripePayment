@@ -7,7 +7,7 @@ use Stripe;
 /**
  * @copyright Copyright (c) 2017, VIISON GmbH
  */
-class Ideal extends Base
+class Ideal extends AbstractStripePaymentMethod
 {
     /**
      * @inheritdoc

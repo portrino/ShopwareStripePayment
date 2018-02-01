@@ -325,7 +325,7 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
      * Returns an instance of a Stripe payment method, which is used e.g. to create
      * stripe sources.
      *
-     * @return Shopware\Plugins\StripePayment\Components\PaymentMethods\Base
+     * @return Shopware\Plugins\StripePayment\Components\PaymentMethods\AbstractStripePaymentMethod
      */
     protected function getStripePaymentMethod()
     {

@@ -29,7 +29,7 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
     /**
      * @inheritdoc
      */
-    public function getCurrentPaymentDataAsArray()
+    public function getCurrentPaymentDataAsArray($userId)
     {
         return (array)Util::getStripeSession();
     }
@@ -93,13 +93,13 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
     }
 
     /**
+     * @inheritdoc
+     *
      * Validates the given payment data. If the data is invalid, an array containing error messages or codes
      * must be returned. By default this method returns an empty array, which indicates that the payment
      * is valid.
-     *
-     * @return array
      */
-    protected function doValidate()
+    public function validate($paymentData)
     {
         return array();
     }
@@ -146,63 +146,5 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
     protected function get($key)
     {
         return Shopware()->Container()->get($key);
-    }
-}
-
-// We need to declare multiple classe here, hence disable the respective PHP CS sniff
-// phpcs:disable PSR1.Classes.ClassDeclaration.MultipleClasses
-
-/**
- * Returns true, if the signature of GenericPaymentMethod#validate appears consistent with Shopware before version
- * 5.0.4-RC1.
- *
- * Since version 5.0.4-RC1, the parameter must be an array (with no type hint).
- * Before, it was an \Enlight_Controller_Request_Request.
- *
- * The commit that changed the signature of #validate is
- * <https://github.com/shopware/shopware/commit/0608b1a7b05e071c93334b29ab6bd588105462d7>.
- */
-function needs_legacy_validate_signature()
-{
-    $parentClass = new \ReflectionClass('ShopwarePlugin\PaymentMethods\Components\GenericPaymentMethod');
-    /* @var $parameters \ReflectionParameter[] */
-    $parameters = $parentClass->getMethod('validate')->getParameters();
-    foreach ($parameters as $parameter) {
-        // Newer Shopware versions use an array parameter named paymentData.
-        if ($parameter->getName() === 'request') {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-if (needs_legacy_validate_signature()) {
-    /**
-     * Shopware < 5.0.4
-     */
-    abstract class Base extends AbstractStripePaymentMethod
-    {
-        /**
-         * @inheritdoc
-         */
-        public function validate(\Enlight_Controller_Request_Request $request)
-        {
-            return $this->doValidate($request->getParams());
-        }
-    }
-} else {
-    /**
-     * Shopware >= 5.0.4
-     */
-    abstract class Base extends AbstractStripePaymentMethod
-    {
-        /**
-         * @inheritdoc
-         */
-        public function validate($paymentData)
-        {
-            return $this->doValidate($paymentData);
-        }
     }
 }

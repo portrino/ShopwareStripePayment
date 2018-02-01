@@ -7,7 +7,7 @@ use Stripe;
 /**
  * @copyright Copyright (c) 2017, VIISON GmbH
  */
-class Sepa extends Base
+class Sepa extends AbstractStripePaymentMethod
 {
     /**
      * @inheritdoc
@@ -57,7 +57,7 @@ class Sepa extends Base
     /**
      * @inheritdoc
      */
-    protected function doValidate(array $paymentData)
+    public function validate($paymentData)
     {
         // Check the payment data for a SEPA source
         if (empty($paymentData['sepaSource'])) {
