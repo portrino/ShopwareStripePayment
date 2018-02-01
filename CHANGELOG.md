@@ -1,3 +1,14 @@
+## 3.0.1
+
+### en
+
+* Fixes an error caused by obsolete plugin files.
+
+### de
+
+* Behebt einen Fehler, der durch obsolete Plugindateien verursacht wurde.
+
+
 ## 3.0.0
 
 ### en
