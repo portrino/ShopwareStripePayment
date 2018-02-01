@@ -8,7 +8,7 @@
 
 ### de
 
-**Hinweis:** Beginnend mit diesem Release ist das Plugin nicht mehr zu Shopware-Versionen vor 5.0.4 kompatibel. Bitte installieren Sie unter älteren Shopware-Installationen Version 2.2.1 des Plugins.  
+**Hinweis:** Beginnend mit diesem Release ist das Plugin nicht mehr zu Shopware-Versionen vor 5.0.4 kompatibel. Bitte installieren Sie unter älteren Shopware-Installationen Version 2.2.1 des Plugins.
 
 * Behebt einen Fehler, der bei wiederholter Installation/Deinstallation auftrat.
 
