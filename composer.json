@@ -19,10 +19,12 @@
     "require-dev": {
         "viison/style-guide": "*"
     },
-    "required-viison-git-hooks": {
-        "viison/style-guide": [
-            "shopware-plugin"
-        ]
+    "extra": {
+        "required-viison-git-hooks": {
+            "viison/style-guide": [
+                "shopware-plugin"
+            ]
+        }
     },
     "scripts": {
         "phpcs": "vendor/bin/phpcs -s -n .",
