@@ -1,5 +1,4 @@
-ShopwareStripePayment
-=====================
+# ShopwareStripePayment
 
 [![Build Status](https://img.shields.io/travis/VIISON/ShopwareStripePayment.svg?style=flat-square)](https://travis-ci.org/VIISON/ShopwareStripePayment)
 
