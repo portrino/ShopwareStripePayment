@@ -1,3 +1,18 @@
+## 3.0.0
+
+### en
+
+**Note:** Starting with this release the plugin is no longer compatible to Shopware versions older than 5.0.4. Please install version 2.2.1 of this plugin on older Shopware versions.
+
+* Fixes an error that occurred when trying to install/uninstall the plugin repeatedly.
+
+### de
+
+**Hinweis:** Beginnend mit diesem Release ist das Plugin nicht mehr zu Shopware-Versionen vor 5.0.4 kompatibel. Bitte installieren Sie unter älteren Shopware-Installationen Version 2.2.1 des Plugins.  
+
+* Behebt einen Fehler, der bei wiederholter Installation/Deinstallation auftrat.
+
+
 ## 2.2.1
 
 ### en
