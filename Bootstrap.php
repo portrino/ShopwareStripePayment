@@ -6,6 +6,8 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 use Shopware\Models\Config\Element;
 use Shopware\Plugins\StripePayment\Classes\SmartyPlugins;
 use Shopware\Plugins\StripePayment\Subscriber;
+use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * This plugin offers a credit card payment method using Stripe.
@@ -343,6 +345,8 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                 return false;
         }
 
+        $this->removeObsoletePluginFiles();
+
         return [
             'success' => true,
             'message' => 'Bitte leeren Sie den gesamten Shop Cache, aktivieren Sie das Plugin und Kompilieren Sie anschließend die Shop Themes neu. Aktivieren Sie abschließend die Zahlart "Stripe Kreditkarte", um sie verfügbar zu machen.',
@@ -484,5 +488,63 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
         );
 
         return $hasColumn === '1';
+    }
+
+    /**
+     * Removes all obsolete plugin files using the PluginStructureIntegrity class.
+     */
+    private function removeObsoletePluginFiles()
+    {
+        try {
+            // Try to find a 'plugin.summary' file
+            $summaryFilePath = $this->Path() . 'plugin.summary';
+            if (!file_exists($summaryFilePath)) {
+                return;
+            }
+
+            // Read the paths of all required plugin files from the summary
+            $requiredPluginFiles = [];
+            $handle = fopen($summaryFilePath, 'r');
+            if ($handle) {
+                $line = fgets($handle);
+                while ($line !== false) {
+                    $requiredPluginFiles[] = str_replace('/./', '/', ($this->Path() . trim($line, "\n")));
+                    $line = fgets($handle);
+                }
+                fclose($handle);
+            } else {
+                $this->get('pluginlogger')->error('StripePayment: Failed to read "plugin.summary" file.');
+
+                return;
+            }
+
+            // Delete all files from the plugin directory that are not required (contained in the summary)
+            $filesystem = new Filesystem();
+            $fileIterator = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($this->Path()),
+                RecursiveIteratorIterator::SELF_FIRST
+            );
+            foreach ($fileIterator as $file) {
+                if (!$file->isFile() || in_array($file->getPathname(), $requiredPluginFiles)) {
+                    continue;
+                }
+                try {
+                    $filesystem->remove($file->getPathname());
+                } catch (IOException $e) {
+                    $this->get('pluginlogger')->error(
+                        'StripePayment: Failed to remove obsolete file. ' . $e->getMessage(),
+                        [
+                            'exception' => $e,
+                            'file' => $file->getPathname(),
+                        ]
+                    );
+                }
+            }
+        } catch (\Exception $e) {
+            $this->get('pluginlogger')->error(
+                'StripePayment: Failed to remove obsolete plugin files.',
+                ['exception' => $e]
+            );
+        }
     }
 }
