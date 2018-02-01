@@ -16,25 +16,25 @@ class Giropay extends AbstractStripePaymentMethod
     {
         Util::initStripeAPI();
         // Create a new Giropay source
-        $returnUrl = $this->assembleShopwareUrl(array(
+        $returnUrl = $this->assembleShopwareUrl([
             'controller' => 'StripePayment',
             'action' => 'completeRedirectFlow',
-        ));
-        $source = Stripe\Source::create(array(
+        ]);
+        $source = Stripe\Source::create([
             'type' => 'giropay',
             'amount' => $amountInCents,
             'currency' => $currencyCode,
-            'owner' => array(
+            'owner' => [
                 'name' => Util::getCustomerName(),
-            ),
-            'giropay' => array(
+            ],
+            'giropay' => [
                 'statement_descriptor' => $this->getStatementDescriptor(),
-            ),
-            'redirect' => array(
+            ],
+            'redirect' => [
                 'return_url' => $returnUrl,
-            ),
+            ],
             'metadata' => $this->getSourceMetadata(),
-        ));
+        ]);
 
         return $source;
     }

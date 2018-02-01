@@ -16,25 +16,25 @@ class Ideal extends AbstractStripePaymentMethod
     {
         Util::initStripeAPI();
         // Create a new iDEAL source
-        $returnUrl = $this->assembleShopwareUrl(array(
+        $returnUrl = $this->assembleShopwareUrl([
             'controller' => 'StripePayment',
             'action' => 'completeRedirectFlow',
-        ));
-        $source = Stripe\Source::create(array(
+        ]);
+        $source = Stripe\Source::create([
             'type' => 'ideal',
             'amount' => $amountInCents,
             'currency' => $currencyCode,
-            'owner' => array(
+            'owner' => [
                 'name' => Util::getCustomerName(),
-            ),
-            'ideal' => array(
+            ],
+            'ideal' => [
                 'statement_descriptor' => $this->getStatementDescriptor(),
-            ),
-            'redirect' => array(
+            ],
+            'redirect' => [
                 'return_url' => $returnUrl,
-            ),
+            ],
             'metadata' => $this->getSourceMetadata(),
-        ));
+        ]);
 
         return $source;
     }

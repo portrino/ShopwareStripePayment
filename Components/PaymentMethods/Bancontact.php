@@ -16,25 +16,25 @@ class Bancontact extends AbstractStripePaymentMethod
     {
         Util::initStripeAPI();
         // Create a new Bancontact source
-        $returnUrl = $this->assembleShopwareUrl(array(
+        $returnUrl = $this->assembleShopwareUrl([
             'controller' => 'StripePayment',
             'action' => 'completeRedirectFlow',
-        ));
-        $source = Stripe\Source::create(array(
+        ]);
+        $source = Stripe\Source::create([
             'type' => 'bancontact',
             'amount' => $amountInCents,
             'currency' => $currencyCode,
-            'owner' => array(
+            'owner' => [
                 'name' => Util::getCustomerName(),
-            ),
-            'bancontact' => array(
+            ],
+            'bancontact' => [
                 'statement_descriptor' => $this->getStatementDescriptor(),
-            ),
-            'redirect' => array(
+            ],
+            'redirect' => [
                 'return_url' => $returnUrl,
-            ),
+            ],
             'metadata' => $this->getSourceMetadata(),
-        ));
+        ]);
 
         return $source;
     }

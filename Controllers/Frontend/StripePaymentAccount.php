@@ -52,10 +52,10 @@ class Shopware_Controllers_Frontend_StripePaymentAccount extends Shopware_Contro
         }
 
         // Set the view data
-        $this->View()->stripePayment = array(
+        $this->View()->stripePayment = [
             'availableCards' => $cards,
             'error' => $stripeSession->accountError,
-        );
+        ];
         unset($stripeSession->accountError);
     }
 
@@ -89,9 +89,9 @@ class Shopware_Controllers_Frontend_StripePaymentAccount extends Shopware_Contro
         unset($stripeSession->saveCardForFutureCheckouts);
 
         // Redirect to the manage action
-        $this->redirect(array(
+        $this->redirect([
             'controller' => $this->Request()->getControllerName(),
             'action' => 'manageCreditCards',
-        ));
+        ]);
     }
 }

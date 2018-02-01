@@ -101,7 +101,7 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
      */
     public function validate($paymentData)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -133,10 +133,10 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
      */
     protected function getSourceMetadata()
     {
-        return array(
+        return [
             'platform_name' => Util::STRIPE_PLATFORM_NAME,
             'shopware_session_id' => $this->get('SessionID'),
-        );
+        ];
     }
 
     /**

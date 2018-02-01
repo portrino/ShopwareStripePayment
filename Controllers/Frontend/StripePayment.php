@@ -28,9 +28,9 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
      */
     public function getWhitelistedCSRFActions()
     {
-        return array(
+        return [
             'stripeWebhook'
-        );
+        ];
     }
 
     /**
@@ -50,7 +50,13 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
                 $this->getCurrencyShortName()
             );
         } catch (Exception $e) {
-            $this->get('pluginlogger')->error('StripePayment: Failed to create source', array('exception' => $e, 'trace' => $e->getTrace()));
+            $this->get('pluginlogger')->error(
+                'StripePayment: Failed to create source',
+                [
+                    'exception' => $e,
+                    'trace' => $e->getTrace(),
+                ]
+            );
             $message = $this->getStripePaymentMethod()->getErrorMessage($e);
             $this->cancelCheckout($message);
 
@@ -78,7 +84,14 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
                 $charge = $this->createCharge($source);
                 $order = $this->saveOrderWithCharge($charge);
             } catch (Exception $e) {
-                $this->get('pluginlogger')->error('StripePayment: Failed to create charge', array('exception' => $e, 'trace' => $e->getTrace(), 'sourceId' => $source->id));
+                $this->get('pluginlogger')->error(
+                    'StripePayment: Failed to create charge',
+                    [
+                        'exception' => $e,
+                        'trace' => $e->getTrace(),
+                        'sourceId' => $source->id,
+                    ]
+                );
                 $message = $this->getStripePaymentMethod()->getErrorMessage($e);
                 $this->cancelCheckout($message);
 
@@ -176,7 +189,14 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
             }
         } catch (\Exception $e) {
             // Log the error and respond with 'ERROR' to make debugging easier
-            $this->get('pluginlogger')->error('StripePayment: Failed to process Stripe webhook', array('exception' => $e, 'trace' => $e->getTrace(), 'eventId' => $event->id));
+            $this->get('pluginlogger')->error(
+                'StripePayment: Failed to process Stripe webhook',
+                [
+                    'exception' => $e,
+                    'trace' => $e->getTrace(),
+                    'eventId' => $event->id,
+                ]
+            );
             echo 'ERROR';
 
             return;
@@ -206,15 +226,15 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
         }
 
         // Prepare the charge data
-        $chargeData = array(
+        $chargeData = [
             'source' => $source->id,
             'amount' => ($this->getAmount() * 100), // Amount has to be in cents!
             'currency' => $this->getCurrencyShortName(),
             'description' => sprintf('%s / Customer %s', $userEmail, $customerNumber),
-            'metadata' => array(
+            'metadata' => [
                 'platform_name' => Util::STRIPE_PLATFORM_NAME,
-            ),
-        );
+            ],
+        ];
         // Add a statement descriptor, if necessary
         $paymentMethod = $this->getStripePaymentMethod();
         if ($paymentMethod->includeStatmentDescriptorInCharge()) {
@@ -260,9 +280,9 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
         }
 
         // Update the cleared date
-        $order = $this->get('models')->getRepository('Shopware\Models\Order\Order')->findOneBy(array(
+        $order = $this->get('models')->getRepository('Shopware\Models\Order\Order')->findOneBy([
             'number' => $orderNumber,
-        ));
+        ]);
         $order->setClearedDate(new \DateTime());
         $this->get('models')->flush($order);
 
@@ -295,11 +315,11 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
     protected function finishCheckout(Order $order)
     {
         Util::resetStripeSession();
-        $this->redirect(array(
+        $this->redirect([
             'controller' => 'checkout',
             'action' => 'finish',
             'sUniqueID' => $order->getTemporaryId(),
-        ));
+        ]);
     }
 
     /**
@@ -315,10 +335,10 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
             $prefix = $this->get('snippets')->getNamespace('frontend/plugins/payment/stripe_payment/base')->get('payment_error/message/charge_failed');
             Util::getStripeSession()->paymentError = $prefix . ' ' . $errorMessage;
         }
-        $this->redirect(array(
+        $this->redirect([
             'controller' => 'checkout',
             'action' => ($this->get('shop')->getTemplate()->getVersion() < 3) ? 'confirm' : 'index',
-        ));
+        ]);
     }
 
     /**
@@ -404,7 +424,13 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
         // Use the source to create the charge and save the order
         $charge = $this->createCharge($event->data->object);
         $order = $this->saveOrderWithCharge($charge);
-        $this->get('pluginlogger')->info('StripePayment: Created order after receiving "source.chargeable" webhook event', array('orderId' => $order->getId(), 'eventId' => $event->id));
+        $this->get('pluginlogger')->info(
+            'StripePayment: Created order after receiving "source.chargeable" webhook event',
+            [
+                'orderId' => $order->getId(),
+                'eventId' => $event->id,
+            ]
+        );
     }
 
     /**
@@ -424,9 +450,9 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
         }
 
         // Find the order that references the source ID
-        $order = $this->get('models')->getRepository('Shopware\Models\Order\Order')->findOneBy(array(
+        $order = $this->get('models')->getRepository('Shopware\Models\Order\Order')->findOneBy([
             'temporaryId' => $source->id,
-        ));
+        ]);
 
         return $order;
     }

@@ -24,13 +24,13 @@ class Checkout implements SubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             'Enlight_Controller_Action_PostDispatchSecure_Frontend_Checkout' => 'onPostDispatchSecure',
             // Shopware 4 templates only (still valid in Shopware 5.0)
             'Shopware_Controllers_Frontend_Checkout::paymentAction::after' => 'onAfterPaymentAction',
             // Shopware 5 themes only
             'Shopware_Controllers_Frontend_Checkout::saveShippingPaymentAction::after' => 'onAfterPaymentAction',
-        );
+        ];
     }
 
     /**
@@ -56,8 +56,8 @@ class Checkout implements SubscriberInterface
 
         // Prepare the view
         $actionName = $args->getSubject()->Request()->getActionName();
-        if (in_array($actionName, array('confirm', 'shippingPayment', 'saveShippingPayment'))) {
-            $stripeViewParams = array();
+        if (in_array($actionName, ['confirm', 'shippingPayment', 'saveShippingPayment'])) {
+            $stripeViewParams = [];
             // Set the stripe public key and some plugin configuration
             $stripeViewParams['publicKey'] = Util::stripePublicKey();
             $stripeViewParams['allowSavingCreditCard'] = Shopware()->Container()->get('plugins')->get('Frontend')->get('StripePayment')->Config()->get('allowSavingCreditCard', true);
@@ -116,7 +116,7 @@ class Checkout implements SubscriberInterface
             try {
                 $stripeViewParams['availableCards'] = Util::getAllStripeCards();
             } catch (\Exception $e) {
-                $stripeViewParams['availableCards'] = array();
+                $stripeViewParams['availableCards'] = [];
             }
             if ($stripeSession->selectedCard) {
                 // Write the card info to the template both JSON encoded and in a form usable by smarty

@@ -35,7 +35,7 @@ class Shopware_Controllers_Backend_StripePayment extends Shopware_Controllers_Ba
 
             return;
         }
-        $positions = $this->Request()->getParam('positions', array());
+        $positions = $this->Request()->getParam('positions', []);
         if (count($positions) === 0) {
             // Missing positions
             $this->View()->success = false;
@@ -69,9 +69,9 @@ class Shopware_Controllers_Backend_StripePayment extends Shopware_Controllers_Ba
         try {
             Util::initStripeAPI();
             $charge = Stripe\Charge::retrieve($order->getTransactionId());
-            $charge->refund(array(
+            $charge->refund([
                 'amount' => intval($amount * 100),
-            ));
+            ]);
             $refund = $charge->refunds[count($charge->refunds) - 1];
         } catch (Exception $e) {
             // Try to get the error response

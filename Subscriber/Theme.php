@@ -37,11 +37,11 @@ class Theme implements SubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             'Enlight_Controller_Action_PostDispatchSecure' => 'onPostDispatchSecure',
             'Theme_Compiler_Collect_Plugin_Javascript' => 'onCollectPluginJavascriptFiles',
             'Theme_Compiler_Collect_Plugin_Less' => 'onCollectPluginLESSFiles',
-        );
+        ];
     }
 
     /**
@@ -57,7 +57,7 @@ class Theme implements SubscriberInterface
     {
         // Determine template type (responsive/emotion)
         $module = $args->getRequest()->getParam('module');
-        $templateType = (!in_array($module, array('backend', 'api')) && Shopware()->Shop()->getTemplate()->getVersion() >= 3) ? 'responsive' : 'emotion';
+        $templateType = (!in_array($module, ['backend', 'api']) && Shopware()->Shop()->getTemplate()->getVersion() >= 3) ? 'responsive' : 'emotion';
 
         // Add the template directory for the used template type
         $this->templateManager->addTemplateDir(
@@ -82,12 +82,12 @@ class Theme implements SubscriberInterface
      */
     public function onCollectPluginJavascriptFiles()
     {
-        return new ArrayCollection(array(
+        return new ArrayCollection([
             $this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/jquery.payment.min.js',
             $this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/stripe_payment_apple_pay.js',
             $this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/stripe_payment_card.js',
             $this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/stripe_payment_sepa.js',
-        ));
+        ]);
     }
 
     /**
@@ -97,16 +97,16 @@ class Theme implements SubscriberInterface
      */
     public function onCollectPluginLESSFiles()
     {
-        return new ArrayCollection(array(
+        return new ArrayCollection([
             new LessDefinition(
-                array(),
-                array(
+                [],
+                [
                     $this->path . 'Views/responsive/frontend/_public/src/less/checkout.less',
                     $this->path . 'Views/responsive/frontend/_public/src/less/account.less',
                     $this->path . 'Views/responsive/frontend/_public/src/less/sidebar.less',
-                ),
+                ],
                 $this->path . 'Views/responsive/'
             )
-        ));
+        ]);
     }
 }

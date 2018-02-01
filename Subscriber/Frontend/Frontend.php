@@ -19,13 +19,13 @@ class Frontend implements SubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            'Enlight_Controller_Front_RouteStartup' => array(
+        return [
+            'Enlight_Controller_Front_RouteStartup' => [
                 'onRouteStartup',
                 -10000,
-            ),
+            ],
             'Enlight_Controller_Front_RouteShutdown' => 'onRouteShutdown',
-        );
+        ];
     }
 
     /**
@@ -65,9 +65,9 @@ class Frontend implements SubscriberInterface
             'SELECT *
             FROM s_core_sessions
             WHERE id = :sessionId',
-            array(
+            [
                 'sessionId' => $sessionId,
-            )
+            ]
         );
         if ($session) {
             \Enlight_Components_Session::setId($sessionId);

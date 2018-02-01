@@ -29,9 +29,9 @@ class Account implements SubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             'Enlight_Controller_Action_PostDispatchSecure_Frontend_Account' => 'onPostDispatchSecure',
-        );
+        ];
     }
 
     /**

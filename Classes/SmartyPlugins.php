@@ -55,7 +55,13 @@ class SmartyPlugins
      */
     public function register()
     {
-        $this->templateManager->registerFilter(\Smarty::FILTER_PRE, array($this, 'filterStripeSnippetBlocks'));
+        $this->templateManager->registerFilter(
+            \Smarty::FILTER_PRE,
+            [
+                $this,
+                'filterStripeSnippetBlocks',
+            ]
+        );
     }
 
     /**

@@ -61,11 +61,11 @@ class Sepa extends AbstractStripePaymentMethod
     {
         // Check the payment data for a SEPA source
         if (empty($paymentData['sepaSource'])) {
-            return array(
+            return [
                 'STRIPE_SEPA_VALIDATION_FAILED'
-            );
+            ];
         }
 
-        return array();
+        return [];
     }
 }

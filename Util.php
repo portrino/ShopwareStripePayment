@@ -74,7 +74,7 @@ class Util
         // Get the Stripe customer
         $customer = self::getStripeCustomer();
         if ($customer === null || isset($customer->deleted)) {
-            return array();
+            return [];
         }
 
         // Get information about all card sources
@@ -82,14 +82,14 @@ class Util
             return $source->type === 'card';
         });
         $cards = array_map(function ($source) {
-            return array(
+            return [
                 'id' => $source->id,
                 'name' => $source->owner->name,
                 'brand' => $source->card->brand,
                 'last4' => $source->card->last4,
                 'exp_month' => $source->card->exp_month,
                 'exp_year' => $source->card->exp_year,
-            );
+            ];
         }, $cardSources);
 
         // Sort the cards by id (which correspond to the date, the card was created/added)
@@ -195,13 +195,13 @@ class Util
 
         // Create a new Stripe customer and save it in the user's attributes
         try {
-            self::$stripeCustomer = Stripe\Customer::create(array(
+            self::$stripeCustomer = Stripe\Customer::create([
                 'description' => self::getCustomerName(),
                 'email' => $customer->getEmail(),
-                'metadata' => array(
+                'metadata' => [
                     'platform_name' => self::STRIPE_PLATFORM_NAME,
-                ),
-            ));
+                ],
+            ]);
             $customer->getAttribute()->setStripeCustomerId(self::$stripeCustomer->id);
             $em->flush($customer->getAttribute());
         } catch (\Exception $e) {
@@ -292,6 +292,6 @@ class Util
      */
     public static function resetStripeSession()
     {
-        Shopware()->Container()->get('session')->stripePayment = new \ArrayObject(array(), \ArrayObject::STD_PROP_LIST);
+        Shopware()->Container()->get('session')->stripePayment = new \ArrayObject([], \ArrayObject::STD_PROP_LIST);
     }
 }

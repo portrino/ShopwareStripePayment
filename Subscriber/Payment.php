@@ -15,9 +15,9 @@ class Payment implements SubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             'Shopware_Modules_Admin_InitiatePaymentClass_AddClass' => 'onAddPaymentClass',
-        );
+        ];
     }
 
     /**

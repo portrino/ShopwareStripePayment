@@ -23,11 +23,11 @@ class ApplePay extends AbstractStripePaymentMethod
         }
 
         // Use the token to create a new Stripe card source
-        $source = Stripe\Source::create(array(
+        $source = Stripe\Source::create([
             'type' => 'card',
             'token' => $stripeSession->applePayToken,
             'metadata' => $this->getSourceMetadata(),
-        ));
+        ]);
         // Remove the token, since it can only be consumed once
         unset($stripeSession->applePayToken);
 

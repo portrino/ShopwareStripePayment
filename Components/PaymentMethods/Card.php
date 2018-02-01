@@ -22,11 +22,11 @@ class Card extends AbstractStripePaymentMethod
             throw new \Exception($this->getSnippet('payment_error/message/no_card_selected'));
         } elseif ($stripeSession->selectedCard['token_id']) {
             // Use the token to create a new Stripe card source
-            $source = Stripe\Source::create(array(
+            $source = Stripe\Source::create([
                 'type' => 'card',
                 'token' => $stripeSession->selectedCard['token_id'],
                 'metadata' => $this->getSourceMetadata(),
-            ));
+            ]);
 
             // Remove the token from the selected card, since it can only be consumed once
             unset($stripeSession->selectedCard['token_id']);
@@ -37,9 +37,9 @@ class Card extends AbstractStripePaymentMethod
                 if (!$stripeCustomer) {
                     $stripeCustomer = Util::createStripeCustomer();
                 }
-                $source = $stripeCustomer->sources->create(array(
+                $source = $stripeCustomer->sources->create([
                     'source' => $source->id,
-                ));
+                ]);
                 unset($stripeSession->saveCardForFutureCheckouts);
             }
 
@@ -58,23 +58,23 @@ class Card extends AbstractStripePaymentMethod
         if ($source->card->three_d_secure === 'required' || ($source->card->three_d_secure !== 'not_supported' && $paymentMethod === 'stripe_payment_card_three_d_secure')) {
             // The card requires the 3D-Secure flow or supports it and the selected payment method requires it,
             // hence create a new 3D-Secure source that is based on the card source
-            $returnUrl = $this->assembleShopwareUrl(array(
+            $returnUrl = $this->assembleShopwareUrl([
                 'controller' => 'StripePayment',
                 'action' => 'completeRedirectFlow',
-            ));
+            ]);
             try {
-                $source = Stripe\Source::create(array(
+                $source = Stripe\Source::create([
                     'type' => 'three_d_secure',
                     'amount' => $amountInCents,
                     'currency' => $currencyCode,
-                    'three_d_secure' => array(
+                    'three_d_secure' => [
                         'card' => $source->id,
-                    ),
-                    'redirect' => array(
+                    ],
+                    'redirect' => [
                         'return_url' => $returnUrl,
-                    ),
+                    ],
                     'metadata' => $this->getSourceMetadata(),
-                ));
+                ]);
             } catch (\Exception $e) {
                 throw new \Exception($this->getErrorMessage($e), 0, $e);
             }
@@ -107,11 +107,11 @@ class Card extends AbstractStripePaymentMethod
     {
         // Check the payment data for a selected card
         if (empty($paymentData['selectedCard'])) {
-            return array(
+            return [
                 'STRIPE_CARD_VALIDATION_FAILED'
-            );
+            ];
         }
 
-        return array();
+        return [];
     }
 }

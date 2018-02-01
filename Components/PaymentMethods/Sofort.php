@@ -16,26 +16,26 @@ class Sofort extends AbstractStripePaymentMethod
     {
         Util::initStripeAPI();
         // Create a new SOFORT source
-        $returnUrl = $this->assembleShopwareUrl(array(
+        $returnUrl = $this->assembleShopwareUrl([
             'controller' => 'StripePayment',
             'action' => 'completeRedirectFlow',
-        ));
-        $source = Stripe\Source::create(array(
+        ]);
+        $source = Stripe\Source::create([
             'type' => 'sofort',
             'amount' => $amountInCents,
             'currency' => $currencyCode,
-            'owner' => array(
+            'owner' => [
                 'name' => Util::getCustomerName(),
-            ),
-            'sofort' => array(
+            ],
+            'sofort' => [
                 'country' => $this->get('session')->sOrderVariables->sCountry['countryiso'],
                 'statement_descriptor' => $this->getStatementDescriptor(),
-            ),
-            'redirect' => array(
+            ],
+            'redirect' => [
                 'return_url' => $returnUrl,
-            ),
+            ],
             'metadata' => $this->getSourceMetadata(),
-        ));
+        ]);
 
         return $source;
     }
