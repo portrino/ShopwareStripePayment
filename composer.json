@@ -23,5 +23,9 @@
         "viison/style-guide": [
             "shopware-plugin"
         ]
+    },
+    "scripts": {
+        "phpcs": "vendor/bin/phpcs -s -n .",
+        "phpcs:fix": "vendor/bin/phpcbf -s -n ."
     }
 }
