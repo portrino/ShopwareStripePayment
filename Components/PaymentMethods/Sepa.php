@@ -12,7 +12,7 @@ class Sepa extends AbstractStripePaymentMethod
     /**
      * @inheritdoc
      */
-    public function createStripeSource()
+    public function createStripeSource($amountInCents, $currencyCode)
     {
         Util::initStripeAPI();
 
