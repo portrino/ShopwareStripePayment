@@ -1,3 +1,16 @@
+## 3.0.2
+
+### en
+
+* Fixes an error in the payment process when using SEPA.
+* Fixes an error in the payment process when using Apple Pay.
+
+### de
+
+* Behebt einen Fehler im Bezahlvorgang bei der Verwendung von SEPA Lastschrift.
+* Behebt einen Fehler im Bezahlvorgang bei der Verwendung von Apple Pay.
+
+
 ## 3.0.1
 
 ### en
