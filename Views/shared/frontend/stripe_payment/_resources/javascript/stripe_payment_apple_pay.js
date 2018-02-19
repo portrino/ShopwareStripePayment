@@ -84,13 +84,13 @@ var StripePaymentApplePay = {
     onFormSubmission: function(event) {
         var me = event.data.scope,
             form = $(this);
-        // Make sure the AGB checkbox is checked. Please note that this check is necessary in both Shopware 4
-        // and Shopware 5 themes, for different reasons. In Shopware 4 templates the checkout form will
+        // Make sure the AGB checkbox is checked, if it exists. Please note that this check is necessary in both
+        // Shopware 4 and Shopware 5 themes, for different reasons. In Shopware 4 templates the checkout form will
         // always be submitted, even if the checkbox is not checked. Hence we don't want to trigger the payment,
         // if not checked. Shopware 5 themes on the other hand validate the checkbox before submitting the
         // checkout form. This validation however does not work on mobile (e.g. iOS Safari), which makes
         // it necessary to always check ourselves.
-        if (!$('input#sAGB').is(':checked')) {
+        if ($('input#sAGB').length === 1 && !$('input#sAGB').is(':checked')) {
             return;
         }
 
