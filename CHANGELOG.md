@@ -1,3 +1,16 @@
+## 3.0.3
+
+### en
+
+* Fixes a bug that prevented the checkout via Apple Pay, if the "terms and conditions" checkbox was hidden.
+* Improves the validation of Apple Pay payments.
+
+### de
+
+* Behebt einen Fehler beim Bestellabschluss mit Apple Pay, der auftrat, falls die AGB-Checkbox nicht angezeigt wird.
+* Verbessert die Validierung von Zahlungen mittels Apple Pay.
+
+
 ## 3.0.2
 
 ### en
