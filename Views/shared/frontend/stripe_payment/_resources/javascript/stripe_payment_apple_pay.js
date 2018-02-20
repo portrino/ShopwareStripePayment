@@ -62,7 +62,7 @@ var StripePaymentApplePay = {
         if (me.isShopware5Template()) {
             // Save the original submit button content and add a listiner on the preloader
             // event to be able to reset it
-            me.submitButtonContent = me.findForm().parent().find('button[form="confirm--form"]').html();
+            me.submitButtonContent = me.findSubmitButton().html();
             $.subscribe('plugin/swPreloaderButton/onShowPreloader', function(event, button) {
                 if (me.shouldResetSubmitButton) {
                     me.shouldResetSubmitButton = false;
@@ -194,7 +194,22 @@ var StripePaymentApplePay = {
      * @return jQuery The main checkout form element.
      */
     findForm: function() {
-        return (this.isShopware5Template()) ? $('form#confirm--form') : $('.additional_footer form');
+        if (this.isShopware5Template()) {
+            // Determine the form that is submitted by the 'submit' button
+            var submitButton = this.findSubmitButton();
+            var formId = 'form#' + submitButton.attr('form');
+
+            return $(formId);
+        } else {
+            return $('.additional_footer form');
+        }
+    },
+
+    /**
+     * @return jQuery The button element that submits the checkout.
+     */
+    findSubmitButton: function() {
+        return (this.isShopware5Template()) ? $('.confirm--content .main--actions button[type="submit"]') : this.findForm().parent().find('button[form="confirm--form"]');
     },
 
     /**

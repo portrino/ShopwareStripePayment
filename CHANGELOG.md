@@ -1,3 +1,14 @@
+## NEXT RELEASE
+
+### en
+
+* Improves the compatibility of Apple Pay payments when using customized themes in the checkout.
+
+### de
+
+* Verbessert die Zahlung mittels Apple Pay bei der Verwendung von angepassten Themes im Bestellabschluss.
+
+
 ## 3.0.3
 
 ### en
