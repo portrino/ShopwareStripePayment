@@ -2,13 +2,15 @@
 
 ### en
 
+* It is now possible to let Stripe automatically send receipt emails to the customer (must be enabled in the plugin config).
 * Improves the compatibility of Apple Pay payments when using customized themes in the checkout.
 * Fixes a UI glitch in the SEPA payment form.
 
 ### de
 
+* Es ist nun möglich, dass Stripe automatisch Zahlungsbelege per E-Mail an den Kunden sendet (muss in der Pluginkonfiguration aktiviert werden).
 * Verbessert die Zahlung mittels Apple Pay bei der Verwendung von angepassten Themes im Bestellabschluss.
-* Behebt einen Darstellungsfehler im Formular für SEPA-Zahlungen.
+* Behebt einen Darstellungsfehler im Formular von SEPA-Zahlungen.
 
 
 ## 3.0.3

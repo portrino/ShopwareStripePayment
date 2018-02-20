@@ -344,7 +344,16 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
             case '3.0.2':
                 // Nothing to do
             case '3.0.3':
-                // Next release
+                $this->Form()->setElement(
+                    'checkbox',
+                    'sendStripeChargeEmails',
+                    [
+                        'label' => 'Stripe-Belege via E-Mail versenden',
+                        'description' => 'Aktivieren Sie diese Feld, damit Stripe automatisch Zahlungsbelege an den Kunden zu senden.',
+                        'value' => false,
+                        'scope' => Element::SCOPE_SHOP,
+                    ]
+                );
 
                 break;
             default:
