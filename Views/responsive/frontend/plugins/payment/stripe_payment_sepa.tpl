@@ -50,13 +50,15 @@
             <div class="panel--tr stripe-sepa-field country-selection">
                 <label>
                     <span class="panel--td">{s namespace=frontend/plugins/payment/stripe_payment/sepa name=form/country}{/s} *</span>
-                    <select class="stripe-sepa-country panel--td is--required" name="country" required="required">
-                        {foreach $stripePayment.sepaCountryList as $country}
-                            <option value="{$country.countryiso}"{if $country.id eq $sUserData.billingaddress.countryId} selected="selected"{/if}>
-                                {$country.countryname}
-                            </option>
-                        {/foreach}
-                    </select>
+                    <div class="select-field">
+                        <select class="stripe-sepa-country panel--td is--required" name="country" required="required">
+                            {foreach $stripePayment.sepaCountryList as $country}
+                                <option value="{$country.countryiso}"{if $country.id eq $sUserData.billingaddress.countryId} selected="selected"{/if}>
+                                    {$country.countryname}
+                                </option>
+                            {/foreach}
+                        </select>
+                    </div>
                 </label>
             </div>
         </div>

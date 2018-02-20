@@ -3,10 +3,12 @@
 ### en
 
 * Improves the compatibility of Apple Pay payments when using customized themes in the checkout.
+* Fixes a UI glitch in the SEPA payment form.
 
 ### de
 
 * Verbessert die Zahlung mittels Apple Pay bei der Verwendung von angepassten Themes im Bestellabschluss.
+* Behebt einen Darstellungsfehler im Formular für SEPA-Zahlungen.
 
 
 ## 3.0.3
