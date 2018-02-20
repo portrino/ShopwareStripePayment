@@ -33,6 +33,7 @@ var StripePaymentApplePay = {
      */
     snippets: {
         error: {
+            connectionNotSecure: 'Your connection to this shop is not secure. Apple Pay only works when served via SSL/TLS (HTTPS). Please select a different payment method.',
             notAvailable: 'Apple Pay is not available on this device/ in this browser. Please select a different payment method.',
             title: 'Error'
         }
@@ -101,6 +102,17 @@ var StripePaymentApplePay = {
 
         // Prevent the form from being submitted until a new Stripe Apple Pay token is generated and received
         event.preventDefault();
+
+        // We have to manually check whether this site is served via HTTPS before checking the Apple Pay availability
+        // using Stripe.js. Even though Stripe.js checks the used protocol and declines the payment if not served via
+        // HTTPS, only a generic 'not available' error message is returned and the HTTPS warning is logged to the
+        // console. We however want to show a specific error message that informs about the lack of security.
+        if (!me.isSecureConnection()) {
+            me.shouldResetSubmitButton = true;
+            me.handleStripeError(me.snippets.error.connectionNotSecure);
+
+            return undefined;
+        }
 
         // Try to start the Apple Pay flow
         $('#stripe-payment-apple-pay-error-box').hide();
@@ -190,6 +202,13 @@ var StripePaymentApplePay = {
      */
     isShopware5Template: function() {
         return typeof $.overlay !== 'undefined';
+    },
+
+    /**
+     * @return Boolean True, if the page is served via HTTPS. Otherwise false.
+     */
+    isSecureConnection: function() {
+        return window.location.protocol === 'https:';
     }
 
 };
