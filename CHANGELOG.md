@@ -1,4 +1,4 @@
-## NEXT RELEASE
+## 3.1.0
 
 ### en
 
