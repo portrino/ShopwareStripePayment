@@ -145,6 +145,7 @@ var StripePaymentApplePay = {
             form.submit();
         }, function(error) {
             // Reset the submit button and display the error
+            me.applePayToken = null;
             me.shouldResetSubmitButton = true;
             var message = me.snippets.error[error.code || ''] || error.message || 'Unknown error';
             me.handleStripeError(message);
