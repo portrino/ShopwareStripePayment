@@ -14,6 +14,7 @@
             float: none;
             padding-left: 0;
             width: 100%;
+            .unitize(max-width, 175);
         }
 
         &.checkox-label {
@@ -24,14 +25,19 @@
     input,
     .StripeElement,
     .saved-cards .js--fancy-select,
-    .country-selection .js--fancy-select {
+    .saved-cards .select-field,
+    .country-selection .js--fancy-select,
+    .country-selection .select-field {
         float: none;
         width: 100%;
+        max-width: none !important;
     }
 
     .stripe-element-card-cvc {
         // Use 'float: left;' to make sure the CVC info icon is positioned on the right of the field
         float: left;
+        // Make the field smaller to make room for the CVC info icon
+        width: 83%;
     }
 
     .help {
@@ -172,14 +178,23 @@
 
         label span.panel--td {
             float: left;
-            width: 35%;
+            width: 44%;
         }
 
         input,
         .StripeElement,
         .saved-cards .js--fancy-select,
-        .country-selection .js--fancy-select {
-            width: 45%;
+        .saved-cards .select-field,
+        .country-selection .js--fancy-select,
+        .country-selection .select-field {
+            width: 56%;
+            .unitize(max-width, 290) !important;
+        }
+
+        .stripe-element-card-cvc {
+            // Make the field smaller to make room for the CVC info icon
+            width: 39%;
+            .unitize(max-width, 245) !important;
         }
 
         .description {
@@ -217,14 +232,21 @@
     .stripe-payment-card-form,
     .stripe-payment-sepa-form {
         label span.panel--td {
-            width: 35%;
+            width: 43%;
         }
 
         input,
         .StripeElement,
         .saved-cards .js--fancy-select,
-        .country-selection .js--fancy-select {
-            width: 39%;
+        .saved-cards .select-field,
+        .country-selection .js--fancy-select,
+        .country-selection .select-field {
+            width: 57%;
+        }
+
+        .stripe-element-card-cvc {
+            // Make the field smaller to make room for the CVC info icon
+            width: 45%;
         }
     }
 }
@@ -234,14 +256,16 @@
     .stripe-payment-card-form,
     .stripe-payment-sepa-form {
         label span.panel--td {
-            width: 20%;
+            width: 38%;
         }
 
         input,
         .StripeElement,
         .saved-cards .js--fancy-select,
-        .country-selection .js--fancy-select {
-            width: 26%;
+        .saved-cards .select-field,
+        .country-selection .js--fancy-select,
+        .country-selection .select-field {
+            width: 62%;
         }
     }
 }
