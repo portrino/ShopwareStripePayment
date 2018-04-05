@@ -1,3 +1,16 @@
+## 3.1.1
+
+### en
+
+* Improves the appearance of input fields for SEPA Direct Debit and credit card payments.
+* Improves the compatibility to the plugin "DHL Wunschpaket".
+
+### de
+
+* Verbessert die Darstellung der Eingabefelder für Zahlungen mittels SEPA-Lastschrift und Kreditkarte.
+* Verbessert die Kompatibilität zum Plugin "DHL Wunschpaket".
+
+
 ## 3.1.0
 
 ### en
