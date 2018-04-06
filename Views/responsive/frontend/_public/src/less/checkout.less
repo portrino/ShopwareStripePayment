@@ -24,13 +24,20 @@
 
     input,
     .StripeElement,
-    .saved-cards .js--fancy-select,
     .saved-cards .select-field,
-    .country-selection .js--fancy-select,
     .country-selection .select-field {
         float: none;
         width: 100%;
         max-width: none !important;
+
+        // In Shopware prior 5.3 'fancy' select boxes are nested 'js--fancy-select' divs, hence we have to fix their styles
+        // since the outer 'select-field' does all the styling
+        &.select-field {
+            display: inline-block;
+        }
+        .js--fancy-select {
+            width: 100%;
+        }
     }
 
     .stripe-element-card-cvc {
@@ -183,9 +190,7 @@
 
         input,
         .StripeElement,
-        .saved-cards .js--fancy-select,
         .saved-cards .select-field,
-        .country-selection .js--fancy-select,
         .country-selection .select-field {
             width: 56%;
             .unitize(max-width, 290) !important;
@@ -237,9 +242,7 @@
 
         input,
         .StripeElement,
-        .saved-cards .js--fancy-select,
         .saved-cards .select-field,
-        .country-selection .js--fancy-select,
         .country-selection .select-field {
             width: 57%;
         }
@@ -261,9 +264,7 @@
 
         input,
         .StripeElement,
-        .saved-cards .js--fancy-select,
         .saved-cards .select-field,
-        .country-selection .js--fancy-select,
         .country-selection .select-field {
             width: 62%;
         }
