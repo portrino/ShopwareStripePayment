@@ -2,7 +2,7 @@
 
 {block name="frontend_index_header_javascript" append}
     <script type="text/javascript">
-        if (typeof document.asyncReady !== 'undefined') {
+        if (typeof document.asyncReady === 'function') {
             // Shopware >= 5.3, hence wait for async JavaScript first
             document.stripeJQueryReady = function(callback) {
                 document.asyncReady(function() {
