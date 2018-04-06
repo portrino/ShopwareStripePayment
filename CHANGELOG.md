@@ -1,3 +1,14 @@
+## 3.1.2
+
+### en
+
+* Improves the compatibility to custom themes.
+
+### de
+
+* Verbessert die Kompatibilität zu manuell angepassten Themes.
+
+
 ## 3.1.1
 
 ### en
