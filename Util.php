@@ -244,14 +244,16 @@ class Util
             return null;
         }
 
+        $billingAddress = (method_exists($customer, 'getDefaultBillingAddress')) ? $customer->getDefaultBillingAddress() : $customer->getBilling();
+
         // Check for company
-        $company = $customer->getBilling()->getCompany();
+        $company = $billingAddress->getCompany();
         if (!empty($company)) {
             return $company;
         }
 
         // Use first and last name
-        return trim($customer->getBilling()->getFirstName() . ' ' . $customer->getBilling()->getLastName());
+        return trim($billingAddress->getFirstName() . ' ' . $billingAddress->getLastName());
     }
 
     /**
