@@ -258,16 +258,16 @@
         },
         {
             "name": "viison/style-guide",
-            "version": "2.0.1",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/VIISON/style-guide.git",
-                "reference": "28df8f8ec6ad60e58d7af07019f20ddc879eaa60"
+                "reference": "89095b491d0251ed658afa2a098e069dfb54fd7f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/VIISON/style-guide/zipball/28df8f8ec6ad60e58d7af07019f20ddc879eaa60",
-                "reference": "28df8f8ec6ad60e58d7af07019f20ddc879eaa60",
+                "url": "https://api.github.com/repos/VIISON/style-guide/zipball/89095b491d0251ed658afa2a098e069dfb54fd7f",
+                "reference": "89095b491d0251ed658afa2a098e069dfb54fd7f",
                 "shasum": ""
             },
             "require": {
@@ -281,11 +281,22 @@
                     "shopware-plugin": "git-hooks/shopware-plugin/"
                 }
             },
+            "scripts": {
+                "phpcs": [
+                    "vendor/bin/phpcs -s -n ."
+                ],
+                "phpcs:fix": [
+                    "vendor/bin/phpcbf -s -n ."
+                ],
+                "phplint": [
+                    "echo \"Linting all PHP files...\"; LINT_RETURN=0; for FILE in $(find . -regex \".*\\.php\" -not -path \"./vendor/*\"); do if ! php -l \"$FILE\"; then LINT_RETURN=1; fi; done; exit $LINT_RETURN;"
+                ]
+            },
             "support": {
-                "source": "https://github.com/VIISON/style-guide/tree/2.0.0",
+                "source": "https://github.com/VIISON/style-guide/tree/3.0.0",
                 "issues": "https://github.com/VIISON/style-guide/issues"
             },
-            "time": "2018-02-01T09:10:03+00:00"
+            "time": "2018-07-18T08:52:06+00:00"
         }
     ],
     "aliases": [],
