@@ -258,16 +258,16 @@
         },
         {
             "name": "viison/style-guide",
-            "version": "3.0.2",
+            "version": "4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/VIISON/style-guide.git",
-                "reference": "02095b22b2095d600c9114775c0e4da6b0233c7e"
+                "reference": "1362115ce94fab3044adad33a97e9bcd0346d29a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/VIISON/style-guide/zipball/02095b22b2095d600c9114775c0e4da6b0233c7e",
-                "reference": "02095b22b2095d600c9114775c0e4da6b0233c7e",
+                "url": "https://api.github.com/repos/VIISON/style-guide/zipball/1362115ce94fab3044adad33a97e9bcd0346d29a",
+                "reference": "1362115ce94fab3044adad33a97e9bcd0346d29a",
                 "shasum": ""
             },
             "require": {
@@ -293,10 +293,10 @@
                 ]
             },
             "support": {
-                "source": "https://github.com/VIISON/style-guide/tree/3.0.2",
+                "source": "https://github.com/VIISON/style-guide/tree/master",
                 "issues": "https://github.com/VIISON/style-guide/issues"
             },
-            "time": "2018-07-18T12:00:34+00:00"
+            "time": "2018-07-26T15:17:16+00:00"
         }
     ],
     "aliases": [],
