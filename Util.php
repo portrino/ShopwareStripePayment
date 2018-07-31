@@ -38,7 +38,7 @@ class Util
         Stripe\Stripe::setApiVersion('2016-07-06');
 
         // Set some plugin info that will be added to every Stripe request
-        $defaultShop = Shopware()->Models()->getRepository('Shopware\Models\Shop\Shop')->getActiveDefault();
+        $defaultShop = Shopware()->Models()->getRepository('Shopware\\Models\\Shop\\Shop')->getActiveDefault();
         Stripe\Stripe::setAppInfo(
             self::STRIPE_PLATFORM_NAME,
             Shopware()->Plugins()->Frontend()->StripePayment()->getVersion(),
@@ -228,7 +228,7 @@ class Util
         if ($customerId === null) {
             return null;
         }
-        $customerRepository = Shopware()->Models()->getRepository('\Shopware\Models\Customer\Customer');
+        $customerRepository = Shopware()->Models()->getRepository('\\Shopware\\Models\\Customer\\Customer');
         $customer = $customerRepository->find($customerId);
 
         return $customer;

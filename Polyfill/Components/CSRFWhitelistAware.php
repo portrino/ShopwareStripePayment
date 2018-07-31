@@ -6,7 +6,7 @@
 
 namespace Shopware\Components;
 
-if (!interface_exists('\Shopware\Components\CSRFWhitelistAware')) {
+if (!interface_exists('Shopware\\Components\\CSRFWhitelistAware')) {
     // Just define an empty interface
     interface CSRFWhitelistAware
     {

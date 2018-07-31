@@ -28,13 +28,13 @@ class Payment implements SubscriberInterface
     public function onAddPaymentClass(\Enlight_Event_EventArgs $args)
     {
         $dirs = $args->getReturn();
-        $dirs['StripePaymentApplePay'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\ApplePay';
-        $dirs['StripePaymentBancontact'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Bancontact';
-        $dirs['StripePaymentCard'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Card';
-        $dirs['StripePaymentIdeal'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Ideal';
-        $dirs['StripePaymentGiropay'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Giropay';
-        $dirs['StripePaymentSepa'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Sepa';
-        $dirs['StripePaymentSofort'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Sofort';
+        $dirs['StripePaymentApplePay'] = 'Shopware\\Plugins\\StripePayment\\Components\\PaymentMethods\\ApplePay';
+        $dirs['StripePaymentBancontact'] = 'Shopware\\Plugins\\StripePayment\\Components\\PaymentMethods\\Bancontact';
+        $dirs['StripePaymentCard'] = 'Shopware\\Plugins\\StripePayment\\Components\\PaymentMethods\\Card';
+        $dirs['StripePaymentIdeal'] = 'Shopware\\Plugins\\StripePayment\\Components\\PaymentMethods\\Ideal';
+        $dirs['StripePaymentGiropay'] = 'Shopware\\Plugins\\StripePayment\\Components\\PaymentMethods\\Giropay';
+        $dirs['StripePaymentSepa'] = 'Shopware\\Plugins\\StripePayment\\Components\\PaymentMethods\\Sepa';
+        $dirs['StripePaymentSofort'] = 'Shopware\\Plugins\\StripePayment\\Components\\PaymentMethods\\Sofort';
         $args->setReturn($dirs);
     }
 }

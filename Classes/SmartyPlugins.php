@@ -88,7 +88,12 @@ class SmartyPlugins
         $defaultNamespace = $this->snippetResource->getSnippetNamespace($template->source);
 
         // Find all 'stripe_snippet' blocks
-        $pattern = "/$ldle$snippetTag(\s.+?)?$rdle(.*?)$ldle\/$snippetTag$rdle/msi";
+        $pattern = sprintf(
+            '/%1$s%2$s(\\s.+?)?%3$s(.*?)%1$s\\/%2$s%3$s/msi',
+            $ldle,
+            $snippetTag,
+            $rdle
+        );
         while (preg_match($pattern, $source, $matches, PREG_OFFSET_CAPTURE)) {
             if (count($matches) != 3) {
                 continue;
@@ -97,9 +102,9 @@ class SmartyPlugins
             $blockContent = $matches[2][0];
 
             // Parse the snippet arguments to retrieve the snippet
-            $hasNamespaceArg = preg_match('/(.?)(namespace=)(.*?)(?=(\s|$))/', $blockArgs, $namespaceMatches);
+            $hasNamespaceArg = preg_match('/(.?)(namespace=)(.*?)(?=(\\s|$))/', $blockArgs, $namespaceMatches);
             $namespace = ($hasNamespaceArg && !empty($namespaceMatches[3])) ? trim($namespaceMatches[3]) : $defaultNamespace;
-            $hasNameArg = preg_match('/(.?)(name=)(.*?)(?=(\s|$))/', $blockArgs, $nameMatches);
+            $hasNameArg = preg_match('/(.?)(name=)(.*?)(?=(\\s|$))/', $blockArgs, $nameMatches);
             $name = ($hasNameArg && !empty($nameMatches[3])) ? trim($nameMatches[3]) : $blockContent;
             $snippet = $this->snippetManager->getNamespace($namespace)->get($name, $blockContent);
             // Unescape already escaped single quotes

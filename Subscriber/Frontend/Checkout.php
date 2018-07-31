@@ -190,7 +190,7 @@ class Checkout implements SubscriberInterface
 
         // Reset parts of the stripe session, if no stripe payment method is selected
         if ($request->getParam('payment')) {
-            $selectedPaymentMethod = Shopware()->Container()->get('models')->find('Shopware\Models\Payment\Payment', $request->getParam('payment'));
+            $selectedPaymentMethod = Shopware()->Container()->get('models')->find('Shopware\\Models\\Payment\\Payment', $request->getParam('payment'));
             if ($selectedPaymentMethod && $selectedPaymentMethod->getAction() !== 'StripePayment') {
                 unset($stripeSession->applePayToken);
             }

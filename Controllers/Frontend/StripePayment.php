@@ -6,7 +6,7 @@ use Shopware\Plugins\StripePayment\Util;
 /**
  * @copyright Copyright (c) 2017, VIISON GmbH
  */
-abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Controllers_Frontend_Payment implements CSRFWhitelistAware
+class Shopware_Controllers_Frontend_StripePayment extends Shopware_Controllers_Frontend_Payment implements CSRFWhitelistAware
 {
     /**
      * The ID of the order payment status 'completely paid'
@@ -285,7 +285,7 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
         }
 
         // Update the cleared date
-        $order = $this->get('models')->getRepository('Shopware\Models\Order\Order')->findOneBy([
+        $order = $this->get('models')->getRepository('Shopware\\Models\\Order\\Order')->findOneBy([
             'number' => $orderNumber,
         ]);
         $order->setClearedDate(new \DateTime());
@@ -372,7 +372,7 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
         if (!$order) {
             return;
         }
-        $paymentStatus = $this->get('models')->find('Shopware\Models\Order\Status', self::PAYMENT_STATUS_REVIEW_NECESSARY);
+        $paymentStatus = $this->get('models')->find('Shopware\\Models\\Order\\Status', self::PAYMENT_STATUS_REVIEW_NECESSARY);
         $order->setPaymentStatus($paymentStatus);
         $this->get('models')->flush($order);
     }
@@ -389,7 +389,7 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
         if (!$order) {
             return;
         }
-        $paymentStatus = $this->get('models')->find('Shopware\Models\Order\Status', self::PAYMENT_STATUS_COMPLETELY_PAID);
+        $paymentStatus = $this->get('models')->find('Shopware\\Models\\Order\\Status', self::PAYMENT_STATUS_COMPLETELY_PAID);
         $order->setPaymentStatus($paymentStatus);
         $this->get('models')->flush($order);
     }
@@ -455,7 +455,7 @@ abstract class Shopware_Controllers_Frontend_StripePayment extends Shopware_Cont
         }
 
         // Find the order that references the source ID
-        $order = $this->get('models')->getRepository('Shopware\Models\Order\Order')->findOneBy([
+        $order = $this->get('models')->getRepository('Shopware\\Models\\Order\\Order')->findOneBy([
             'temporaryId' => $source->id,
         ]);
 

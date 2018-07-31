@@ -64,7 +64,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                 // Check for any Stripe payment methods
                 $builder = $this->get('models')->createQueryBuilder();
                 $builder->select('payment')
-                        ->from('Shopware\Models\Payment\Payment', 'payment')
+                        ->from('Shopware\\Models\\Payment\\Payment', 'payment')
                         ->where('payment.name LIKE \'stripe_payment%\'');
                 $stripePaymentMethods = $builder->getQuery()->getResult();
                 if (count($stripePaymentMethods) === 0) {
@@ -167,7 +167,7 @@ class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Compone
                     SET stripe_customer_id = NULL'
                 );
                 // Rename the original payment method to 'stripe_payment_card'
-                $stripePaymentMethod = $this->get('models')->getRepository('Shopware\Models\Payment\Payment')->findOneBy([
+                $stripePaymentMethod = $this->get('models')->getRepository('Shopware\\Models\\Payment\\Payment')->findOneBy([
                     'name' => 'stripe_payment',
                 ]);
                 if ($stripePaymentMethod) {

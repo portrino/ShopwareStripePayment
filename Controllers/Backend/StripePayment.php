@@ -47,7 +47,7 @@ class Shopware_Controllers_Backend_StripePayment extends Shopware_Controllers_Ba
         $comment = $this->Request()->getParam('comment');
 
         // Try to get order
-        $order = $this->get('models')->find('Shopware\Models\Order\Order', $orderId);
+        $order = $this->get('models')->find('Shopware\\Models\\Order\\Order', $orderId);
         if ($order === null) {
             // Order does not exist
             $this->View()->success = false;
@@ -94,7 +94,7 @@ class Shopware_Controllers_Backend_StripePayment extends Shopware_Controllers_Ba
         $internalComment .= "\n--------------------------------------------------------------\n"
                          . 'Stripe Rückerstattung (' . date('d.m.Y, G:i:s') . ")\n"
                          . 'Betrag: ' . number_format($amount, 2, ',', '.') . " €\n"
-                         . "Kommentar: $comment\n"
+                         . 'Kommentar: ' . $comment . "\n"
                          . "Positionen:\n";
         foreach ($positions as $position) {
             $price = number_format($position['price'], 2, ',', '.');
