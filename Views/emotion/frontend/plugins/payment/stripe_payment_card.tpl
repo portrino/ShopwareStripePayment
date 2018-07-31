@@ -3,7 +3,6 @@
     <link href="{link file='frontend/stripe_payment/_resources/styles/stripe_payment_card.css'}" rel="stylesheet">
     {* Include and set up the Stripe SDK *}
     <script type="text/javascript" src="https://js.stripe.com/v3/"></script>
-    <script type="text/javascript" src="{link file="frontend/stripe_payment/_resources/javascript/jquery.payment.min.js"}"></script>
     <script type="text/javascript" src="{link file="frontend/stripe_payment/_resources/javascript/stripe_payment_card.js"}"></script>
     <script type="text/javascript">
         // Include the shared initialization of the StripePaymentCard library

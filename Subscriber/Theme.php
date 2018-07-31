@@ -83,7 +83,6 @@ class Theme implements SubscriberInterface
     public function onCollectPluginJavascriptFiles()
     {
         return new ArrayCollection([
-            $this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/jquery.payment.min.js',
             $this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/stripe_payment_apple_pay.js',
             $this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/stripe_payment_card.js',
             $this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/stripe_payment_sepa.js',
