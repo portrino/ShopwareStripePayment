@@ -7,7 +7,7 @@
 
 ### de
 
-* Verbessert to Kompatiblität zu Shopware 5.5.
+* Verbessert die Kompatibilität zu Shopware 5.5.
 * Behebt einen Fehler, der unter Umständen dazu führen konnte, dass die Eingabefelder für Kreditkartenzahlungen nicht korrekt angezeigt wurden.
 
 
