@@ -1,3 +1,16 @@
+## 3.1.3
+
+### en
+
+* Improves the Shopware 5.5 compatibility.
+* Fixes a bug that might have prevented the input fields for credit cards payments from being displayed correctly.
+
+### de
+
+* Verbessert to Kompatiblität zu Shopware 5.5.
+* Behebt einen Fehler, der unter Umständen dazu führen konnte, dass die Eingabefelder für Kreditkartenzahlungen nicht korrekt angezeigt wurden.
+
+
 ## 3.1.2
 
 ### en
