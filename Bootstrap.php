@@ -1,4 +1,10 @@
 <?php
+// Copyright (c) Pickware GmbH. All rights reserved.
+// This file is part of software that is released under a proprietary license.
+// You must not copy, modify, distribute, make publicly available, or execute
+// its contents or parts thereof without express permission by the copyright
+// holder, unless otherwise permitted by law.
+
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require_once(__DIR__ . '/vendor/autoload.php');
 }
@@ -11,8 +17,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * This plugin offers a credit card payment method using Stripe.
- *
- * @copyright Copyright (c) 2015, VIISON GmbH
  */
 class Shopware_Plugins_Frontend_StripePayment_Bootstrap extends Shopware_Components_Plugin_Bootstrap
 {

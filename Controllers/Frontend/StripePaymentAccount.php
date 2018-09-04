@@ -1,11 +1,15 @@
 <?php
+// Copyright (c) Pickware GmbH. All rights reserved.
+// This file is part of software that is released under a proprietary license.
+// You must not copy, modify, distribute, make publicly available, or execute
+// its contents or parts thereof without express permission by the copyright
+// holder, unless otherwise permitted by law.
+
 use Shopware\Plugins\StripePayment\Util;
 
 /**
  * This controller provides two actions for listing all credit cards of the currently logged in user
  * and for deleting a selected credit card.
- *
- * @copyright Copyright (c) 2015, VIISON GmbH
  */
 class Shopware_Controllers_Frontend_StripePaymentAccount extends Shopware_Controllers_Frontend_Account
 {

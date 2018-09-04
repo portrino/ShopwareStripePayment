@@ -1,4 +1,10 @@
 <?php
+// Copyright (c) Pickware GmbH. All rights reserved.
+// This file is part of software that is released under a proprietary license.
+// You must not copy, modify, distribute, make publicly available, or execute
+// its contents or parts thereof without express permission by the copyright
+// holder, unless otherwise permitted by law.
+
 namespace Shopware\Plugins\StripePayment\Subscriber;
 
 use Enlight\Event\SubscriberInterface;
@@ -6,8 +12,6 @@ use \Shopware_Plugins_Frontend_StripePayment_Bootstrap as Bootstrap;
 
 /**
  * A subscriber returning the paths of custom controllers.
- *
- * @copyright Copyright (c) 2017, VIISON GmbH
  */
 class Controllers implements SubscriberInterface
 {
