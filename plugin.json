@@ -11,6 +11,6 @@
     },
     "compatibility": {
         "minimumVersion": "5.0.4",
-        "maximumVersion": "5.4.99"
+        "maximumVersion": "5.5.99"
     }
 }
