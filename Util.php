@@ -220,7 +220,7 @@ class Util
     /**
      * Checks if a user/customer is currently logged in and tries to get and return that customer.
      *
-     * @return null|Customer The customer object of the user who is logged in or null, if no user is logged in.
+     * @return Customer|null The customer object of the user who is logged in or null, if no user is logged in.
      */
     public static function getCustomer()
     {
@@ -242,7 +242,7 @@ class Util
     }
 
     /**
-     * @return null|string The customers company name, if it exists. Otherwise their joined first and last name or null, if no user is logged in.
+     * @return string|null The customers company name, if it exists. Otherwise their joined first and last name or null, if no user is logged in.
      */
     public static function getCustomerName()
     {
