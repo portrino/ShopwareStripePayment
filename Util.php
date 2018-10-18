@@ -234,7 +234,6 @@ class Util
         if ($customerId === null) {
             return null;
         }
-        $customerRepository = Shopware()->Models()->getRepository('\Shopware\Models\Customer\Customer');
         $customerRepository = Shopware()->Models()->getRepository('\\Shopware\\Models\\Customer\\Customer');
         /** @var Customer $customer */
         $customer = $customerRepository->find($customerId);
