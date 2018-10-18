@@ -56,7 +56,7 @@ class Util
      */
     public static function stripePublicKey()
     {
-        return (string)Shopware()->Plugins()->Frontend()->StripePayment()->Config()->get('stripePublicKey');
+        return Shopware()->Plugins()->Frontend()->StripePayment()->Config()->get('stripePublicKey');
     }
 
     /**
@@ -64,7 +64,7 @@ class Util
      */
     public static function stripeSecretKey()
     {
-        return (string)Shopware()->Plugins()->Frontend()->StripePayment()->Config()->get('stripeSecretKey');
+        return Shopware()->Plugins()->Frontend()->StripePayment()->Config()->get('stripeSecretKey');
     }
 
     /**
