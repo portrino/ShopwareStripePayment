@@ -7,9 +7,9 @@
 
 namespace Shopware\Plugins\StripePayment;
 
+use Shopware\Models\Attribute\Customer as CustomerAttribute;
 use Shopware\Models\Customer\Customer;
 use Stripe;
-use Shopware\Models\Attribute\Customer as CustomerAttribute;
 
 /**
  * Utility functions used across this plugin.
