@@ -1,4 +1,10 @@
 <?php
+// Copyright (c) Pickware GmbH. All rights reserved.
+// This file is part of software that is released under a proprietary license.
+// You must not copy, modify, distribute, make publicly available, or execute
+// its contents or parts thereof without express permission by the copyright
+// holder, unless otherwise permitted by law.
+
 namespace Shopware\Plugins\StripePayment\Subscriber;
 
 use Enlight\Event\SubscriberInterface;
@@ -8,8 +14,6 @@ use \Shopware_Plugins_Frontend_StripePayment_Bootstrap as Bootstrap;
 
 /**
  * The subscriber providing the theme/template extensions.
- *
- * @copyright Copyright (c) 2015, VIISON GmbH
  */
 class Theme implements SubscriberInterface
 {
@@ -37,11 +41,11 @@ class Theme implements SubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             'Enlight_Controller_Action_PostDispatchSecure' => 'onPostDispatchSecure',
             'Theme_Compiler_Collect_Plugin_Javascript' => 'onCollectPluginJavascriptFiles',
-            'Theme_Compiler_Collect_Plugin_Less' => 'onCollectPluginLESSFiles'
-        );
+            'Theme_Compiler_Collect_Plugin_Less' => 'onCollectPluginLESSFiles',
+        ];
     }
 
     /**
@@ -57,7 +61,7 @@ class Theme implements SubscriberInterface
     {
         // Determine template type (responsive/emotion)
         $module = $args->getRequest()->getParam('module');
-        $templateType = (!in_array($module, array('backend', 'api')) && Shopware()->Shop()->getTemplate()->getVersion() >= 3) ? 'responsive' : 'emotion';
+        $templateType = (!in_array($module, ['backend', 'api']) && Shopware()->Shop()->getTemplate()->getVersion() >= 3) ? 'responsive' : 'emotion';
 
         // Add the template directory for the used template type
         $this->templateManager->addTemplateDir(
@@ -78,37 +82,34 @@ class Theme implements SubscriberInterface
      * Adds Stripe's jQuery payment plugin as well as the custom Stripe payment library
      * to the Javascript resources which are minified.
      *
-     * @param \Enlight_Event_EventArgs $args
      * @return ArrayCollection
      */
-    public function onCollectPluginJavascriptFiles(\Enlight_Event_EventArgs $args)
+    public function onCollectPluginJavascriptFiles()
     {
-        return new ArrayCollection(array(
-            $this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/jquery.payment.min.js',
+        return new ArrayCollection([
             $this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/stripe_payment_apple_pay.js',
             $this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/stripe_payment_card.js',
-            $this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/stripe_payment_sepa.js'
-        ));
+            $this->path . 'Views/shared/frontend/stripe_payment/_resources/javascript/stripe_payment_sepa.js',
+        ]);
     }
 
     /**
      * Adds this plugin's LESS files to the compile path.
      *
-     * @param \Enlight_Event_EventArgs $args
      * @return ArrayCollection
      */
-    public function onCollectPluginLESSFiles(\Enlight_Event_EventArgs $args)
+    public function onCollectPluginLESSFiles()
     {
-        return new ArrayCollection(array(
+        return new ArrayCollection([
             new LessDefinition(
-                array(),
-                array(
+                [],
+                [
                     $this->path . 'Views/responsive/frontend/_public/src/less/checkout.less',
                     $this->path . 'Views/responsive/frontend/_public/src/less/account.less',
-                    $this->path . 'Views/responsive/frontend/_public/src/less/sidebar.less'
-                ),
+                    $this->path . 'Views/responsive/frontend/_public/src/less/sidebar.less',
+                ],
                 $this->path . 'Views/responsive/'
             )
-        ));
+        ]);
     }
 }

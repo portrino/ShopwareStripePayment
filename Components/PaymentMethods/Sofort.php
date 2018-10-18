@@ -1,13 +1,16 @@
 <?php
+// Copyright (c) Pickware GmbH. All rights reserved.
+// This file is part of software that is released under a proprietary license.
+// You must not copy, modify, distribute, make publicly available, or execute
+// its contents or parts thereof without express permission by the copyright
+// holder, unless otherwise permitted by law.
+
 namespace Shopware\Plugins\StripePayment\Components\PaymentMethods;
 
 use Shopware\Plugins\StripePayment\Util;
 use Stripe;
 
-/**
- * @copyright Copyright (c) 2017, VIISON GmbH
- */
-class Sofort extends Base
+class Sofort extends AbstractStripePaymentMethod
 {
     /**
      * @inheritdoc
@@ -16,26 +19,26 @@ class Sofort extends Base
     {
         Util::initStripeAPI();
         // Create a new SOFORT source
-        $returnUrl = $this->assembleShopwareUrl(array(
+        $returnUrl = $this->assembleShopwareUrl([
             'controller' => 'StripePayment',
-            'action' => 'completeRedirectFlow'
-        ));
-        $source = Stripe\Source::create(array(
+            'action' => 'completeRedirectFlow',
+        ]);
+        $source = Stripe\Source::create([
             'type' => 'sofort',
             'amount' => $amountInCents,
             'currency' => $currencyCode,
-            'owner' => array(
-                'name' => Util::getCustomerName()
-            ),
-            'sofort' => array(
+            'owner' => [
+                'name' => Util::getCustomerName(),
+            ],
+            'sofort' => [
                 'country' => $this->get('session')->sOrderVariables->sCountry['countryiso'],
-                'statement_descriptor' => $this->getStatementDescriptor()
-            ),
-            'redirect' => array(
-                'return_url' => $returnUrl
-            ),
-            'metadata' => $this->getSourceMetadata()
-        ));
+                'statement_descriptor' => $this->getStatementDescriptor(),
+            ],
+            'redirect' => [
+                'return_url' => $returnUrl,
+            ],
+            'metadata' => $this->getSourceMetadata(),
+        ]);
 
         return $source;
     }

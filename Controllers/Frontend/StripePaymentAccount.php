@@ -1,11 +1,15 @@
 <?php
+// Copyright (c) Pickware GmbH. All rights reserved.
+// This file is part of software that is released under a proprietary license.
+// You must not copy, modify, distribute, make publicly available, or execute
+// its contents or parts thereof without express permission by the copyright
+// holder, unless otherwise permitted by law.
+
 use Shopware\Plugins\StripePayment\Util;
 
 /**
  * This controller provides two actions for listing all credit cards of the currently logged in user
  * and for deleting a selected credit card.
- *
- * @copyright Copyright (c) 2015, VIISON GmbH
  */
 class Shopware_Controllers_Frontend_StripePaymentAccount extends Shopware_Controllers_Frontend_Account
 {
@@ -35,7 +39,7 @@ class Shopware_Controllers_Frontend_StripePaymentAccount extends Shopware_Contro
             // Shopware 5
             $this->View()->loadTemplate('frontend/account/stripe_payment_credit_cards.tpl');
         } else {
-            // Shopware 4
+            // Shopware 4 template (still valid in Shopware 5.0)
             $this->View()->loadTemplate('frontend/stripe_payment/account/credit_cards.tpl');
             $this->View()->extendsTemplate('frontend/stripe_payment/account/content_right.tpl');
         }
@@ -52,10 +56,10 @@ class Shopware_Controllers_Frontend_StripePaymentAccount extends Shopware_Contro
         }
 
         // Set the view data
-        $this->View()->stripePayment = array(
+        $this->View()->stripePayment = [
             'availableCards' => $cards,
-            'error' => $stripeSession->accountError
-        );
+            'error' => $stripeSession->accountError,
+        ];
         unset($stripeSession->accountError);
     }
 
@@ -89,9 +93,9 @@ class Shopware_Controllers_Frontend_StripePaymentAccount extends Shopware_Contro
         unset($stripeSession->saveCardForFutureCheckouts);
 
         // Redirect to the manage action
-        $this->redirect(array(
+        $this->redirect([
             'controller' => $this->Request()->getControllerName(),
-            'action' => 'manageCreditCards'
-        ));
+            'action' => 'manageCreditCards',
+        ]);
     }
 }

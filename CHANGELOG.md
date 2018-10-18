@@ -1,3 +1,107 @@
+## 3.1.3
+
+### en
+
+* Improves the Shopware 5.5 compatibility.
+* Fixes a bug that might have prevented the input fields for credit cards payments from being displayed correctly.
+
+### de
+
+* Verbessert die Kompatibilität zu Shopware 5.5.
+* Behebt einen Fehler, der unter Umständen dazu führen konnte, dass die Eingabefelder für Kreditkartenzahlungen nicht korrekt angezeigt wurden.
+
+
+## 3.1.2
+
+### en
+
+* Improves the compatibility to custom themes.
+
+### de
+
+* Verbessert die Kompatibilität zu manuell angepassten Themes.
+
+
+## 3.1.1
+
+### en
+
+* Improves the appearance of input fields for SEPA Direct Debit and credit card payments.
+* Improves the compatibility to the plugin "DHL Wunschpaket".
+
+### de
+
+* Verbessert die Darstellung der Eingabefelder für Zahlungen mittels SEPA-Lastschrift und Kreditkarte.
+* Verbessert die Kompatibilität zum Plugin "DHL Wunschpaket".
+
+
+## 3.1.0
+
+### en
+
+* It is now possible to let Stripe automatically send receipt emails to the customer (must be enabled in the plugin config).
+* Improves the compatibility of Apple Pay payments when using customized themes in the checkout.
+* Fixes a UI glitch in the SEPA payment form.
+
+### de
+
+* Es ist nun möglich, dass Stripe automatisch Zahlungsbelege per E-Mail an den Kunden sendet (muss in der Pluginkonfiguration aktiviert werden).
+* Verbessert die Zahlung mittels Apple Pay bei der Verwendung von angepassten Themes im Bestellabschluss.
+* Behebt einen Darstellungsfehler im Formular von SEPA-Zahlungen.
+
+
+## 3.0.3
+
+### en
+
+* Fixes a bug that prevented the checkout via Apple Pay, if the "terms and conditions" checkbox was hidden.
+* Improves the validation of Apple Pay payments.
+
+### de
+
+* Behebt einen Fehler beim Bestellabschluss mit Apple Pay, der auftrat, falls die AGB-Checkbox nicht angezeigt wird.
+* Verbessert die Validierung von Zahlungen mittels Apple Pay.
+
+
+## 3.0.2
+
+### en
+
+* Fixes an error in the payment process when using SEPA.
+* Fixes an error in the payment process when using Apple Pay.
+
+### de
+
+* Behebt einen Fehler im Bezahlvorgang bei der Verwendung von SEPA Lastschrift.
+* Behebt einen Fehler im Bezahlvorgang bei der Verwendung von Apple Pay.
+
+
+## 3.0.1
+
+### en
+
+* Fixes an error caused by obsolete plugin files.
+
+### de
+
+* Behebt einen Fehler, der durch obsolete Plugindateien verursacht wurde.
+
+
+## 3.0.0
+
+### en
+
+**Note:** Starting with this release the plugin is no longer compatible to Shopware versions older than 5.0.4. Please install version 2.2.1 of this plugin on older Shopware versions.
+
+* Fixes an error that occurred when trying to install/uninstall the plugin repeatedly.
+
+### de
+
+**Hinweis:** Beginnend mit diesem Release ist das Plugin nicht mehr zu Shopware-Versionen vor 5.0.4 kompatibel. Bitte installieren Sie unter älteren Shopware-Installationen Version 2.2.1 des Plugins.
+
+* Behebt einen Fehler, der bei wiederholter Installation/Deinstallation auftrat.
+
+
 ## 2.2.1
 
 ### en

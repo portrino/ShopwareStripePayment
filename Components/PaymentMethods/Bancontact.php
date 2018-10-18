@@ -1,13 +1,16 @@
 <?php
+// Copyright (c) Pickware GmbH. All rights reserved.
+// This file is part of software that is released under a proprietary license.
+// You must not copy, modify, distribute, make publicly available, or execute
+// its contents or parts thereof without express permission by the copyright
+// holder, unless otherwise permitted by law.
+
 namespace Shopware\Plugins\StripePayment\Components\PaymentMethods;
 
 use Shopware\Plugins\StripePayment\Util;
 use Stripe;
 
-/**
- * @copyright Copyright (c) 2017, VIISON GmbH
- */
-class Bancontact extends Base
+class Bancontact extends AbstractStripePaymentMethod
 {
     /**
      * @inheritdoc
@@ -16,25 +19,25 @@ class Bancontact extends Base
     {
         Util::initStripeAPI();
         // Create a new Bancontact source
-        $returnUrl = $this->assembleShopwareUrl(array(
+        $returnUrl = $this->assembleShopwareUrl([
             'controller' => 'StripePayment',
-            'action' => 'completeRedirectFlow'
-        ));
-        $source = Stripe\Source::create(array(
+            'action' => 'completeRedirectFlow',
+        ]);
+        $source = Stripe\Source::create([
             'type' => 'bancontact',
             'amount' => $amountInCents,
             'currency' => $currencyCode,
-            'owner' => array(
-                'name' => Util::getCustomerName()
-            ),
-            'bancontact' => array(
-                'statement_descriptor' => $this->getStatementDescriptor()
-            ),
-            'redirect' => array(
-                'return_url' => $returnUrl
-            ),
-            'metadata' => $this->getSourceMetadata()
-        ));
+            'owner' => [
+                'name' => Util::getCustomerName(),
+            ],
+            'bancontact' => [
+                'statement_descriptor' => $this->getStatementDescriptor(),
+            ],
+            'redirect' => [
+                'return_url' => $returnUrl,
+            ],
+            'metadata' => $this->getSourceMetadata(),
+        ]);
 
         return $source;
     }

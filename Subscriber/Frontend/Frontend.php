@@ -1,12 +1,15 @@
 <?php
+// Copyright (c) Pickware GmbH. All rights reserved.
+// This file is part of software that is released under a proprietary license.
+// You must not copy, modify, distribute, make publicly available, or execute
+// its contents or parts thereof without express permission by the copyright
+// holder, unless otherwise permitted by law.
+
 namespace Shopware\Plugins\StripePayment\Subscriber\Frontend;
 
 use Enlight\Event\SubscriberInterface;
 use Shopware\Plugins\StripePayment\Util;
 
-/**
- * @copyright Copyright (c) 2017, VIISON GmbH
- */
 class Frontend implements SubscriberInterface
 {
     /**
@@ -19,10 +22,13 @@ class Frontend implements SubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            'Enlight_Controller_Front_RouteStartup' => array('onRouteStartup', -10000),
-            'Enlight_Controller_Front_RouteShutdown' => 'onRouteShutdown'
-        );
+        return [
+            'Enlight_Controller_Front_RouteStartup' => [
+                'onRouteStartup',
+                -10000,
+            ],
+            'Enlight_Controller_Front_RouteShutdown' => 'onRouteShutdown',
+        ];
     }
 
     /**
@@ -62,9 +68,9 @@ class Frontend implements SubscriberInterface
             'SELECT *
             FROM s_core_sessions
             WHERE id = :sessionId',
-            array(
-                'sessionId' => $sessionId
-            )
+            [
+                'sessionId' => $sessionId,
+            ]
         );
         if ($session) {
             \Enlight_Components_Session::setId($sessionId);

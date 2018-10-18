@@ -1,12 +1,16 @@
 <?php
+// Copyright (c) Pickware GmbH. All rights reserved.
+// This file is part of software that is released under a proprietary license.
+// You must not copy, modify, distribute, make publicly available, or execute
+// its contents or parts thereof without express permission by the copyright
+// holder, unless otherwise permitted by law.
+
 namespace Shopware\Plugins\StripePayment\Subscriber;
 
 use Enlight\Event\SubscriberInterface;
 
 /**
  * The subscriber for adding the custom StripePaymentMethod path.
- *
- * @copyright Copyright (c) 2015, VIISON GmbH
  */
 class Payment implements SubscriberInterface
 {
@@ -15,9 +19,9 @@ class Payment implements SubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            'Shopware_Modules_Admin_InitiatePaymentClass_AddClass' => 'onAddPaymentClass'
-        );
+        return [
+            'Shopware_Modules_Admin_InitiatePaymentClass_AddClass' => 'onAddPaymentClass',
+        ];
     }
 
     /**
@@ -28,13 +32,13 @@ class Payment implements SubscriberInterface
     public function onAddPaymentClass(\Enlight_Event_EventArgs $args)
     {
         $dirs = $args->getReturn();
-        $dirs['StripePaymentApplePay'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\ApplePay';
-        $dirs['StripePaymentBancontact'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Bancontact';
-        $dirs['StripePaymentCard'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Card';
-        $dirs['StripePaymentIdeal'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Ideal';
-        $dirs['StripePaymentGiropay'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Giropay';
-        $dirs['StripePaymentSepa'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Sepa';
-        $dirs['StripePaymentSofort'] = 'Shopware\Plugins\StripePayment\Components\PaymentMethods\Sofort';
+        $dirs['StripePaymentApplePay'] = 'Shopware\\Plugins\\StripePayment\\Components\\PaymentMethods\\ApplePay';
+        $dirs['StripePaymentBancontact'] = 'Shopware\\Plugins\\StripePayment\\Components\\PaymentMethods\\Bancontact';
+        $dirs['StripePaymentCard'] = 'Shopware\\Plugins\\StripePayment\\Components\\PaymentMethods\\Card';
+        $dirs['StripePaymentIdeal'] = 'Shopware\\Plugins\\StripePayment\\Components\\PaymentMethods\\Ideal';
+        $dirs['StripePaymentGiropay'] = 'Shopware\\Plugins\\StripePayment\\Components\\PaymentMethods\\Giropay';
+        $dirs['StripePaymentSepa'] = 'Shopware\\Plugins\\StripePayment\\Components\\PaymentMethods\\Sepa';
+        $dirs['StripePaymentSofort'] = 'Shopware\\Plugins\\StripePayment\\Components\\PaymentMethods\\Sofort';
         $args->setReturn($dirs);
     }
 }

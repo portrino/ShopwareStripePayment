@@ -1,10 +1,14 @@
 <?php
+// Copyright (c) Pickware GmbH. All rights reserved.
+// This file is part of software that is released under a proprietary license.
+// You must not copy, modify, distribute, make publicly available, or execute
+// its contents or parts thereof without express permission by the copyright
+// holder, unless otherwise permitted by law.
+
 use Shopware\Plugins\StripePayment\Util;
 
 /**
  * The general backend controller, which handles refundings.
- *
- * @copyright Copyright (c) 2015, VIISON GmbH
  */
 class Shopware_Controllers_Backend_StripePayment extends Shopware_Controllers_Backend_ExtJs
 {
@@ -23,6 +27,7 @@ class Shopware_Controllers_Backend_StripePayment extends Shopware_Controllers_Ba
             $this->View()->success = false;
             $this->View()->message = 'Required parameter "orderId" not found';
             $this->Response()->setHttpResponseCode(400);
+
             return;
         }
         $amount = floatval($this->Request()->getParam('amount'));
@@ -31,25 +36,28 @@ class Shopware_Controllers_Backend_StripePayment extends Shopware_Controllers_Ba
             $this->View()->success = false;
             $this->View()->message = 'Required parameter "amount" must be greater zero';
             $this->Response()->setHttpResponseCode(400);
+
             return;
         }
-        $positions = $this->Request()->getParam('positions', array());
+        $positions = $this->Request()->getParam('positions', []);
         if (count($positions) === 0) {
             // Missing positions
             $this->View()->success = false;
             $this->View()->message = 'Required parameter "positions" not found or empty';
             $this->Response()->setHttpResponseCode(400);
+
             return;
         }
         $comment = $this->Request()->getParam('comment');
 
         // Try to get order
-        $order = $this->get('models')->find('Shopware\Models\Order\Order', $orderId);
+        $order = $this->get('models')->find('Shopware\\Models\\Order\\Order', $orderId);
         if ($order === null) {
             // Order does not exist
             $this->View()->success = false;
             $this->View()->message = 'Order with id ' . $orderId . ' not found';
             $this->Response()->setHttpResponseCode(404);
+
             return;
         }
         if ($order->getTransactionId() === null) {
@@ -57,6 +65,7 @@ class Shopware_Controllers_Backend_StripePayment extends Shopware_Controllers_Ba
             $this->View()->success = false;
             $this->View()->message = 'Order with id ' . $orderId . ' has no Stripe charge';
             $this->Response()->setHttpResponseCode(404);
+
             return;
         }
 
@@ -64,9 +73,9 @@ class Shopware_Controllers_Backend_StripePayment extends Shopware_Controllers_Ba
         try {
             Util::initStripeAPI();
             $charge = Stripe\Charge::retrieve($order->getTransactionId());
-            $charge->refund(array(
-                'amount' => intval($amount * 100)
-            ));
+            $charge->refund([
+                'amount' => intval($amount * 100),
+            ]);
             $refund = $charge->refunds[count($charge->refunds) - 1];
         } catch (Exception $e) {
             // Try to get the error response
@@ -80,6 +89,7 @@ class Shopware_Controllers_Backend_StripePayment extends Shopware_Controllers_Ba
             $this->View()->success = false;
             $this->View()->message = $message;
             $this->Response()->setHttpResponseCode(500);
+
             return;
         }
 
@@ -88,7 +98,7 @@ class Shopware_Controllers_Backend_StripePayment extends Shopware_Controllers_Ba
         $internalComment .= "\n--------------------------------------------------------------\n"
                          . 'Stripe Rückerstattung (' . date('d.m.Y, G:i:s') . ")\n"
                          . 'Betrag: ' . number_format($amount, 2, ',', '.') . " €\n"
-                         . "Kommentar: $comment\n"
+                         . 'Kommentar: ' . $comment . "\n"
                          . "Positionen:\n";
         foreach ($positions as $position) {
             $price = number_format($position['price'], 2, ',', '.');

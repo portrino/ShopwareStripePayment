@@ -1,4 +1,10 @@
 <?php
+// Copyright (c) Pickware GmbH. All rights reserved.
+// This file is part of software that is released under a proprietary license.
+// You must not copy, modify, distribute, make publicly available, or execute
+// its contents or parts thereof without express permission by the copyright
+// holder, unless otherwise permitted by law.
+
 namespace Shopware\Plugins\StripePayment;
 
 use Shopware\Models\Customer\Customer;
@@ -7,8 +13,6 @@ use Shopware\Models\Attribute\Customer as CustomerAttribute;
 
 /**
  * Utility functions used across this plugin.
- *
- * @copyright Copyright (c) 2015, VIISON GmbH
  */
 class Util
 {
@@ -39,7 +43,7 @@ class Util
         Stripe\Stripe::setApiVersion('2016-07-06');
 
         // Set some plugin info that will be added to every Stripe request
-        $defaultShop = Shopware()->Models()->getRepository('Shopware\Models\Shop\Shop')->getActiveDefault();
+        $defaultShop = Shopware()->Models()->getRepository('Shopware\\Models\\Shop\\Shop')->getActiveDefault();
         Stripe\Stripe::setAppInfo(
             self::STRIPE_PLATFORM_NAME,
             Shopware()->Plugins()->Frontend()->StripePayment()->getVersion(),
@@ -75,7 +79,7 @@ class Util
         // Get the Stripe customer
         $customer = self::getStripeCustomer();
         if ($customer === null || isset($customer->deleted)) {
-            return array();
+            return [];
         }
 
         // Get information about all card sources
@@ -83,14 +87,14 @@ class Util
             return $source->type === 'card';
         });
         $cards = array_map(function ($source) {
-            return array(
+            return [
                 'id' => $source->id,
                 'name' => $source->owner->name,
                 'brand' => $source->card->brand,
                 'last4' => $source->card->last4,
                 'exp_month' => $source->card->exp_month,
-                'exp_year' => $source->card->exp_year
-            );
+                'exp_year' => $source->card->exp_year,
+            ];
         }, $cardSources);
 
         // Sort the cards by id (which correspond to the date, the card was created/added)
@@ -197,13 +201,13 @@ class Util
 
         // Create a new Stripe customer and save it in the user's attributes
         try {
-            self::$stripeCustomer = Stripe\Customer::create(array(
+            self::$stripeCustomer = Stripe\Customer::create([
                 'description' => self::getCustomerName(),
                 'email' => $customer->getEmail(),
-                'metadata' => array(
-                    'platform_name' => self::STRIPE_PLATFORM_NAME
-                )
-            ));
+                'metadata' => [
+                    'platform_name' => self::STRIPE_PLATFORM_NAME,
+                ],
+            ]);
             $customer->getAttribute()->setStripeCustomerId(self::$stripeCustomer->id);
             $em->flush($customer->getAttribute());
         } catch (\Exception $e) {
@@ -231,6 +235,7 @@ class Util
             return null;
         }
         $customerRepository = Shopware()->Models()->getRepository('\Shopware\Models\Customer\Customer');
+        $customerRepository = Shopware()->Models()->getRepository('\\Shopware\\Models\\Customer\\Customer');
         /** @var Customer $customer */
         $customer = $customerRepository->find($customerId);
 
@@ -247,14 +252,16 @@ class Util
             return null;
         }
 
+        $billingAddress = (method_exists($customer, 'getDefaultBillingAddress')) ? $customer->getDefaultBillingAddress() : $customer->getBilling();
+
         // Check for company
-        $company = $customer->getBilling()->getCompany();
+        $company = $billingAddress->getCompany();
         if (!empty($company)) {
             return $company;
         }
 
         // Use first and last name
-        return trim($customer->getBilling()->getFirstName() . ' ' . $customer->getBilling()->getLastName());
+        return trim($billingAddress->getFirstName() . ' ' . $billingAddress->getLastName());
     }
 
     /**
@@ -295,6 +302,6 @@ class Util
      */
     public static function resetStripeSession()
     {
-        Shopware()->Container()->get('session')->stripePayment = new \ArrayObject(array(), \ArrayObject::STD_PROP_LIST);
+        Shopware()->Container()->get('session')->stripePayment = new \ArrayObject([], \ArrayObject::STD_PROP_LIST);
     }
 }

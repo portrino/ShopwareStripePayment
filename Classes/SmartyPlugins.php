@@ -1,12 +1,15 @@
 <?php
+// Copyright (c) Pickware GmbH. All rights reserved.
+// This file is part of software that is released under a proprietary license.
+// You must not copy, modify, distribute, make publicly available, or execute
+// its contents or parts thereof without express permission by the copyright
+// holder, unless otherwise permitted by law.
+
 namespace Shopware\Plugins\StripePayment\Classes;
 
 use Shopware\Components\DependencyInjection\Container;
 use \Enlight_Components_Snippet_Resource as SnippetResource;
 
-/**
- * @copyright Copyright (c) 2017 VIISON GmbH
- */
 class SmartyPlugins
 {
     /**
@@ -55,7 +58,13 @@ class SmartyPlugins
      */
     public function register()
     {
-        $this->templateManager->registerFilter(\Smarty::FILTER_PRE, array($this, 'filterStripeSnippetBlocks'));
+        $this->templateManager->registerFilter(
+            \Smarty::FILTER_PRE,
+            [
+                $this,
+                'filterStripeSnippetBlocks',
+            ]
+        );
     }
 
     /**
@@ -82,7 +91,12 @@ class SmartyPlugins
         $defaultNamespace = $this->snippetResource->getSnippetNamespace($template->source);
 
         // Find all 'stripe_snippet' blocks
-        $pattern = "/$ldle$snippetTag(\s.+?)?$rdle(.*?)$ldle\/$snippetTag$rdle/msi";
+        $pattern = sprintf(
+            '/%1$s%2$s(\\s.+?)?%3$s(.*?)%1$s\\/%2$s%3$s/msi',
+            $ldle,
+            $snippetTag,
+            $rdle
+        );
         while (preg_match($pattern, $source, $matches, PREG_OFFSET_CAPTURE)) {
             if (count($matches) != 3) {
                 continue;
@@ -91,9 +105,9 @@ class SmartyPlugins
             $blockContent = $matches[2][0];
 
             // Parse the snippet arguments to retrieve the snippet
-            $hasNamespaceArg = preg_match('/(.?)(namespace=)(.*?)(?=(\s|$))/', $blockArgs, $namespaceMatches);
+            $hasNamespaceArg = preg_match('/(.?)(namespace=)(.*?)(?=(\\s|$))/', $blockArgs, $namespaceMatches);
             $namespace = ($hasNamespaceArg && !empty($namespaceMatches[3])) ? trim($namespaceMatches[3]) : $defaultNamespace;
-            $hasNameArg = preg_match('/(.?)(name=)(.*?)(?=(\s|$))/', $blockArgs, $nameMatches);
+            $hasNameArg = preg_match('/(.?)(name=)(.*?)(?=(\\s|$))/', $blockArgs, $nameMatches);
             $name = ($hasNameArg && !empty($nameMatches[3])) ? trim($nameMatches[3]) : $blockContent;
             $snippet = $this->snippetManager->getNamespace($namespace)->get($name, $blockContent);
             // Unescape already escaped single quotes
@@ -103,6 +117,7 @@ class SmartyPlugins
 
             // Replace the whole match with the snippet value
             $matchingBlock = $matches[0];
+            // phpcs:ignore Generic.PHP.ForbiddenFunctions
             $source = substr_replace($source, $snippet, $matchingBlock[1], strlen($matchingBlock[0]));
         }
 

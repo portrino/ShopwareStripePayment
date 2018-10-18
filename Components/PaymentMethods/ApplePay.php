@@ -1,13 +1,16 @@
 <?php
+// Copyright (c) Pickware GmbH. All rights reserved.
+// This file is part of software that is released under a proprietary license.
+// You must not copy, modify, distribute, make publicly available, or execute
+// its contents or parts thereof without express permission by the copyright
+// holder, unless otherwise permitted by law.
+
 namespace Shopware\Plugins\StripePayment\Components\PaymentMethods;
 
 use Shopware\Plugins\StripePayment\Util;
 use Stripe;
 
-/**
- * @copyright Copyright (c) 2017, VIISON GmbH
- */
-class ApplePay extends Base
+class ApplePay extends AbstractStripePaymentMethod
 {
     /**
      * @inheritdoc
@@ -23,11 +26,11 @@ class ApplePay extends Base
         }
 
         // Use the token to create a new Stripe card source
-        $source = Stripe\Source::create(array(
+        $source = Stripe\Source::create([
             'type' => 'card',
             'token' => $stripeSession->applePayToken,
-            'metadata' => $this->getSourceMetadata()
-        ));
+            'metadata' => $this->getSourceMetadata(),
+        ]);
         // Remove the token, since it can only be consumed once
         unset($stripeSession->applePayToken);
 

@@ -1,4 +1,10 @@
 <?php
+// Copyright (c) Pickware GmbH. All rights reserved.
+// This file is part of software that is released under a proprietary license.
+// You must not copy, modify, distribute, make publicly available, or execute
+// its contents or parts thereof without express permission by the copyright
+// holder, unless otherwise permitted by law.
+
 namespace Shopware\Plugins\StripePayment\Subscriber\Frontend;
 
 use Enlight\Event\SubscriberInterface;
@@ -6,8 +12,6 @@ use \Shopware_Plugins_Frontend_StripePayment_Bootstrap as Bootstrap;
 
 /**
  * The subscriber for frontend controllers.
- *
- * @copyright Copyright (c) 2017, VIISON GmbH
  */
 class Account implements SubscriberInterface
 {
@@ -29,9 +33,9 @@ class Account implements SubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            'Enlight_Controller_Action_PostDispatchSecure_Frontend_Account' => 'onPostDispatchSecure'
-        );
+        return [
+            'Enlight_Controller_Action_PostDispatchSecure_Frontend_Account' => 'onPostDispatchSecure',
+        ];
     }
 
     /**
@@ -42,8 +46,12 @@ class Account implements SubscriberInterface
     public function onPostDispatchSecure(\Enlight_Event_EventArgs $args)
     {
         if (Shopware()->Shop()->getTemplate()->getVersion() < 3) {
-            // Shopware 4
+            // Shopware 4 template (still valid in Shopware 5.0)
             $args->getSubject()->View()->extendsTemplate('frontend/stripe_payment/account/content_right.tpl');
         }
+
+        // Only show the card management entry in the account menu, if saving credit cards is enabled
+        $pluginConfig = Shopware()->Container()->get('plugins')->get('Frontend')->get('StripePayment')->Config();
+        $args->getSubject()->View()->stripeCardManagementEnabled = $pluginConfig->get('allowSavingCreditCard', true);
     }
 }

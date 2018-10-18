@@ -1,4 +1,10 @@
 <?php
+// Copyright (c) Pickware GmbH. All rights reserved.
+// This file is part of software that is released under a proprietary license.
+// You must not copy, modify, distribute, make publicly available, or execute
+// its contents or parts thereof without express permission by the copyright
+// holder, unless otherwise permitted by law.
+
 namespace Shopware\Plugins\StripePayment\Subscriber\Frontend;
 
 use Enlight\Event\SubscriberInterface;
@@ -7,8 +13,6 @@ use \Shopware_Plugins_Frontend_StripePayment_Bootstrap as Bootstrap;
 
 /**
  * The subscriber for frontend controllers.
- *
- * @copyright Copyright (c) 2017, VIISON GmbH
  */
 class Checkout implements SubscriberInterface
 {
@@ -24,13 +28,13 @@ class Checkout implements SubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             'Enlight_Controller_Action_PostDispatchSecure_Frontend_Checkout' => 'onPostDispatchSecure',
-            // Shopware 4 templates only
+            // Shopware 4 templates only (still valid in Shopware 5.0)
             'Shopware_Controllers_Frontend_Checkout::paymentAction::after' => 'onAfterPaymentAction',
             // Shopware 5 themes only
-            'Shopware_Controllers_Frontend_Checkout::saveShippingPaymentAction::after' => 'onAfterPaymentAction'
-        );
+            'Shopware_Controllers_Frontend_Checkout::saveShippingPaymentAction::after' => 'onAfterPaymentAction',
+        ];
     }
 
     /**
@@ -56,8 +60,8 @@ class Checkout implements SubscriberInterface
 
         // Prepare the view
         $actionName = $args->getSubject()->Request()->getActionName();
-        if (in_array($actionName, array('confirm', 'shippingPayment', 'saveShippingPayment'))) {
-            $stripeViewParams = array();
+        if (in_array($actionName, ['confirm', 'shippingPayment', 'saveShippingPayment'])) {
+            $stripeViewParams = [];
             // Set the stripe public key and some plugin configuration
             $stripeViewParams['publicKey'] = Util::stripePublicKey();
             $stripeViewParams['allowSavingCreditCard'] = Shopware()->Container()->get('plugins')->get('Frontend')->get('StripePayment')->Config()->get('allowSavingCreditCard', true);
@@ -107,7 +111,7 @@ class Checkout implements SubscriberInterface
             // Add the shop's currency and locale
             $shop = Shopware()->Container()->get('shop');
             $stripeViewParams['currency'] = $shop->getCurrency()->getCurrency();
-            $stripeViewParams['currency'] = strtolower($stripeViewParams['currency']);
+            $stripeViewParams['currency'] = mb_strtolower($stripeViewParams['currency']);
             $locale = $shop->getLocale()->getLocale();
             $locale = explode('_', $locale);
             $stripeViewParams['locale'] = $locale[0];
@@ -116,7 +120,7 @@ class Checkout implements SubscriberInterface
             try {
                 $stripeViewParams['availableCards'] = Util::getAllStripeCards();
             } catch (\Exception $e) {
-                $stripeViewParams['availableCards'] = array();
+                $stripeViewParams['availableCards'] = [];
             }
             if ($stripeSession->selectedCard) {
                 // Write the card info to the template both JSON encoded and in a form usable by smarty
@@ -143,7 +147,7 @@ class Checkout implements SubscriberInterface
             $view->stripePayment = $stripeViewParams;
         }
         if ($actionName === 'confirm' && Shopware()->Container()->get('shop')->getTemplate()->getVersion() < 3) {
-            // Load the required templates (Shopware 4 templates only)
+            // Load the required templates (Shopware 4 templates only; still valid in Shopware 5.0)
             $view->extendsTemplate('frontend/stripe_payment/checkout/confirm.tpl');
             $view->extendsTemplate('frontend/stripe_payment/checkout/card_logos.tpl');
 
@@ -154,7 +158,7 @@ class Checkout implements SubscriberInterface
             // Add the SEPA mandate URL to the view
             $view->stripePaymentSepatMandateUrl = $view->sPayment['data']['sepaSource']['sepa_debit']['mandate_url'];
             if (Shopware()->Container()->get('shop')->getTemplate()->getVersion() < 3) {
-                // Load the required template (Shopware 4 templates only)
+                // Load the required template (Shopware 4 templates only; still valid in Shopware 5.0)
                 $view->extendsTemplate('frontend/stripe_payment/checkout/finish.tpl');
             }
         }
@@ -190,7 +194,7 @@ class Checkout implements SubscriberInterface
 
         // Reset parts of the stripe session, if no stripe payment method is selected
         if ($request->getParam('payment')) {
-            $selectedPaymentMethod = Shopware()->Container()->get('models')->find('Shopware\Models\Payment\Payment', $request->getParam('payment'));
+            $selectedPaymentMethod = Shopware()->Container()->get('models')->find('Shopware\\Models\\Payment\\Payment', $request->getParam('payment'));
             if ($selectedPaymentMethod && $selectedPaymentMethod->getAction() !== 'StripePayment') {
                 unset($stripeSession->applePayToken);
             }

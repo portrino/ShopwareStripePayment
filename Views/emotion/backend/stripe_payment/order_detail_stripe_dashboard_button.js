@@ -1,8 +1,16 @@
+// Copyright (c) Pickware GmbH. All rights reserved.
+// This file is part of software that is released under a proprietary license.
+// You must not copy, modify, distribute, make publicly available, or execute
+// its contents or parts thereof without express permission by the copyright
+// holder, unless otherwise permitted by law.
+
 /**
  * Overrides the backend order detail overview to provide an extra button
  * for opening Stripe payments in the Stripe dashboard.
  */
-//{block name="backend/order/view/detail/overview" append}
+//{block name="backend/order/view/detail/overview"}
+    //{$smarty.block.parent}
+
 Ext.define('Shopware.apps.StripePayment.Order.view.detail.Overview.StripeDashboardButton', {
 
     override: 'Shopware.apps.Order.view.detail.Overview',

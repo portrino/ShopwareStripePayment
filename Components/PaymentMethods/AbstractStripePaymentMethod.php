@@ -1,12 +1,15 @@
 <?php
+// Copyright (c) Pickware GmbH. All rights reserved.
+// This file is part of software that is released under a proprietary license.
+// You must not copy, modify, distribute, make publicly available, or execute
+// its contents or parts thereof without express permission by the copyright
+// holder, unless otherwise permitted by law.
+
 namespace Shopware\Plugins\StripePayment\Components\PaymentMethods;
 
 use Shopware\Plugins\StripePayment\Util;
 use ShopwarePlugin\PaymentMethods\Components\GenericPaymentMethod;
 
-/**
- * @copyright Copyright (c) 2017, VIISON GmbH
- */
 abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
 {
     /**
@@ -84,7 +87,7 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
         }
 
         // Strip all characters that are not allowed in statement descriptors
-        $descriptor = preg_replace('/[\<\>\/\\(\)\{\}\'"]/', '', $descriptor);
+        $descriptor = preg_replace('/[\\<\\>\\/\\(\\)\\{\\}\'"]/', '', $descriptor);
 
         // Keep at most 35 characters
         $descriptor = mb_substr($descriptor, 0, 35);
@@ -93,16 +96,15 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
     }
 
     /**
-     * Validates the given payment data. If the data is invalid, an array containing error messages or codes
-     * must be returned. By default this method returns an empty array, which indicates that the $paymentData
-     * is valid.
+     * @inheritdoc
      *
-     * @param array $paymentData
-     * @return array
+     * Validates the given payment data. If the data is invalid, an array containing error messages or codes
+     * must be returned. By default this method returns an empty array, which indicates that the payment
+     * is valid.
      */
-    protected function doValidate(array $paymentData)
+    public function validate($paymentData)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -116,7 +118,7 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
         $front = $this->get('front');
         $url = $front->Router()->assemble($components);
         if (!preg_match('#^https?://#', $url)) {
-            if (strpos($url, '/') !== 0) {
+            if (mb_strpos($url, '/') !== 0) {
                 $url = $front->Request()->getBaseUrl() . '/' . $url;
             }
             $uri = $front->Request()->getScheme() . '://' . $front->Request()->getHttpHost();
@@ -134,10 +136,10 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
      */
     protected function getSourceMetadata()
     {
-        return array(
+        return [
             'platform_name' => Util::STRIPE_PLATFORM_NAME,
-            'shopware_session_id' => $this->get('SessionID')
-        );
+            'shopware_session_id' => $this->get('SessionID'),
+        ];
     }
 
     /**
@@ -147,60 +149,5 @@ abstract class AbstractStripePaymentMethod extends GenericPaymentMethod
     protected function get($key)
     {
         return Shopware()->Container()->get($key);
-    }
-}
-
-/**
- * Returns true, if the signature of GenericPaymentMethod#validate appears consistent with Shopware before version
- * 5.0.4-RC1.
- *
- * Since version 5.0.4-RC1, the parameter must be an array (with no type hint).
- * Before, it was an \Enlight_Controller_Request_Request.
- *
- * The commit that changed the signature of #validate is
- * <https://github.com/shopware/shopware/commit/0608b1a7b05e071c93334b29ab6bd588105462d7>.
- */
-function needs_legacy_validate_signature()
-{
-    $parentClass = new \ReflectionClass('ShopwarePlugin\PaymentMethods\Components\GenericPaymentMethod');
-    /* @var $parameters \ReflectionParameter[] */
-    $parameters = $parentClass->getMethod('validate')->getParameters();
-    foreach ($parameters as $parameter) {
-        // Newer Shopware versions use an array parameter named paymentData.
-        if ($parameter->getName() === 'request') {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-if (needs_legacy_validate_signature()) {
-    /**
-     * Shopware < 5.0.4
-     */
-    abstract class Base extends AbstractStripePaymentMethod
-    {
-        /**
-         * @inheritdoc
-         */
-        public function validate(\Enlight_Controller_Request_Request $request)
-        {
-            return $this->doValidate($request->getParams());
-        }
-    }
-} else {
-    /**
-     * Shopware >= 5.0.4
-     */
-    abstract class Base extends AbstractStripePaymentMethod
-    {
-        /**
-         * @inheritdoc
-         */
-        public function validate($paymentData)
-        {
-            return $this->doValidate($paymentData);
-        }
     }
 }

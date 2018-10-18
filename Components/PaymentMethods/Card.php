@@ -1,13 +1,16 @@
 <?php
+// Copyright (c) Pickware GmbH. All rights reserved.
+// This file is part of software that is released under a proprietary license.
+// You must not copy, modify, distribute, make publicly available, or execute
+// its contents or parts thereof without express permission by the copyright
+// holder, unless otherwise permitted by law.
+
 namespace Shopware\Plugins\StripePayment\Components\PaymentMethods;
 
 use Shopware\Plugins\StripePayment\Util;
 use Stripe;
 
-/**
- * @copyright Copyright (c) 2017, VIISON GmbH
- */
-class Card extends Base
+class Card extends AbstractStripePaymentMethod
 {
     /**
      * @inheritdoc
@@ -22,11 +25,11 @@ class Card extends Base
             throw new \Exception($this->getSnippet('payment_error/message/no_card_selected'));
         } elseif ($stripeSession->selectedCard['token_id']) {
             // Use the token to create a new Stripe card source
-            $source = Stripe\Source::create(array(
+            $source = Stripe\Source::create([
                 'type' => 'card',
                 'token' => $stripeSession->selectedCard['token_id'],
-                'metadata' => $this->getSourceMetadata()
-            ));
+                'metadata' => $this->getSourceMetadata(),
+            ]);
 
             // Remove the token from the selected card, since it can only be consumed once
             unset($stripeSession->selectedCard['token_id']);
@@ -37,9 +40,9 @@ class Card extends Base
                 if (!$stripeCustomer) {
                     $stripeCustomer = Util::createStripeCustomer();
                 }
-                $source = $stripeCustomer->sources->create(array(
-                    'source' => $source->id
-                ));
+                $source = $stripeCustomer->sources->create([
+                    'source' => $source->id,
+                ]);
                 unset($stripeSession->saveCardForFutureCheckouts);
             }
 
@@ -58,23 +61,23 @@ class Card extends Base
         if ($source->card->three_d_secure === 'required' || ($source->card->three_d_secure !== 'not_supported' && $paymentMethod === 'stripe_payment_card_three_d_secure')) {
             // The card requires the 3D-Secure flow or supports it and the selected payment method requires it,
             // hence create a new 3D-Secure source that is based on the card source
-            $returnUrl = $this->assembleShopwareUrl(array(
+            $returnUrl = $this->assembleShopwareUrl([
                 'controller' => 'StripePayment',
-                'action' => 'completeRedirectFlow'
-            ));
+                'action' => 'completeRedirectFlow',
+            ]);
             try {
-                $source = Stripe\Source::create(array(
+                $source = Stripe\Source::create([
                     'type' => 'three_d_secure',
                     'amount' => $amountInCents,
                     'currency' => $currencyCode,
-                    'three_d_secure' => array(
-                        'card' => $source->id
-                    ),
-                    'redirect' => array(
-                        'return_url' => $returnUrl
-                    ),
-                    'metadata' => $this->getSourceMetadata()
-                ));
+                    'three_d_secure' => [
+                        'card' => $source->id,
+                    ],
+                    'redirect' => [
+                        'return_url' => $returnUrl,
+                    ],
+                    'metadata' => $this->getSourceMetadata(),
+                ]);
             } catch (\Exception $e) {
                 throw new \Exception($this->getErrorMessage($e), 0, $e);
             }
@@ -103,15 +106,15 @@ class Card extends Base
     /**
      * @inheritdoc
      */
-    protected function doValidate(array $paymentData)
+    public function validate($paymentData)
     {
         // Check the payment data for a selected card
         if (empty($paymentData['selectedCard'])) {
-            return array(
+            return [
                 'STRIPE_CARD_VALIDATION_FAILED'
-            );
+            ];
         }
 
-        return array();
+        return [];
     }
 }
