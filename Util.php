@@ -71,7 +71,7 @@ class Util
      * Uses the Stripe customer id of the active user to retrieve the customer from Stripe
      * and returns the customer's credit cards.
      *
-     * @return array array containing information about all loaded credit cards.
+     * @return array An array containing information about all loaded credit cards.
      * @throws \Exception if loading the Stripe customer fails.
      */
     public static function getAllStripeCards()
@@ -138,7 +138,7 @@ class Util
      * First tries to find currently logged in user in the database and checks their stripe customer id.
      * If found, the customer information is loaded from Stripe and returned.
      *
-     * @return Stripe\Customer|null customer, which was loaded from Stripe or null, if e.g. the customer does not exist.
+     * @return Stripe\Customer|null The customer, which was loaded from Stripe or null, if e.g. the customer does not exist.
      * @throws \Exception An exception, if Stripe could not load the customer.
      */
     public static function getStripeCustomer()
