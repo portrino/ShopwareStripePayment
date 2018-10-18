@@ -49,5 +49,9 @@ class Account implements SubscriberInterface
             // Shopware 4 template (still valid in Shopware 5.0)
             $args->getSubject()->View()->extendsTemplate('frontend/stripe_payment/account/content_right.tpl');
         }
+
+        // Only show the card management entry in the account menu, if saving credit cards is enabled
+        $pluginConfig = Shopware()->Container()->get('plugins')->get('Frontend')->get('StripePayment')->Config();
+        $args->getSubject()->View()->stripeCardManagementEnabled = $pluginConfig->get('allowSavingCreditCard', true);
     }
 }
